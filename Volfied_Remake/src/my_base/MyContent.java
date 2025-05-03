@@ -4,19 +4,21 @@ package my_base;
 
 
 import my_game.Pokimon;
+
 import ui_elements.ScreenPoint;
 import base.Game;
 import base.GameCanvas;
 import base.GameContent;
+import my_game.SmallEnemy;
 import my_game.MyPolygon;
 
-public class MyContent extends GameContent{
-	private Pokimon pokimon;
-	private MyPolygon myPolygon;
-	
-	//TODO
-	//Declare your own character
-	
+public class MyContent extends GameContent {
+
+    private final int   QUANTITY_OF_SMALL_ENEMIES   = 10;
+
+	private Pokimon     pokimon;
+	private MyPolygon   myPolygon;
+	private SmallEnemy  smallEnemy;
 
 	@Override
 	public void initContent() {
@@ -32,6 +34,7 @@ public class MyContent extends GameContent{
 		};
 
 		myPolygon = new MyPolygon(points);
+
 	}	
 	
 	public Pokimon pokimon() {
@@ -40,6 +43,10 @@ public class MyContent extends GameContent{
 
 	public MyPolygon polygon() {
 		return myPolygon;
+	}
+
+	public SmallEnemy smallEnemy() {
+		return smallEnemy;
 	}
 	
 	public void addCharacter() {
