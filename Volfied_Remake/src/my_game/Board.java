@@ -42,11 +42,11 @@ public class Board {
 		Field field	= content.field();
 		canvas.setBackground(Color.BLACK);
 //		canvas.addShape(new Image("title", "resources/PacmanTitle.png", 372, 123, 300, -10));
-//		addScore(content.score());
+		addScore(content.score());
 		field.addFieldToBoard();		
         addSpacePilot(content.spacePilot());
 		addSmallEnemies();
-//		addStatusLine();
+		addStatusLine();
 //		content.historyIndication().addToCanvas();
 	}
 
@@ -82,8 +82,22 @@ public class Board {
 			image = new Image(s.name(), "resources/"+s.name()+".png", 36,36, transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
 			canvas.addShape(image);
 		}
-	}	
+    }
 
+	private void addScore(Score score) {
+		Text t2 = new Text(score.guid(), score.getText() , 70,70);
+		t2.setColor(Color.WHITE);
+		t2.setFontSize(40);
+		canvas.addShape(t2);
+	}
+
+	private void addStatusLine() {
+		StatusLine status = content.statusLine();
+		Text t2 = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
+		t2.setColor(status.getColor());
+		t2.setFontSize(30);
+		canvas.addShape(t2);
+	}
 	public void updateSpacePilot() {
 		SpacePilot spacePilot   = content.spacePilot();
 
@@ -117,6 +131,17 @@ public class Board {
 		
 	}
 
+	
+	public void updateScore() {
+		Text t1 = (Text) canvas.getShape(content.score().guid());
+		t1.setText(content.score().getText());
+	}
+
+	public void updateStatusLine() {
+		Text t1 = (Text) canvas.getShape(content.statusLine().guid());
+		t1.setText(content.statusLine().getText());
+		t1.setColor(content.statusLine().getColor());
+	}
 
 	//transform an X coordinate from the maze coordinates to the canvas coordinates
 	private int transX(int x) {
@@ -126,5 +151,4 @@ public class Board {
 	private int transY(int y) {
 		return BOARD_Y_OFFSET + y*BOARD_SCALE;
 	}
-
 }

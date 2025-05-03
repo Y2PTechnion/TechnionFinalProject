@@ -15,7 +15,7 @@ public class GameControl {
 		
 //		Lollipop lp = eatCurrentLolly(content.pacman().getLocation());
 		// If history is played, restore locations from history.
-		// Otherwise, move pacman and ghosts according to
+		// Otherwise, move space pilot and small enemies according to
 //		if (content.historyPlayer().isPlaying()) {
 //			content.historyPlayer().playState();
 //		} else {
@@ -28,9 +28,9 @@ public class GameControl {
 //			board.updateLolly(lp);
 //		}
 //		handleCollisions();
-//		board.updateScore();
-//		content.statusLine().refresh();
-//		board.updateStatusLine();
+		board.updateScore();
+		content.statusLine().refresh();
+		board.updateStatusLine();
 //		content.historyRecorder().recordState();
 //        checkGameOver();
 		

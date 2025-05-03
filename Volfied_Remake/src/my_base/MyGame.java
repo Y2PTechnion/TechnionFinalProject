@@ -7,6 +7,7 @@ import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
 
+import shapes.Text;
 
 public class MyGame extends Game {
 	
@@ -42,7 +43,9 @@ public class MyGame extends Game {
 		GameDashboard dashboard = gameUI.dashboard();
 		
 		dashboard.setBackground(Color.BLACK);
-		
+
+  //      dashboard.addUIElement(new Text("score", "Score: 0", 20, 20, 200, 40, Color.GREEN));
+
 		// Add a the Polygon buttons
 //		dashboard.addUIElement(new EditPolygonButton("editButton", "Edit", 60, 40));
 //		dashboard.addUIElement(new RotatePolygonButton("rotateButton", "Rotate", 60, 100));

@@ -10,6 +10,8 @@ import my_game.SpacePilot;
 import my_game.Board;
 import my_game.GameControl;
 import my_game.SmallEnemies;
+import my_game.Score;
+import my_game.StatusLine;
 
 public class MyContent extends GameContent {
 
@@ -18,6 +20,8 @@ public class MyContent extends GameContent {
 	private Field 			field;
     private SpacePilot  	spacePilot;
 	private SmallEnemies	smallEnemies;
+	private Score 			score;
+	private StatusLine 		statusLine;
 	private Board           board;
 	private GameControl     gameControl;
 	
@@ -29,6 +33,9 @@ public class MyContent extends GameContent {
 		spacePilot		= new SpacePilot("spacePilot", field);
 		smallEnemies	= new SmallEnemies();
 		smallEnemies.initSmallEnemies(field);
+		score 			= new Score();
+		statusLine 		= new StatusLine();
+		statusLine.showText("Good Luck!", Color.GREEN, 3000);
 		gameControl = new GameControl(this);
 	}	
 	
@@ -42,6 +49,14 @@ public class MyContent extends GameContent {
 	
 	public SmallEnemies smallEnemies() {
 		return smallEnemies;
+	}
+	
+	public Score score() {
+		return score;
+	}
+
+	public StatusLine statusLine() {
+		return statusLine;
 	}
 
 	public Board getBoard() {
