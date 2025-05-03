@@ -1,70 +1,54 @@
 package my_base;
 
+import java.awt.Color;
 
-
-
-import my_game.Pokimon;
-
-import ui_elements.ScreenPoint;
 import base.Game;
 import base.GameCanvas;
 import base.GameContent;
-import my_game.SmallEnemy;
-import my_game.MyPolygon;
+import my_game.Field;
+import my_game.SpacePilot;
+import my_game.Board;
+import my_game.GameControl;
+import my_game.SmallEnemies;
 
 public class MyContent extends GameContent {
 
-    private final int   QUANTITY_OF_SMALL_ENEMIES   = 10;
+    private final int   	QUANTITY_OF_SMALL_ENEMIES   = 10;
 
-	private Pokimon     pokimon;
-	private MyPolygon   myPolygon;
-	private SmallEnemy  smallEnemy;
-
+	private Field 			field;
+    private SpacePilot  	spacePilot;
+	private SmallEnemies	smallEnemies;
+	private Board           board;
+	private GameControl     gameControl;
+	
 	@Override
 	public void initContent() {
-		pokimon = new Pokimon();
-		ScreenPoint[] points = {
-			new ScreenPoint(100, 100),
-			new ScreenPoint(130, 50),
-			new ScreenPoint(170, 50),
-			new ScreenPoint(200, 100),
-			new ScreenPoint(220, 170),
-			new ScreenPoint(170, 150),
-			new ScreenPoint(130, 150)
-		};
-
-		myPolygon = new MyPolygon(points);
-
+		board 			= new Board();
+		board.setContent(this);
+		field 			= new Field(board);
+		spacePilot		= new SpacePilot("spacePilot", field);
+		smallEnemies	= new SmallEnemies();
+		smallEnemies.initSmallEnemies(field);
+		gameControl = new GameControl(this);
 	}	
 	
-	public Pokimon pokimon() {
-		return pokimon;
-	}
-
-	public MyPolygon polygon() {
-		return myPolygon;
-	}
-
-	public SmallEnemy smallEnemy() {
-		return smallEnemy;
+	public Field field() {
+		return field;
 	}
 	
-	public void addCharacter() {
-		//TODO
-		//Create an instance of your character and set its properties with
-		//initial values
-		
-		
-		//TODO
-		//Add your character visual representation to the canvas using its addToCanvas() method.
-
+	public SpacePilot spacePilot() {
+		return spacePilot;
 	}
 	
-	//TODO
-	//create a method with the name myCharacter which returns
-	//your character for others to use.
+	public SmallEnemies smallEnemies() {
+		return smallEnemies;
+	}
 
-	
-	//TODO
-	//create a changeCharacter method and change inside all the properties you like.
+	public Board getBoard() {
+		return this.board;
+	}
+
+	public GameControl gameControl() {
+		return this.gameControl;
+	}
 }

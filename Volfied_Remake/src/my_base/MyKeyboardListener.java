@@ -1,11 +1,10 @@
 package my_base;
 
-import my_game.Pokimon;
+import my_game.Field;
 import my_ui_elements.DirectionCombo;
 
 import java.awt.event.KeyEvent;
 
-import base.Game;
 import base.KeyboardListener;
 
 public class MyKeyboardListener extends KeyboardListener{
@@ -21,20 +20,24 @@ public class MyKeyboardListener extends KeyboardListener{
 	public void directionalKeyPressed(Direction direction) {
 		switch (direction) {
 		  case RIGHT:
-			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.RIGHT);
-			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Right");
+			  myContent.spacePilot().setDirectionPolicy(Field.Direction.RIGHT);
+//			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.RIGHT);
+//			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Right");
 			  break;
 		  case LEFT:
-			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.LEFT);
-			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Left");
+		  	myContent.spacePilot().setDirectionPolicy(Field.Direction.LEFT);
+//			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.LEFT);
+//			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Left");
 			  break;
 		  case UP:
-			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.UP);
-			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() + 20);
+		  myContent.spacePilot().setDirectionPolicy(Field.Direction.UP);
+//			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.UP);
+//			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() + 20);
 			  break;
 		  case DOWN:
-			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.DOWN);
-			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() - 20);
+		  myContent.spacePilot().setDirectionPolicy(Field.Direction.DOWN);
+//			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.DOWN);
+//			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() - 20);
 			  break;
 		}
 	}

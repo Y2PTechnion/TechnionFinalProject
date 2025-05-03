@@ -1,9 +1,6 @@
 package my_game;
 
-import base.Game;
-import base.GameCanvas;
-import ui_elements.ScreenPoint;
-import base.Intersectable;
+import my_game.Field.Direction;
 
 
 /**
@@ -17,13 +14,16 @@ import base.Intersectable;
  * 
  * @author (YuvalYossiPablo)
  */
-public class SmallEnemy implements Intersectable {
+public class SmallEnemy {
 	
-	private ScreenPoint location;
-	private String 		imageId                 = "";
+	private BoardPoint 	location;
+	private String 		name                 	= "";
 	private int         imageWidth      		= 0;
 	private int         imageHeight     		= 0;
 	private int         speedPixelsPerCycle		= 1;
+	private Direction 	directionPolicy 		= Direction.DOWN;
+	private Direction 	currentDirection 		= Direction.RIGHT;
+	private Field 		field;	
 	
     /**
         * SmallEnemy constructor method
@@ -33,62 +33,93 @@ public class SmallEnemy implements Intersectable {
         *
         * @param (String smallEnemyId) (Small Enemy ID)
         * @param (ScreenPoint smallEnemyLocation) (Small Enemy first location into the canvas)
+		* @param (Field field) (field)
         * @return (SmallEnemy)
         */
-	public SmallEnemy(String smallEnemyId, ScreenPoint smallEnemyLocation) {
-		imageId             = smallEnemyId;
-		setLocation(new ScreenPoint(smallEnemyLocation.x, smallEnemyLocation.y));
+	public SmallEnemy(String smallEnemyId, Field field) {
+		this.name          	= smallEnemyId;
+		this.field 			= field;
 	}	
 
-	public ScreenPoint getLocation() {
+	public BoardPoint getLocation() {
 		return this.location;
 	}
 	
-	public void setLocation(ScreenPoint location) {
+	public void setLocation(BoardPoint location) {
 		this.location = location;
 	}
 	
-	public void setImageID(String id) {
-		this.imageId = id;
+	
+	public void setDirectionPolicy(Direction direction) {
+		directionPolicy = direction;
 	}
 	
-	public String getImageID() {
-		return this.imageId;
+	public Direction getCurrentDirection() {
+		return currentDirection;
 	}
 
-	public void addToCanvas() {
-		GameCanvas canvas = Game.UI().canvas();
-		//TODO
-		//Create the character's graphical elements and add them to the canvas
+	public Direction getPolicy() {
+		return directionPolicy;
 	}
+	
+	public String name() {
+		return name;
+	}
+
+	public void move() {
+						
+		// First try to move according to policy
+		BoardPoint desired = new BoardPoint(location.x + directionPolicy.xVec(), location.y + directionPolicy.yVec());
+		// if move is possible, i.e., maze does not block
+		if (!field.blocksMove(location, desired)) {
+			currentDirection = directionPolicy;
+			location.x = desired.x;
+			location.y = desired.y;
+			// After moving to next location, update movement direction randomly for next movement
+			updateDirectionPolicy();
+			return;
+		}
+		// If reached here, desired policy is not applicable, move in current direction
+		BoardPoint next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
+		if (field.blocksMove(location, next)) {
+			switch (currentDirection) {
+				case RIGHT:
+					currentDirection = Direction.LEFT;
+					break;
+				case LEFT:
+					currentDirection = Direction.RIGHT;
+					break;
+				case UP:
+					currentDirection = Direction.DOWN;
+					break;
+				case DOWN:
+					currentDirection = Direction.UP;
+					break;
+			}
+			updateDirectionPolicy();
+			// recalculate next point according to new direction
+			next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
+		}
+		// move to next point
+		location.x = next.x;
+		location.y = next.y;
+	}
+	
+	private void updateDirectionPolicy() {
+		switch (currentDirection) {
+		case RIGHT:
+			directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
+			break;
+		case LEFT:
+			directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
+			break;
+		case UP:
+			directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
+			break;
+		case DOWN:
+			directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
+			break;
+		}
+	}
+}
 		
-    //  Intersectable base class method to be implemented
-    //  Intersectable base class method to be implemented
-    //  Intersectable base class method to be implemented
-    @Override
-    public ScreenPoint[] getIntersectionVertices() {
-        int intersectionWidth   = this.imageWidth;
-        int intersectionHeight  = this.imageHeight;
-
-        int leftX               = this.location.x;
-        int topY                = this.location.y;
-
-        // ScreenPoint[] vertices = {
-        //         new ScreenPoint(centerX - intersectionWidth / 2, centerY - intersectionHeight / 2),
-        //         new ScreenPoint(centerX + intersectionWidth / 2, centerY - intersectionHeight / 2),
-        //         new ScreenPoint(centerX + intersectionWidth / 2, centerY + intersectionHeight / 2),
-        //         new ScreenPoint(centerX - intersectionWidth / 2, centerY + intersectionHeight / 2)
-        // };
-        ScreenPoint[] vertices = {
-                new ScreenPoint(leftX, topY),
-                new ScreenPoint(leftX + intersectionWidth, topY),
-                new ScreenPoint(leftX + intersectionWidth, topY + intersectionHeight),
-                new ScreenPoint(leftX, topY + intersectionHeight)
-            //new ScreenPoint(leftX, topY),
-            //new ScreenPoint(leftX, topY),
-            //new ScreenPoint(leftX, topY)
-        };
-
-        return vertices;
-    }
-}	

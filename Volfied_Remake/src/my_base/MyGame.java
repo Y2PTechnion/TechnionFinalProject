@@ -3,21 +3,10 @@ package my_base;
 import java.awt.Color;
 
 import base.Game;
-import base.GameCanvas;
 import base.GameContent;
+import base.GameCanvas;
 import base.GameDashboard;
-import my_game.Pokimon;
-import my_ui_elements.AddButton;
-import my_ui_elements.ChangeButton;
-import my_ui_elements.DirectionCombo;
-import my_ui_elements.DragCircleCB;
-import my_ui_elements.EditPolygonButton;
-import my_ui_elements.EndButton;
-import my_ui_elements.GetNameButton;
-import my_ui_elements.MusicButton;
-import my_ui_elements.RotatePolygonButton;
-import my_ui_elements.SlowDownButton;
-import shapes.Circle;
+
 
 public class MyGame extends Game {
 	
@@ -28,22 +17,23 @@ public class MyGame extends Game {
 		
 		GameCanvas canvas = gameUI.canvas();
 		canvas.setMouseHandler(Game.MouseHandler());
-		canvas.setBackground(Color.WHITE);
-		canvas.setBackgroundImage("resources/background1.jpg");
+		
+		content.getBoard().setCanvas(canvas);
+		content.getBoard().initBoard();
 
-		Pokimon pokimon = content.pokimon();
-		pokimon.addToCanvas();
-		canvas.addShape(content.polygon().getVisualPolygon());
-		Circle c = new Circle("circle", 300, 300, 50);
-		c.setDraggable(false);
-		canvas.addShape(c);
+//		canvas.setBackground(Color.WHITE);
+//		canvas.setBackgroundImage("resources/background1.jpg");
+//		canvas.addShape(content.polygon().getVisualPolygon());
+//		Circle c = new Circle("circle", 300, 300, 50);
+//		c.setDraggable(false);
+//		canvas.addShape(c);
 		/**
 		 * This is a use of a shape button.
 		 * Note that it uses the addToCanvas method of the button and is not added in the regular way,
 		 * since it includes multiple ui elements.
 		 */
-		SlowDownButton slow = new SlowDownButton("SlowDown", 800, 600);
-		slow.addToCanvas();
+//		SlowDownButton slow = new SlowDownButton("SlowDown", 800, 600);
+//		slow.addToCanvas();
 	}
 	
 	@Override
@@ -54,24 +44,24 @@ public class MyGame extends Game {
 		dashboard.setBackground(Color.BLACK);
 		
 		// Add a the Polygon buttons
-		dashboard.addUIElement(new EditPolygonButton("editButton", "Edit", 60, 40));
-		dashboard.addUIElement(new RotatePolygonButton("rotateButton", "Rotate", 60, 100));
+//		dashboard.addUIElement(new EditPolygonButton("editButton", "Edit", 60, 40));
+//		dashboard.addUIElement(new RotatePolygonButton("rotateButton", "Rotate", 60, 100));
 
 		// Add a the Circle drag checkbox
-		dashboard.addUIElement(new DragCircleCB("dragCB", "Drag Circle", 280, 80, 200, 40, false));
+//		dashboard.addUIElement(new DragCircleCB("dragCB", "Drag Circle", 280, 80, 200, 40, false));
 
 		// Add a the direction list combo
-		dashboard.addUIElement(new DirectionCombo(280, 40));
+//		dashboard.addUIElement(new DirectionCombo(280, 40));
 
 		// Add a the AddButton button
-		dashboard.addUIElement(new AddButton("addButton", "Add", 540, 40));
+//		dashboard.addUIElement(new AddButton("addButton", "Add", 540, 40));
 		
 		// Add the ChangeButton button to the dashboard
-		dashboard.addUIElement(new ChangeButton("changeButton", "Change", 540, 100));
-		dashboard.addUIElement(new MusicButton("musicButton", "Play", 700, 40));
+//		dashboard.addUIElement(new ChangeButton("changeButton", "Change", 540, 100));
+//		dashboard.addUIElement(new MusicButton("musicButton", "Play", 700, 40));
 
-		dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
-		dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));
+//		dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
+//		dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));
 	}
 	
 	@Override
@@ -97,6 +87,4 @@ public class MyGame extends Game {
 		game.setKeyboardListener(new MyKeyboardListener());
 		game.initGame();
 	}
-
-
 }
