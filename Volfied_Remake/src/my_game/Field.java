@@ -5,21 +5,25 @@ import java.util.ArrayList;
 public class Field {
 	
 	public enum Direction{
-		RIGHT (1,0),
-		LEFT(-1,0),
-		UP (0,-1),
-		DOWN(0,1);
+		RIGHT (1,0, 0),
+		LEFT(-1,0, 1),
+		UP (0,-1, 2),
+		DOWN(0,1, 3);
 		
-		private final int xVec, yVec;
-		private Direction(int xVec, int yVec) {
-			this.xVec = xVec;
-			this.yVec = yVec;
+		private final int xVec, yVec, index;
+		private Direction(int xVec, int yVec, int index) {
+			this.xVec   = xVec;
+			this.yVec   = yVec;
+            this.index  = index;
 		}
 		public int xVec() {
-			return xVec;
+			return this.xVec;
 		}
 		public int yVec() {
-			return yVec;
+			return this.yVec;
+		}
+		public int index() {
+			return this.index;
 		}
 	}
 	

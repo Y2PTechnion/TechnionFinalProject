@@ -79,6 +79,7 @@ public class SmallEnemy {
 			updateDirectionPolicy();
 			return;
 		}
+
 		// If reached here, desired policy is not applicable, move in current direction
 		BoardPoint next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
 		if (field.blocksMove(location, next)) {
@@ -86,20 +87,25 @@ public class SmallEnemy {
 				case RIGHT:
 					currentDirection = Direction.LEFT;
 					break;
+
 				case LEFT:
 					currentDirection = Direction.RIGHT;
 					break;
+
 				case UP:
 					currentDirection = Direction.DOWN;
 					break;
+
 				case DOWN:
 					currentDirection = Direction.UP;
 					break;
+
 			}
 			updateDirectionPolicy();
 			// recalculate next point according to new direction
 			next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
 		}
+
 		// move to next point
 		location.x = next.x;
 		location.y = next.y;
@@ -110,15 +116,19 @@ public class SmallEnemy {
 		case RIGHT:
 			directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
 			break;
+
 		case LEFT:
 			directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
 			break;
+
 		case UP:
 			directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
 			break;
+
 		case DOWN:
 			directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
 			break;
+
 		}
 	}
 }

@@ -19,10 +19,10 @@ public class GameControl {
 //		if (content.historyPlayer().isPlaying()) {
 //			content.historyPlayer().playState();
 //		} else {
-//			content.spacePilot().move();
+			content.spacePilot().move();
 			content.smallEnemies().move();
 //		}
-//		board.updateSpacePilot();
+		board.updateSpacePilot();
 		board.updateSmallEnemies();
 //		if (lp != null) {
 //			board.updateLolly(lp);

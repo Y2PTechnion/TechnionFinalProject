@@ -19,26 +19,37 @@ public class MyKeyboardListener extends KeyboardListener{
 	@Override
 	public void directionalKeyPressed(Direction direction) {
 		switch (direction) {
-		  case RIGHT:
-			  myContent.spacePilot().setDirectionPolicy(Field.Direction.RIGHT);
+            case RIGHT: {
+			    myContent.spacePilot().setDirectionPolicy(Field.Direction.RIGHT);
+                myContent.spacePilot().moveLocation(1, 0);
 //			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.RIGHT);
 //			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Right");
-			  break;
-		  case LEFT:
-		  	myContent.spacePilot().setDirectionPolicy(Field.Direction.LEFT);
+			    break;
+			}
+
+		    case LEFT: {
+		  	    myContent.spacePilot().setDirectionPolicy(Field.Direction.LEFT);
+                myContent.spacePilot().moveLocation(-1, 0);
 //			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.LEFT);
 //			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Left");
-			  break;
-		  case UP:
-		  myContent.spacePilot().setDirectionPolicy(Field.Direction.UP);
+			    break;
+			}
+
+		    case UP: {
+		        myContent.spacePilot().setDirectionPolicy(Field.Direction.UP);
+                myContent.spacePilot().moveLocation(0, -1);
 //			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.UP);
 //			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() + 20);
-			  break;
-		  case DOWN:
-		  myContent.spacePilot().setDirectionPolicy(Field.Direction.DOWN);
+			    break;
+			}
+
+		    case DOWN: {
+		        myContent.spacePilot().setDirectionPolicy(Field.Direction.DOWN);
+                myContent.spacePilot().moveLocation(0, 1);
 //			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.DOWN);
 //			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() - 20);
-			  break;
+			    break;
+			}
 		}
 	}
 	

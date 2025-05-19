@@ -8,6 +8,7 @@ import base.GameContent;
 import my_game.Field;
 import my_game.SpacePilot;
 import my_game.Board;
+import my_game.BoardPoint;
 import my_game.GameControl;
 import my_game.SmallEnemies;
 import my_game.Score;
@@ -31,6 +32,7 @@ public class MyContent extends GameContent {
 		board.setContent(this);
 		field 			= new Field(board);
 		spacePilot		= new SpacePilot("spacePilot", field);
+        spacePilot.setLocation(new BoardPoint(1,13));
 		smallEnemies	= new SmallEnemies();
 		smallEnemies.initSmallEnemies(field);
 		score 			= new Score();

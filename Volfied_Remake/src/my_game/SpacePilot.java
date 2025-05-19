@@ -1,7 +1,4 @@
 package my_game;
-
-import base.Game;
-import base.GameCanvas;
 import ui_elements.ScreenPoint;
 import base.Intersectable;
 import my_game.Field.Direction;
@@ -18,16 +15,21 @@ import my_game.Field.Direction;
  * @author (YuvalYossiPablo)
  */
 public class SpacePilot implements Intersectable {
-	private BoardPoint 	location;
-	private String 		imageId                 = "";
-	private int         imageWidth      		= 0;
-	private int         imageHeight     		= 0;
-	private int         speedPixelsPerCycle		= 1;
-	private Direction 	directionPolicy 		= Direction.RIGHT;
-	private Direction 	currentDirection 		= Direction.RIGHT;
-	private Direction 	prevDirection 			= Direction.RIGHT;
-    private Field       field;
-	
+	private BoardPoint 		location;
+	private String 			imageId                 = "";
+    private int             imageIndex              = 0;
+	private int         	imageWidth      		= 0;
+	private int         	imageHeight     		= 0;
+	private int         	speedPixelsPerCycle		= 1;
+	private Direction 		directionPolicy 		= Direction.RIGHT;
+	private Direction 		currentDirection 		= Direction.RIGHT;
+	private Direction 		prevDirection 			= Direction.RIGHT;
+    private Field       	field;
+	private final String[]	images = {"YellowSpaceshipRight", "YellowSpaceshipLeft",
+			"YellowSpaceshipUp", "YellowSpaceshipDown"};
+	private final int       IMAGE_WIDTH             = 36;
+	private final int       IMAGE_HEIGHT            = 36;
+
     /**
         * SpacePilot constructor method
         * 
@@ -40,6 +42,12 @@ public class SpacePilot implements Intersectable {
 	public SpacePilot(String spacePilotId, Field field) {
 		imageId             = spacePilotId;
         this.field          = field;
+
+        this.imageIndex     = this.directionPolicy.index();
+
+        //  Sets the image dimensions
+        this.imageWidth     = this.IMAGE_WIDTH;
+        this.imageHeight    = this.IMAGE_HEIGHT;
 //		setLocation(new ScreenPoint(spacePilotLocation.x, spacePilotLocation.y));
 	}	
 
@@ -50,9 +58,21 @@ public class SpacePilot implements Intersectable {
 	public void setLocation(BoardPoint location) {
 		this.location = location;
 	}
-	
+
+    public void setLocation(int x, int y) {
+    	this.location.x = x;
+		this.location.y = y;
+    }
+
+	public void moveLocation(int dx, int dy) {
+		this.location.x += dx;
+		this.location.y += dy;
+	}
+
 	public void setDirectionPolicy(Direction direction) {
-		directionPolicy = direction;
+        imageIndex          = direction.index();
+		directionPolicy     = direction;
+        currentDirection    = direction;
 	}
 	
 	public Direction getCurrentDirection() {
@@ -64,9 +84,20 @@ public class SpacePilot implements Intersectable {
 	}
 		
 	public void setImageID(String id) {
-		this.imageId = id;
+		this.imageId    = id;
 	}
 	
+	public String getImageName() {
+		return images[imageIndex];
+	}
+
+	public int getImageWidth() {
+		return imageWidth;
+	}
+	
+	public int getImageHeight() {
+		return imageHeight;
+	}
 	public String getImageID() {
 		return this.imageId;
 	}
@@ -91,15 +122,19 @@ public class SpacePilot implements Intersectable {
 				case RIGHT:
 					currentDirection = Direction.LEFT;
 					break;
+
 				case LEFT:
 					currentDirection = Direction.RIGHT;
 					break;
+
 				case UP:
 					currentDirection = Direction.DOWN;
 					break;
+
 				case DOWN:
 					currentDirection = Direction.UP;
 					break;
+
 			}
 			// recalculate next BoardPoint according to new direction
 			next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());

@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import base.GameCanvas;
 import my_base.MyContent;
+import my_game.Field.Direction;
 import shapes.Circle;
 import shapes.Image;
 import shapes.Rectangle;
@@ -67,7 +68,13 @@ public class Board {
 	}
 	
 	private void addSpacePilot(SpacePilot spacePilot) {
-        Rectangle image = new Rectangle("SpacePilot", 467, 650, 20, 20);
+        Image image = new Image(spacePilot.getImageName(), "resources/" + spacePilot.getImageName()+".jpg", 
+            spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
+            transX(spacePilot.getLocation().x)-18, transY(spacePilot.getLocation().y)-18);
+//		image.setShapeListener(this);
+		image.setzOrder(3);
+
+//        spacePilot.setLocation(467, 620);
 //		Image image = new Image("pacman", "resources/pacman_right.png", 48,48, transX(pacman.getLocation().x)-24, transY(pacman.getLocation().y)-24);
 		canvas.addShape(image);
 //		Text t2 = new Text("policy", pacman.getDirectionPolicy().toString() , BOARD_X_OFFSET,70);
@@ -79,7 +86,7 @@ public class Board {
 	private void addSmallEnemies() {
 		Image image;
 		for (SmallEnemy s: content.smallEnemies().getSmallEnemies()) {
-			image = new Image(s.name(), "resources/"+s.name()+".png", 36,36, transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
+			image = new Image(s.name(), "resources/" + s.name() + ".png", 36,36, transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
 			canvas.addShape(image);
 		}
     }
@@ -98,27 +105,43 @@ public class Board {
 		t2.setFontSize(30);
 		canvas.addShape(t2);
 	}
+
 	public void updateSpacePilot() {
 		SpacePilot spacePilot   = content.spacePilot();
 
 		if (spacePilot.changedDirection()) {
 			switch (spacePilot.getCurrentDirection()) {
-			case RIGHT:
-//				canvas.changeImage("pacman", "resources/pacman_right.png", 48,48);
-				break;
-			case LEFT:
-//				canvas.changeImage("pacman", "resources/pacman_left.png", 48,48);
-				break;
-			case UP:
-//				canvas.changeImage("pacman", "resources/pacman_up.png", 48,48);
-				break;
-			case DOWN:
-//				canvas.changeImage("pacman", "resources/pacman_down.png", 48,48);
-				break;
+                case RIGHT: {
+                    spacePilot.setDirectionPolicy(Direction.RIGHT);
+ //   				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+ //                       spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                    break;
+                }
+
+                case LEFT: {
+                    spacePilot.setDirectionPolicy(Direction.LEFT);
+ //   				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+ //                       spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                    break;
+                }
+
+                case UP: {
+                    spacePilot.setDirectionPolicy(Direction.UP);
+//    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+ //                       spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                    break;
+                }
+
+                case DOWN: {
+                    spacePilot.setDirectionPolicy(Direction.DOWN);
+//    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+//                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                    break;
+                }
 			}
 		}
 		
-//		canvas.moveShapeToLocation("spacePilot", transX(content.spacePilot().getLocation().x)-24, transY(content.spacePilot().getLocation().y)-24);
+		canvas.moveShapeToLocation(spacePilot.getImageName(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
 
 //		Text t1 = (Text) canvas.getShape("policy");
 //		t1.setText(pacman.getDirectionPolicy().toString());
