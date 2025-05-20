@@ -1,6 +1,6 @@
 package my_game;
 
-import my_game.Field.Direction;
+import my_game.Grid.Direction;
 
 
 /**
@@ -23,7 +23,7 @@ public class SmallEnemy {
 	private int         speedPixelsPerCycle		= 1;
 	private Direction 	directionPolicy 		= Direction.DOWN;
 	private Direction 	currentDirection 		= Direction.RIGHT;
-	private Field 		field;	
+	private Grid 	    grid;	
 	
     /**
         * SmallEnemy constructor method
@@ -33,12 +33,12 @@ public class SmallEnemy {
         *
         * @param (String smallEnemyId) (Small Enemy ID)
         * @param (ScreenPoint smallEnemyLocation) (Small Enemy first location into the canvas)
-		* @param (Field field) (field)
+		* @param (Grid grid) (grid)
         * @return (SmallEnemy)
         */
-	public SmallEnemy(String smallEnemyId, Field field) {
+	public SmallEnemy(String smallEnemyId, Grid grid) {
 		this.name          	= smallEnemyId;
-		this.field 			= field;
+		this.grid 			= grid;
 	}	
 
 	public BoardPoint getLocation() {
@@ -71,7 +71,7 @@ public class SmallEnemy {
 		// First try to move according to policy
 		BoardPoint desired = new BoardPoint(location.x + directionPolicy.xVec(), location.y + directionPolicy.yVec());
 		// if move is possible, i.e., maze does not block
-		if (!field.blocksMove(location, desired)) {
+		if (!grid.blocksMove(location, desired)) {
 			currentDirection = directionPolicy;
 			location.x = desired.x;
 			location.y = desired.y;
@@ -82,7 +82,7 @@ public class SmallEnemy {
 
 		// If reached here, desired policy is not applicable, move in current direction
 		BoardPoint next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
-		if (field.blocksMove(location, next)) {
+		if (grid.blocksMove(location, next)) {
 			switch (currentDirection) {
 				case RIGHT:
 					currentDirection = Direction.LEFT;

@@ -2,7 +2,7 @@ package my_game;
 
 import java.util.ArrayList;
 
-public class Field {
+public class Grid {
 	
 	public enum Direction{
 		RIGHT (1,0, 0),
@@ -27,39 +27,39 @@ public class Field {
 		}
 	}
 	
-	public static final int FIELD_X_SIZE = 21;
-	public static final int FIELD_Y_SIZE = 14;	
+	public static final int GRID_X_SIZE = 21;
+	public static final int GRID_Y_SIZE = 14;	
 	
 	private Board board;
-	private ArrayList<FieldLine> lines = new ArrayList<FieldLine>();
+	private ArrayList<GridLine> lines = new ArrayList<GridLine>();
 	
-	public Field(Board board) {
+	public Grid(Board board) {
 		this.board  = board;
-		initFieldLines();
+		initGridLines();
 	}
 
-	private void initFieldLines() {
+	private void initGridLines() {
 		// Frame
-		lines.add(new FieldLine(0,0,FIELD_X_SIZE,0));
-		lines.add(new FieldLine(0,0,0,FIELD_Y_SIZE));
-		lines.add(new FieldLine(0,FIELD_Y_SIZE,FIELD_X_SIZE,FIELD_Y_SIZE));
-		lines.add(new FieldLine(FIELD_X_SIZE,0,FIELD_X_SIZE,FIELD_Y_SIZE));
+		lines.add(new GridLine(0,0,GRID_X_SIZE,0));
+		lines.add(new GridLine(0,0,0,GRID_Y_SIZE));
+		lines.add(new GridLine(0,GRID_Y_SIZE,GRID_X_SIZE,GRID_Y_SIZE));
+		lines.add(new GridLine(GRID_X_SIZE,0,GRID_X_SIZE,GRID_Y_SIZE));
 		
 		// Inner lines
 		
 
 
 	}
-	public void addFieldToBoard() {
+	public void addGridToBoard() {
 		int i = 0;
-		for (FieldLine line: lines()) {
+		for (GridLine line: lines()) {
 			board.addLine(line, ++i);
 		}
 	}
 	public boolean blocksMove(BoardPoint p1, BoardPoint p2) {
 		
 		//Check if any of the lines blocks the move and if so, return true
-		for (FieldLine line: lines) {
+		for (GridLine line: lines) {
 			if (line.blocksMove(p1, p2)) {
 				return true;
 			}
@@ -68,10 +68,10 @@ public class Field {
 		return false;
 	}
 
-	public boolean isOnFieldLine(int x, int y) {
+	public boolean isOnGridLine(int x, int y) {
 		
 		//Check if the point is on any of the lines and if so, return true
-		for (FieldLine line: lines) {
+		for (GridLine line: lines) {
 			if (line.isOnLine(x, y)) {
 				return true;
 			}
@@ -80,7 +80,7 @@ public class Field {
 		return false;
 	}
 	
-	public ArrayList<FieldLine> lines() {
+	public ArrayList<GridLine> lines() {
 		return this.lines;
 	}
 }

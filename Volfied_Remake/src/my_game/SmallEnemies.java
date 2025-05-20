@@ -4,18 +4,18 @@ public class SmallEnemies {
 
 	SmallEnemy[] smallEnemies = new SmallEnemy[3];
 
-	public void initSmallEnemies(Field field) {
+	public void initSmallEnemies(Grid grid) {
 		
 		SmallEnemy s; 
-		s = new SmallEnemy("smallEnemy1", field);
+		s = new SmallEnemy("smallEnemy1", grid);
 		s.setLocation(new BoardPoint(11,7));
 		smallEnemies[0] = s;
 
-		s = new SmallEnemy("smallEnemy2", field);
+		s = new SmallEnemy("smallEnemy2", grid);
 		s.setLocation(new BoardPoint(20,13));
 		smallEnemies[1] = s;
 
-		s = new SmallEnemy("smallEnemy3", field);
+		s = new SmallEnemy("smallEnemy3", grid);
 		s.setLocation(new BoardPoint(1,13));
 		smallEnemies[2] = s;
 	}

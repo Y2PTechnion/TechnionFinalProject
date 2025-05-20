@@ -1,7 +1,7 @@
 package my_game;
 import ui_elements.ScreenPoint;
 import base.Intersectable;
-import my_game.Field.Direction;
+import my_game.Grid.Direction;
 
 /**
  * SpacePilot class
@@ -24,7 +24,7 @@ public class SpacePilot implements Intersectable {
 	private Direction 		directionPolicy 		= Direction.RIGHT;
 	private Direction 		currentDirection 		= Direction.RIGHT;
 	private Direction 		prevDirection 			= Direction.RIGHT;
-    private Field       	field;
+    private Grid       	    grid;
 	private final String[]	images = {"YellowSpaceshipRight", "YellowSpaceshipLeft",
 			"YellowSpaceshipUp", "YellowSpaceshipDown"};
 	private final int       IMAGE_WIDTH             = 36;
@@ -39,9 +39,9 @@ public class SpacePilot implements Intersectable {
         * @param (String spacePilotId) (Space Pilot ID)
         * @return (SpacePilot)
         */
-	public SpacePilot(String spacePilotId, Field field) {
+	public SpacePilot(String spacePilotId, Grid grid) {
 		imageId             = spacePilotId;
-        this.field          = field;
+        this.grid           = grid;
 
         this.imageIndex     = this.directionPolicy.index();
 
@@ -109,7 +109,7 @@ public class SpacePilot implements Intersectable {
 		// First try to move according to policy
 		BoardPoint desired = new BoardPoint(location.x + directionPolicy.xVec(), location.y + directionPolicy.yVec());
 		// if move is possible, i.e., maze does not block
-		if (!field.blocksMove(location, desired)) {
+		if (!grid.blocksMove(location, desired)) {
 			currentDirection = directionPolicy;
 			location.x = desired.x;
 			location.y = desired.y;
@@ -117,7 +117,7 @@ public class SpacePilot implements Intersectable {
 		}
 		// If reached here, desired policy is not applicable, move in opposite direction
 		BoardPoint next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
-		if (field.blocksMove(location, next)) {
+		if (grid.blocksMove(location, next)) {
 			switch (currentDirection) {
 				case RIGHT:
 					currentDirection = Direction.LEFT;

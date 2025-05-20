@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import base.GameCanvas;
 import my_base.MyContent;
-import my_game.Field.Direction;
+import my_game.Grid.Direction;
 import shapes.Circle;
 import shapes.Image;
 import shapes.Rectangle;
@@ -40,11 +40,11 @@ public class Board {
 
 	public void initBoard() {
 		canvas.deleteAllShapes();
-		Field field	= content.field();
+		Grid grid	= content.grid();
 		canvas.setBackground(Color.BLACK);
 //		canvas.addShape(new Image("title", "resources/PacmanTitle.png", 372, 123, 300, -10));
 		addScore(content.score());
-		field.addFieldToBoard();		
+		grid.addGridToBoard();		
         addSpacePilot(content.spacePilot());
 		addSmallEnemies();
 		addStatusLine();
@@ -54,7 +54,7 @@ public class Board {
 	/**
 	 * Every maze line is drawn as a very thin rectangle
 	 */
-	public void addLine(FieldLine line, int lineIndex) {
+	public void addLine(GridLine line, int lineIndex) {
 		int minX = Math.min(line.p1.x, line.p2.x);
 		int maxX = Math.max(line.p1.x, line.p2.x);
 		int minY = Math.min(line.p1.y, line.p2.y);

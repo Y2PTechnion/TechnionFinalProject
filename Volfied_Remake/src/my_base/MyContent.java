@@ -5,7 +5,7 @@ import java.awt.Color;
 import base.Game;
 import base.GameCanvas;
 import base.GameContent;
-import my_game.Field;
+import my_game.Grid;
 import my_game.SpacePilot;
 import my_game.Board;
 import my_game.BoardPoint;
@@ -18,7 +18,7 @@ public class MyContent extends GameContent {
 
     private final int   	QUANTITY_OF_SMALL_ENEMIES   = 10;
 
-	private Field 			field;
+	private Grid 			grid;
     private SpacePilot  	spacePilot;
 	private SmallEnemies	smallEnemies;
 	private Score 			score;
@@ -30,19 +30,19 @@ public class MyContent extends GameContent {
 	public void initContent() {
 		board 			= new Board();
 		board.setContent(this);
-		field 			= new Field(board);
-		spacePilot		= new SpacePilot("spacePilot", field);
+		grid 			= new Grid(board);
+		spacePilot		= new SpacePilot("spacePilot", grid);
         spacePilot.setLocation(new BoardPoint(1,13));
 		smallEnemies	= new SmallEnemies();
-		smallEnemies.initSmallEnemies(field);
+		smallEnemies.initSmallEnemies(grid);
 		score 			= new Score();
 		statusLine 		= new StatusLine();
 		statusLine.showText("Good Luck!", Color.GREEN, 3000);
 		gameControl = new GameControl(this);
 	}	
 	
-	public Field field() {
-		return field;
+	public Grid grid() {
+		return grid;
 	}
 	
 	public SpacePilot spacePilot() {

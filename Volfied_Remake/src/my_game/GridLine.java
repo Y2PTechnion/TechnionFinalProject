@@ -1,14 +1,14 @@
 package my_game;
 
-public class FieldLine {
+public class GridLine {
 	public BoardPoint p1, p2;
 	
-	public FieldLine(BoardPoint p1, BoardPoint p2) {
+	public GridLine(BoardPoint p1, BoardPoint p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 	}
 	
-	public FieldLine(int x1, int y1, int x2, int y2) {
+	public GridLine(int x1, int y1, int x2, int y2) {
 		this.p1 = new BoardPoint(x1,y1);
 		this.p2 = new BoardPoint(x2,y2);
 	}
