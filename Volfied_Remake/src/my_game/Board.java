@@ -109,7 +109,7 @@ public class Board {
 	public void updateSpacePilot() {
 		SpacePilot spacePilot   = content.spacePilot();
 
-		if (spacePilot.changedDirection()) {
+//		if (spacePilot.changedDirection()) {
 			switch (spacePilot.getCurrentDirection()) {
                 case RIGHT: {
  //                   spacePilot.directionalKeyPressed(Direction.RIGHT);
@@ -141,12 +141,16 @@ public class Board {
 
                 case STOPPED:
                 default: {
+    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                    break;
                 }
 			}
-		}
+//		}
 		
 		canvas.moveShapeToLocation(spacePilot.getImageID(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
 
+        spacePilot.setCurrentDirection(Direction.STOPPED);
 //		Text t1 = (Text) canvas.getShape("policy");
 //		t1.setText(pacman.getDirectionPolicy().toString());
 	}
