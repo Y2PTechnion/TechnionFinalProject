@@ -20,17 +20,24 @@ public class GridLine {
 		int maxY = Math.max(this.p1.y, this.p2.y);
 		
 		//both points are left to the line
-		if (p1.x < minX && p2.x < minX)
+		if (p1.x < minX && p2.x < minX) {
 			return false;
+        }
+
 		//both points are right to the line
-		if (p1.x > maxX && p2.x > maxX)
+		if (p1.x > maxX && p2.x > maxX) {
 			return false;
+        }
+
 		//both points are above the line
-		if (p1.y < minY && p2.y < minY)
+		if (p1.y < minY && p2.y < minY) {
 			return false;
+        }
+
 		//both points are below the line
-		if (p1.y > maxY && p2.y > maxY)
+		if (p1.y > maxY && p2.y > maxY) {
 			return false;
+        }
 		
 		//If reached here, the points are within the range of line from both of its sides
 		return true;

@@ -91,7 +91,9 @@ public class MyGame extends Game {
 
 	@Override
 	protected void initCanvas() {
-		
+		/**
+		 * DO NOT TOUCH FIRST 2 ROWS !!!
+		 */
 		GameCanvas canvas   = gameUI.canvas();
 		canvas.setMouseHandler(Game.MouseHandler());
 		

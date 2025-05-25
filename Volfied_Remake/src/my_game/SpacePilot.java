@@ -102,6 +102,7 @@ public class SpacePilot implements Intersectable {
 	public int getImageHeight() {
 		return imageHeight;
 	}
+
 	public String getImageID() {
 		return this.imageId;
 	}

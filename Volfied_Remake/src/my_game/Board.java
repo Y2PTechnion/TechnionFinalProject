@@ -24,9 +24,9 @@ public class Board {
 	 * X & Y Offsets - the top left point of the maze in the canvas
 	 * Scale - the multiplication factor that to convert a grid cell into pixels.
 	 */
-	private final int BOARD_X_OFFSET = 80;
-	private final int BOARD_Y_OFFSET = 120;
-	public static final int BOARD_SCALE = 40;
+	private final int       BOARD_X_OFFSET  = 80;
+	private final int       BOARD_Y_OFFSET  = 120;
+	public static final int BOARD_SCALE     = 36;
 	private GameCanvas canvas;
 	private MyContent content;
 	
@@ -65,6 +65,14 @@ public class Board {
 		rect.setColor(Color.BLUE);
 		rect.setWeight(2);
 		canvas.addShape(rect);
+	}
+	
+		public void addRegion(Region rg) {
+		Circle circle = new Circle(rg.getGuid(), transX(rg.getLocation().x), transY(rg.getLocation().y), 3);
+		circle.setColor(Color.WHITE);
+		circle.setFillColor(Color.WHITE);
+		circle.setIsFilled(true);
+		canvas.addShape(circle);
 	}
 	
 	private void addSpacePilot(SpacePilot spacePilot) {
@@ -112,28 +120,24 @@ public class Board {
 //		if (spacePilot.changedDirection()) {
 			switch (spacePilot.getCurrentDirection()) {
                 case RIGHT: {
- //                   spacePilot.directionalKeyPressed(Direction.RIGHT);
     				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case LEFT: {
- //                   spacePilot.directionalKeyPressed(Direction.LEFT);
     				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case UP: {
-//                    spacePilot.directionalKeyPressed(Direction.UP);
     				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case DOWN: {
-//                    spacePilot.directionalKeyPressed(Direction.DOWN);
     				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
@@ -149,7 +153,7 @@ public class Board {
 //		}
 		
 		canvas.moveShapeToLocation(spacePilot.getImageID(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
-
+        // Reset the direction to stopped, so that the next move will be according to the policy
         spacePilot.setCurrentDirection(Direction.STOPPED);
 //		Text t1 = (Text) canvas.getShape("policy");
 //		t1.setText(pacman.getDirectionPolicy().toString());
@@ -162,6 +166,9 @@ public class Board {
 		
 	}
 
+	public void updateRegion(Region rg) {
+		canvas.deleteShape(rg.getGuid());
+	}
 	
 	public void updateScore() {
 		Text t1 = (Text) canvas.getShape(content.score().guid());

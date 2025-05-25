@@ -28,44 +28,88 @@ public class Grid {
 		}
 	}
 	
-	public static final int GRID_X_SIZE = 21;
-	public static final int GRID_Y_SIZE = 14;	
+// Grid size in cells
+// Each cell is 24x24 pixels, so the grid size in pixels is 504x336
+	public static final int GRID_X_SIZE_IN_CELLS = 21;
+	public static final int GRID_Y_SIZE_IN_CELLS = 14;	
 	
 	private Board board;
 	private ArrayList<GridLine> lines = new ArrayList<GridLine>();
+	private Region[][] regions = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
+	private int numRegions = 0;
 	
 	public Grid(Board board) {
 		this.board  = board;
 		initGridLines();
+		initRegions();
 	}
 
 	private void initGridLines() {
 		// Frame
-		lines.add(new GridLine(0,0,GRID_X_SIZE,0));
-		lines.add(new GridLine(0,0,0,GRID_Y_SIZE));
-		lines.add(new GridLine(0,GRID_Y_SIZE,GRID_X_SIZE,GRID_Y_SIZE));
-		lines.add(new GridLine(GRID_X_SIZE,0,GRID_X_SIZE,GRID_Y_SIZE));
+		lines.add(new GridLine(0, 0, GRID_X_SIZE_IN_CELLS, 0));
+		lines.add(new GridLine(0, 0, 0, GRID_Y_SIZE_IN_CELLS));
+		lines.add(new GridLine(0, GRID_Y_SIZE_IN_CELLS, GRID_X_SIZE_IN_CELLS, GRID_Y_SIZE_IN_CELLS));
+		lines.add(new GridLine(GRID_X_SIZE_IN_CELLS, 0, GRID_X_SIZE_IN_CELLS, GRID_Y_SIZE_IN_CELLS));
 		
 		// Inner lines
 		
+		//2 lines on 2nd row and 2 symmetric from bottom
+//		lines.add(new MazeLine(2,2,10,2));
+//		lines.add(new MazeLine(12,2,19,2));
+//		lines.add(new MazeLine(2,MAZE_Y_SIZE - 2,10, MAZE_Y_SIZE- 2));
+//		lines.add(new MazeLine(12,MAZE_Y_SIZE- 2,19,MAZE_Y_SIZE - 2));
+		
+		// 1 line on 4th row and one symmetric from bottom
+//		lines.add(new MazeLine(2,4,19,4));
+//		lines.add(new MazeLine(2,MAZE_Y_SIZE - 4,19, MAZE_Y_SIZE- 4));
 
+		// 2 lines in the middle to create a 1 unit wide passage
+//		lines.add(new MazeLine(11,5,11,6));
+//		lines.add(new MazeLine(11,MAZE_Y_SIZE - 5,11, MAZE_Y_SIZE- 6));
 
+		//2 lines on 6th row and 2 symmetric from bottom
+//		lines.add(new MazeLine(2,6,9,6));
+//		lines.add(new MazeLine(13,6,19,6));
+//		lines.add(new MazeLine(2,MAZE_Y_SIZE - 6,9, MAZE_Y_SIZE- 6));
+//		lines.add(new MazeLine(13,MAZE_Y_SIZE- 6,19,MAZE_Y_SIZE - 6));
+	}
+	
+	public void initRegions() {
+		numRegions = 0;
+		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
+			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
+				if (!isOnGridLine(x, y)) {
+					regions[x][y] = new Region(x,y);
+					numRegions++;
+				}
+			}
+		}
+		
 	}
 	public void addGridToBoard() {
 		int i = 0;
 		for (GridLine line: lines()) {
 			board.addLine(line, ++i);
 		}
+		
+		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
+			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
+				if (null != regions()[x][y]) {
+					board.addRegion(regions()[x][y]);
+				}
+			}
+		}
 	}
 	public boolean blocksMove(BoardPoint p1, BoardPoint p2) {
 		
-		//Check if any of the lines blocks the move and if so, return true
+		//  Check if any of the lines blocks the move and if so, return true
 		for (GridLine line: lines) {
 			if (line.blocksMove(p1, p2)) {
 				return true;
 			}
 		}
-		//If reached here, there is no blocking line
+
+		//  If reached here, there is no blocking line
 		return false;
 	}
 
@@ -80,8 +124,21 @@ public class Grid {
 		//If reached here, it is not on any line
 		return false;
 	}
+
+	public int currentRegions( ) {
+		return numRegions;
+	}
+
+	public void decreaseRegions() {
+		numRegions--;
+	}
 	
 	public ArrayList<GridLine> lines() {
 		return this.lines;
 	}
+
+	public Region[][] regions() {
+		return this.regions;
+	}
+
 }
