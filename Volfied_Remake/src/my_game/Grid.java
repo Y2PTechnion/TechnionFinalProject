@@ -8,7 +8,8 @@ public class Grid {
 		RIGHT (1,0, 0),
 		LEFT(-1,0, 1),
 		UP (0,-1, 2),
-		DOWN(0,1, 3);
+		DOWN(0,1, 3),
+        STOPPED(0,0, 4);
 		
 		private final int xVec, yVec, index;
 		private Direction(int xVec, int yVec, int index) {

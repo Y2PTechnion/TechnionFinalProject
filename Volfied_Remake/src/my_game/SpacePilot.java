@@ -69,7 +69,7 @@ public class SpacePilot implements Intersectable {
 		this.location.y += dy;
 	}
 
-	public void setDirectionPolicy(Direction direction) {
+	public void directionalKeyPressed(Direction direction) {
         imageIndex          = direction.index();
 		directionPolicy     = direction;
         currentDirection    = direction;
@@ -107,7 +107,8 @@ public class SpacePilot implements Intersectable {
 		prevDirection = currentDirection;
 				
 		// First try to move according to policy
-		BoardPoint desired = new BoardPoint(location.x + directionPolicy.xVec(), location.y + directionPolicy.yVec());
+//		BoardPoint desired = new BoardPoint(location.x + directionPolicy.xVec(), location.y + directionPolicy.yVec());
+        BoardPoint desired = new BoardPoint(location.x + directionPolicy.xVec(), location.y + directionPolicy.yVec());
 		// if move is possible, i.e., maze does not block
 		if (!grid.blocksMove(location, desired)) {
 			currentDirection = directionPolicy;

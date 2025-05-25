@@ -68,7 +68,7 @@ public class Board {
 	}
 	
 	private void addSpacePilot(SpacePilot spacePilot) {
-        Image image = new Image(spacePilot.getImageName(), "resources/" + spacePilot.getImageName()+".jpg", 
+        Image image = new Image(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()+".jpg", 
             spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
             transX(spacePilot.getLocation().x)-18, transY(spacePilot.getLocation().y)-18);
 //		image.setShapeListener(this);
@@ -112,36 +112,40 @@ public class Board {
 		if (spacePilot.changedDirection()) {
 			switch (spacePilot.getCurrentDirection()) {
                 case RIGHT: {
-                    spacePilot.setDirectionPolicy(Direction.RIGHT);
- //   				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
- //                       spacePilot.getImageWidth(), spacePilot.getImageHeight());
+ //                   spacePilot.directionalKeyPressed(Direction.RIGHT);
+    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case LEFT: {
-                    spacePilot.setDirectionPolicy(Direction.LEFT);
- //   				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
- //                       spacePilot.getImageWidth(), spacePilot.getImageHeight());
+ //                   spacePilot.directionalKeyPressed(Direction.LEFT);
+    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case UP: {
-                    spacePilot.setDirectionPolicy(Direction.UP);
-//    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
- //                       spacePilot.getImageWidth(), spacePilot.getImageHeight());
+//                    spacePilot.directionalKeyPressed(Direction.UP);
+    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case DOWN: {
-                    spacePilot.setDirectionPolicy(Direction.DOWN);
-//    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
-//                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
+//                    spacePilot.directionalKeyPressed(Direction.DOWN);
+    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
+                }
+
+                case STOPPED:
+                default: {
                 }
 			}
 		}
 		
-		canvas.moveShapeToLocation(spacePilot.getImageName(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
+		canvas.moveShapeToLocation(spacePilot.getImageID(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
 
 //		Text t1 = (Text) canvas.getShape("policy");
 //		t1.setText(pacman.getDirectionPolicy().toString());

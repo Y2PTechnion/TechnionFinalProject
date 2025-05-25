@@ -20,36 +20,29 @@ public class MyKeyboardListener extends KeyboardListener{
 	public void directionalKeyPressed(Direction direction) {
 		switch (direction) {
             case RIGHT: {
-			    myContent.spacePilot().setDirectionPolicy(Grid.Direction.RIGHT);
-                myContent.spacePilot().moveLocation(1, 0);
-//			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.RIGHT);
+			    myContent.spacePilot().directionalKeyPressed(Grid.Direction.RIGHT);
 //			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Right");
 			    break;
 			}
 
 		    case LEFT: {
-		  	    myContent.spacePilot().setDirectionPolicy(Grid.Direction.LEFT);
-                myContent.spacePilot().moveLocation(-1, 0);
-//			  myContent.pokimon().setDirectionPolicy(Pokimon.Direction.LEFT);
+		  	    myContent.spacePilot().directionalKeyPressed(Grid.Direction.LEFT);
 //			  ((DirectionCombo) (Game.UI().dashboard().getUIElement("directionCombo"))).setDirection("Left");
 			    break;
 			}
 
 		    case UP: {
-		        myContent.spacePilot().setDirectionPolicy(Grid.Direction.UP);
-                myContent.spacePilot().moveLocation(0, -1);
-//			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.UP);
+		        myContent.spacePilot().directionalKeyPressed(Grid.Direction.UP);
 //			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() + 20);
 			    break;
 			}
 
 		    case DOWN: {
-		        myContent.spacePilot().setDirectionPolicy(Grid.Direction.DOWN);
-                myContent.spacePilot().moveLocation(0, 1);
-//			  //myContent.pokimon().setDirectionPolicy(Pokimon.Direction.DOWN);
+		        myContent.spacePilot().directionalKeyPressed(Grid.Direction.DOWN);
 //			  myContent.pokimon().setRotation(myContent.pokimon().getRotation() - 20);
 			    break;
-			}
+
+  			}
 		}
 	}
 	
