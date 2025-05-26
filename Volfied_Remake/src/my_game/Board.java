@@ -24,11 +24,11 @@ public class Board {
 	 * X & Y Offsets - the top left point of the maze in the canvas
 	 * Scale - the multiplication factor that to convert a grid cell into pixels.
 	 */
-	private final int       BOARD_X_OFFSET  = 80;
-	private final int       BOARD_Y_OFFSET  = 120;
-	public static final int BOARD_SCALE     = 36;
-	private GameCanvas canvas;
-	private MyContent content;
+	private final       int         BOARD_X_OFFSET  = 80;
+	private final       int         BOARD_Y_OFFSET  = 120;
+	public static final int         BOARD_SCALE     = 36;
+	private             GameCanvas  canvas;
+	private             MyContent   content;
 	
 	public void setCanvas(GameCanvas canvas) {
 		this.canvas = canvas;
@@ -100,10 +100,14 @@ public class Board {
     }
 
 	private void addScore(Score score) {
-		Text t2 = new Text(score.guid(), score.getText() , 70,70);
+		Text t2     = new Text(score.guid(), score.getText() , 70,70);
 		t2.setColor(Color.WHITE);
 		t2.setFontSize(40);
 		canvas.addShape(t2);
+        Text t3     = new Text(score.guidPercentage(), score.getPercentage(), 400, 70); 
+		t3.setColor(Color.WHITE);
+		t3.setFontSize(40);
+		canvas.addShape(t3);
 	}
 
 	private void addStatusLine() {
@@ -114,7 +118,7 @@ public class Board {
 		canvas.addShape(t2);
 	}
 
-	public void updateSpacePilot() {
+	public void updateSpacePilotInCanvas() {
 		SpacePilot spacePilot   = content.spacePilot();
 
 //		if (spacePilot.changedDirection()) {
@@ -159,7 +163,7 @@ public class Board {
 //		t1.setText(pacman.getDirectionPolicy().toString());
 	}
 	
-	public void updateSmallEnemies() {
+	public void updateSmallEnemiesInCanvas() {
 		for (SmallEnemy s: content.smallEnemies().getSmallEnemies()) {
 			canvas.moveShapeToLocation(s.name(), transX(s.getLocation().x)-24, transY(s.getLocation().y)-24);
 		}
@@ -173,6 +177,8 @@ public class Board {
 	public void updateScore() {
 		Text t1 = (Text) canvas.getShape(content.score().guid());
 		t1.setText(content.score().getText());
+		Text t2 = (Text) canvas.getShape(content.score().guidPercentage());
+		t2.setText(content.score().getPercentage());
 	}
 
 	public void updateStatusLine() {

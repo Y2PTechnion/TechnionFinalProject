@@ -33,10 +33,9 @@ public class Grid {
 	public static final int GRID_X_SIZE_IN_CELLS = 21;
 	public static final int GRID_Y_SIZE_IN_CELLS = 14;	
 	
-	private Board board;
-	private ArrayList<GridLine> lines = new ArrayList<GridLine>();
-	private Region[][] regions = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
-	private int numRegions = 0;
+	private Board               board;
+	private ArrayList<GridLine> lines           = new ArrayList<GridLine>();
+	private Region[][]          regions         = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
 	
 	public Grid(Board board) {
 		this.board  = board;
@@ -75,7 +74,7 @@ public class Grid {
 	}
 	
 	public void initRegions() {
-		numRegions = 0;
+		int numRegions = 0;
 		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
 			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
 				if (!isOnGridLine(x, y)) {
@@ -84,8 +83,23 @@ public class Grid {
 				}
 			}
 		}
-		
+        //  Set the maximum number of regions in a grid
+		Region.setMaximumNumberOfRegionsInGrid(numRegions);
 	}
+
+    public void resetRegions() {
+		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
+			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
+				if ((null != regions()[x][y])
+                        && (false == regions()[x][y].isShown())) {
+					board.addRegion(regions()[x][y]);
+                    regions()[x][y].show();
+				}
+			}
+		}
+        Region.resetConqueredRegions();
+    }
+
 	public void addGridToBoard() {
 		int i = 0;
 		for (GridLine line: lines()) {
@@ -100,6 +114,7 @@ public class Grid {
 			}
 		}
 	}
+
 	public boolean blocksMove(BoardPoint p1, BoardPoint p2) {
 		
 		//  Check if any of the lines blocks the move and if so, return true
@@ -125,12 +140,16 @@ public class Grid {
 		return false;
 	}
 
-	public int currentRegions( ) {
-		return numRegions;
+	public int getCurrentNumberOfUnconqueredRegions( ) {
+		return Region.getNumberOfUnconqueredRegions();
 	}
 
-	public void decreaseRegions() {
-		numRegions--;
+	public double getPercentageOfConqueredRegions( ) {
+		return (Region.getNumberOfConqueredRegions() * 100.0 / Region.getMaximumNumberOfRegionsInGrid());
+	}
+
+	public void setRegionAsConquered() {
+		Region.setConqueredRegion();
 	}
 	
 	public ArrayList<GridLine> lines() {

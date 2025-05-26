@@ -1,5 +1,7 @@
 package my_game;
 
+import java.awt.Color;
+
 import my_base.MyContent;
 
 public class GameControl {
@@ -13,7 +15,8 @@ public class GameControl {
 
 	public void gameStep() {
 		
-		Region rg = conquerCurrentRegion(content.spacePilot().getLocation());
+		Region rg   = conquerCurrentRegion(content.spacePilot().getLocation());
+
 		// If history is played, restore locations from history.
 		// Otherwise, move space pilot and small enemies according to
 //		if (content.historyPlayer().isPlaying()) {
@@ -22,12 +25,14 @@ public class GameControl {
 			content.spacePilot().move();
 			content.smallEnemies().move();
 //		}
-		board.updateSpacePilot();
-		board.updateSmallEnemies();
+		board.updateSpacePilotInCanvas();
+		board.updateSmallEnemiesInCanvas();
+
 		if (null != rg) {
 			board.updateRegion(rg);
 		}
-//		handleCollisions();
+
+		handleCollisions();
 		board.updateScore();
 		content.statusLine().refresh();
 		board.updateStatusLine();
@@ -41,10 +46,12 @@ public class GameControl {
 		SmallEnemies	smallEnemies	= content.smallEnemies();
 		
 		for (SmallEnemy s: smallEnemies.getSmallEnemies()) {
-			if (s.getLocation().x == spacePilot.getLocation().x &&
-					s.getLocation().y == spacePilot.getLocation().y) {
-//				content.score().reset();
-//				content.statusLine().showText("Oops ...", Color.RED, 2000);
+			if (s.getLocation().x == spacePilot.getLocation().x 
+                    && s.getLocation().y == spacePilot.getLocation().y) {
+				content.score().reset();
+				content.statusLine().showText("Oops ...", Color.RED, 2000);
+                //  Reset the grid
+                content.grid().resetRegions();
 				return;
 			}
 		}
@@ -52,16 +59,21 @@ public class GameControl {
 
 
 	public Region conquerCurrentRegion(BoardPoint location) {
-		Region rg = content.grid().regions()[location.x][location.y];
-		if (rg.isShown()) {
+		Region  rg  = content.grid().regions()[location.x][location.y];
+
+		if (true == rg.isShown()) {
 			rg.hide();
-//			content.score().add(1);
-			content.grid().decreaseRegions();
-			// if (content.maze().currentLollies() == 0) {
-			// 	content.statusLine().showText("Great JOB !!!", Color.YELLOW, 5000);
-			// }
+			content.score().add(1);
+			content.grid().setRegionAsConquered();
+            content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
+
+            //  Next lines won't be relevant later, only for fun by now
+			if (0 == content.grid().getCurrentNumberOfUnconqueredRegions()) {
+				content.statusLine().showText("Great JOB !!!", Color.YELLOW, 5000);
+			}
 			return rg; 
 		}
+
 		return null;
 	}
 
