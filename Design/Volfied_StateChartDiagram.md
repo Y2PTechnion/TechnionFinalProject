@@ -5,24 +5,56 @@
 @startuml
 
 @startuml
-[*] -> NewGame
-NewGame --> Login : Succeeded
-NewGame --> [*] : Aborted
-Login --> State3 : Succeeded
-Login --> [*] : Aborted
-state State3 {
-state "Accumulate Enough Data" as long1
-long1 : Just a test
-[*] --> long1
-long1 --> long1 : New Data
-long1 --> ProcessData : Enough Data
-Login --> [H]: Resume
+
+state "Game Initialization" as GameInitialization
+state "Game Active" as GameActive
+
+[*] -right-> GameInitialization : Start Game
+
+GameInitialization -right-> GameActive : Start Current Player
+state GameActive {
+
+	
+
+
+	[*] -down-> SpacePilotIdle
+		state "Space Pilot Idle" as SpacePilotIdle
+		state isInsideConqueredZone <<choice>>	
+		state isThereCollision <<choice>>		
+		SpacePilotIdle -down-> isInsideConqueredZone : Player Moves Space Pilot\n / <b>Game Control</b> -> Space Pilot move
+		state "Space Pilot Damaged" as SpacePilotDamaged
+		state "Conquering Zone" as SpacePilotConqueringZone
+
+		isInsideConqueredZone --> isThereCollision : [moved to\nnon-conquered zone]
+		isInsideConqueredZone --> SpacePilotIdle : [moved inside\nconquered zone]	
+		isThereCollision --> SpacePilotConqueringZone : [no collision with\nsmall enemy]
+		isThereCollision --> SpacePilotDamaged : [collision with\nsmall enemy]
+		
+		SpacePilotConqueringZone --> SpacePilotIdle : Update score
+		SpacePilotDamaged -->  SpacePilotIdle : Reduce lives
+		
+	||
+	
+	state "Small Enemy Idle" as SmallEnemyIdle
+	[*] -down-> SmallEnemyIdle
+		SmallEnemyIdle -up-> SmallEnemyIdle : 300 ms\n/ <b>Game Control</b> -> Small Enemy Random move
+
+	||
+	[*] -down-> GameControlIdle
+		state "Game Control Idle" as GameControlIdle
+		state "Game Control Moving" as GameControlMoving
+		state "Game Control Step" as GameControlStep
+		GameControlIdle	--> GameControlMoving : Small Enemy Random move\n/ Update Small Enemy position
+		GameControlIdle	--> GameControlStep : 300 ms
+		GameControlIdle	--> GameControlMoving : Space Pilot move\n/ Update Space Pilot position
+		GameControlMoving --> GameControlIdle
+
 }
-State3 --> Login : Pause
-Login --> State3[H*]: DeepResume
-State3 --> State3 : Failed
-State3 --> [*] : Succeeded / Save Result
-State3 --> [*] : Aborted
+
+state GameOver {
+}
+
+GameOver --> [*] : Game Ended
 
 
 @enduml
