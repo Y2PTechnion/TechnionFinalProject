@@ -1,8 +1,10 @@
-#Volfied arcade game (system design) class diagram
+#Volfied arcade game (handle collisions UC) class diagram
 
 ```PlantUML
 
 @startuml
+
+title "Handle Collisions UC"-related class diagrams
 
 interface GameContent {
 	+initContent()
@@ -17,32 +19,47 @@ class MyContent {
 
 MyContent .up.* GameContent : implements
 
-interface Intersectable {
+interface Intersectable #back:lightblue {
 	+ getIntersectionVertices()
 }
 
-class IntersectionAlgorithm {
+class IntersectionAlgorithm #back:lightblue {
 	+areIntersecting()
 }
 
-class Cell {
+enum RegionStatus #back:lightblue {
+	+REGION_STATUS_EMPTY
+	+REGION_STATUS_CONQUERED
+	+REGION_STATUS_TEMP_LINE
+}
+
+class Region #back:lightblue {
 	-status
 
 	+updateStatus()
 	+getStatus()
 }
 
+Region ..* Intersectable : implements
+
+RegionStatus *-- Region
+
+
+class GridLine {
+}
+
 class Grid {
 	-width
 	-height
-	-cell
+	-region
 
-	+updateCellStatus()
-	+getCellStatus()
+	+updateRegionStatus()
+	+getRegionStatus()
 	+displayGrid()
 }
 
-Grid "1" *-right- "many" Cell : contains
+Grid "1" *-down- "many" Region : contains
+Grid "1" *-down- "many" GridLine : contains
 
 class Board {
 	-grid
@@ -51,9 +68,9 @@ class Board {
 	+getConqueredPercentage()
 }
 
-Board "1" *-- "many" Grid : contains
+Board "1" *-left- "many" Grid : contains
 
-class SpacePilot {
+class SpacePilot #back:lightblue {
 	-health
 	-score
 	-position
@@ -68,7 +85,7 @@ class SpacePilot {
 
 SpacePilot ..* Intersectable : implements
 
-class SmallEnemy {
+class SmallEnemy #back:lightblue {
 	-health
 	-speed
 	-position
@@ -82,9 +99,9 @@ SmallEnemy ..* Intersectable : implements
 class SmallEnemies {
 }
 
-SmallEnemies "1" *-- "many" SmallEnemy : contains
+SmallEnemies "1" *-right- "many" SmallEnemy : contains
 
-class GameControl {
+class GameControl #back:lightblue {
 	-level
 
 	+setCurrentLevel()
