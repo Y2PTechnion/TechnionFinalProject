@@ -9,52 +9,70 @@
 state "Game Initialization" as GameInitialization
 state "Game Active" as GameActive
 
-[*] -right-> GameInitialization : Start Game
+[*] -down-> GameInitialization : Start Game
 
-GameInitialization -right-> GameActive : Start Current Player
+GameInitialization -down-> GameActive : Start Current Player
 state GameActive {
-
-	
-
-
 	[*] -down-> SpacePilotIdle
-		state "Space Pilot Idle" as SpacePilotIdle
-		state isInsideConqueredZone <<choice>>	
-		state isThereCollision <<choice>>		
-		SpacePilotIdle -down-> isInsideConqueredZone : Player Moves Space Pilot\n / <b>Game Control</b> -> Space Pilot move
-		state "Space Pilot Damaged" as SpacePilotDamaged
-		state "Conquering Zone" as SpacePilotConqueringZone
+		state "<b>Space Pilot</b> Idle" as SpacePilotIdle
+		state "<b>Space Pilot</b> Damaged" as SpacePilotDamaged : Exit/Reduces Space Pilot life
+		state "<b>Space Pilot</b> Killed" as SpacePilotKilled : Exit/<b>Game Over</b>
 
-		isInsideConqueredZone --> isThereCollision : [moved to\nnon-conquered zone]
-		isInsideConqueredZone --> SpacePilotIdle : [moved inside\nconquered zone]	
-		isThereCollision --> SpacePilotConqueringZone : [no collision with\nsmall enemy]
-		isThereCollision --> SpacePilotDamaged : [collision with\nsmall enemy]
+		state isGameOver <<choice>>			
 		
-		SpacePilotConqueringZone --> SpacePilotIdle : Update score
-		SpacePilotDamaged -->  SpacePilotIdle : Reduce lives
+		SpacePilotIdle -up-> SpacePilotIdle : Player Moves Space Pilot\n / <b>Game Control</b> -> Space Pilot move
+		SpacePilotIdle -down-> SpacePilotDamaged : [Reduce Lives]
+		SpacePilotDamaged --> isGameOver
+		isGameOver --> SpacePilotKilled : [if no life left]
+		isGameOver --> SpacePilotIdle : [if still there\nis life left]
+		SpacePilotKilled -down-> ToGameOver <<exitPoint>> 
 		
 	||
 	
-	state "Small Enemy Idle" as SmallEnemyIdle
+	state "<b>Small Enemy</b> Idle" as SmallEnemyIdle
 	[*] -down-> SmallEnemyIdle
 		SmallEnemyIdle -up-> SmallEnemyIdle : 300 ms\n/ <b>Game Control</b> -> Small Enemy Random move
 
 	||
 	[*] -down-> GameControlIdle
-		state "Game Control Idle" as GameControlIdle
-		state "Game Control Moving" as GameControlMoving
-		state "Game Control Step" as GameControlStep
-		GameControlIdle	--> GameControlMoving : Small Enemy Random move\n/ Update Small Enemy position
-		GameControlIdle	--> GameControlStep : 300 ms
-		GameControlIdle	--> GameControlMoving : Space Pilot move\n/ Update Space Pilot position
-		GameControlMoving --> GameControlIdle
+		state "<b>Game Control</b> Idle" as GameControlIdle
+		state "<b>Game Control</b> Step" as GameControlStep : Exit/Verifies collision\n& closing region	
+		
+		state isInsideConqueredZone <<choice>>	
+		state isThereCollision <<choice>>	
+		state hasSpacePilotWon <<choice>>			
+		
+		state "<b>Game Control</b> Collision" as Collision : Exit/<b>Space Pilot</b> -> Reduce lives
+		state "<b>Game Control</b> Conquering Zone" as SpacePilotConqueringZone : Exit/Update conquered zones
+		state "<b>Game Control</b> Win" as GameControlWin : Exit/<b>Game Over</b>
+		
+		isInsideConqueredZone --> GameControlStep : [if moved to\nnon-conquered zone]
+		isInsideConqueredZone --> GameControlIdle : [if moved inside\nconquered zone]	
 
+		GameControlIdle	--> GameControlStep : [Small Enemy Random move]\n/ Update Small Enemy position
+		GameControlIdle	--> isInsideConqueredZone : [Space Pilot move]\n/ Update Space Pilot position
+		GameControlStep --> isThereCollision
+		isThereCollision --> GameControlIdle : [if no collision\n& not conquered region]
+		isThereCollision --> SpacePilotConqueringZone : [if no collision \n& conquered region]
+		isThereCollision --> Collision : [if there is collision]
+		
+		SpacePilotConqueringZone --> hasSpacePilotWon
+		hasSpacePilotWon --> GameControlIdle : [Space Pilot has not\nyet conquered the territory]
+		hasSpacePilotWon --> GameControlWin : [Space Pilot has\nconquered ALL the territory]		
+		
+			
+		GameControlWin --> ToGameOverWon <<exitPoint>>
+		
+		Collision -->  GameControlIdle
 }
 
-state GameOver {
-}
+state GameOver : Exit/Update\nstatistics and score 
 
-GameOver --> [*] : Game Ended
+
+
+GameActive -right-> GameOver
+
+GameOver --right> [*] : Game Ended
 
 
 @enduml
