@@ -105,7 +105,7 @@ public class Board {
 		t2.setFontSize(40);
 		canvas.addShape(t2);
         Text t3     = new Text(score.guidPercentage(), score.getPercentage(), 400, 70); 
-		t3.setColor(Color.WHITE);
+		t3.setColor(Color.GREEN);
 		t3.setFontSize(40);
 		canvas.addShape(t3);
 	}
