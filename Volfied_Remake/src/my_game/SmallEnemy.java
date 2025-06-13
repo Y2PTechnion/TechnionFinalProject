@@ -2,7 +2,6 @@ package my_game;
 
 import my_game.Grid.Direction;
 
-
 /**
  * SmallEnemy class
  * 
@@ -55,23 +54,27 @@ public class SmallEnemy extends GameCharacter {
 		BoardPoint next = new BoardPoint(getLocation().x + currentDirection.xVec(), getLocation().y + currentDirection.yVec());
 		if (grid.blocksMove(getLocation(), next)) {
 			switch (currentDirection) {
-				case RIGHT:
+				case RIGHT: {
 					currentDirection = Direction.LEFT;
 					break;
+                }
 
-				case LEFT:
+				case LEFT: {
 					currentDirection = Direction.RIGHT;
 					break;
+                }
 
-				case UP:
+				case UP: {
 					currentDirection = Direction.DOWN;
 					break;
+                }
 
-				case DOWN:
+				case DOWN: {
 					currentDirection = Direction.UP;
 					break;
-
+                }
 			}
+
 			updateDirectionPolicy();
 			// recalculate next point according to new direction
 			next = new BoardPoint(getLocation().x + currentDirection.xVec(), getLocation().y + currentDirection.yVec());
@@ -83,22 +86,25 @@ public class SmallEnemy extends GameCharacter {
 	
 	private void updateDirectionPolicy() {
 		switch (currentDirection) {
-		case RIGHT:
-			directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
-			break;
+            case RIGHT: {
+                directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
+                break;
+            }
 
-		case LEFT:
-			directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
-			break;
+            case LEFT: {
+                directionPolicy = (Math.random() < 0.5 ? Direction.DOWN : Direction.UP);
+                break;
+            }
 
-		case UP:
-			directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
-			break;
+            case UP: {
+                directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
+                break;
+            }
 
-		case DOWN:
-			directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
-			break;
-
+            case DOWN: {
+                directionPolicy = (Math.random() < 0.5 ? Direction.RIGHT : Direction.LEFT);
+                break;
+            }
 		}
 	}
 }		

@@ -164,5 +164,4 @@ public class Grid {
 	public Region[][] regions() {
 		return this.regions;
 	}
-
 }

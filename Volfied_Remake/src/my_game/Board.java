@@ -59,20 +59,22 @@ public class Board {
 	 * Every maze line is drawn as a very thin rectangle
 	 */
 	public void addLine(GridLine line, int lineIndex) {
-		int minX = Math.min(line.p1().x, line.p2().x);
-		int maxX = Math.max(line.p1().x, line.p2().x);
-		int minY = Math.min(line.p1().y, line.p2().y);
-		int maxY = Math.max(line.p1().y, line.p2().y);
+		int minX    = Math.min(line.p1().x, line.p2().x);
+		int maxX    = Math.max(line.p1().x, line.p2().x);
+		int minY    = Math.min(line.p1().y, line.p2().y);
+		int maxY    = Math.max(line.p1().y, line.p2().y);
 
 		// Represent each line as a thin 4-pixel wide rectangle
-		Rectangle rect = new Rectangle("ml"+lineIndex, transX(minX) - 2, transY(minY) - 2, BOARD_SCALE*(maxX-minX) + 4, BOARD_SCALE*(maxY-minY)+4);
-		rect.setColor(Color.BLUE);
-		rect.setWeight(2);
-		canvas.addShape(rect);
+		Rectangle   rectangle   = new Rectangle("ml" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
+            BOARD_SCALE * (maxX-minX) + 4, BOARD_SCALE * (maxY-minY) + 4);
+
+		rectangle.setColor(Color.BLUE);
+		rectangle.setWeight(2);
+		canvas.addShape(rectangle);
 	}
 	
-		public void addRegion(Region rg) {
-		Circle circle = new Circle(rg.getGuid(), transX(rg.getLocation().x), transY(rg.getLocation().y), 3);
+	public void addRegion(Region rg) {
+		Circle circle   = new Circle(rg.getGuid(), transX(rg.getLocation().x), transY(rg.getLocation().y), 3);
 		circle.setColor(Color.WHITE);
 		circle.setFillColor(Color.WHITE);
 		circle.setIsFilled(true);
