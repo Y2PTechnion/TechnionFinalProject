@@ -1,7 +1,8 @@
 package my_game;
 
 public class GridLine {
-	public BoardPoint p1, p2;
+	public  BoardPoint  p1  = null;
+    public  BoardPoint  p2  = null;
 	
 	public GridLine(BoardPoint p1, BoardPoint p2) {
 		this.p1 = p1;

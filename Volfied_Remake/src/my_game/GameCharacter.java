@@ -16,8 +16,8 @@ import my_game.Grid.Direction;
  */
 public class GameCharacter implements Intersectable {
 //  Private constants for the class
-	private final int       IMAGE_WIDTH             = 18;
-	private final int       IMAGE_HEIGHT            = 18;
+	private final int           IMAGE_WIDTH         = 18;
+	private final int           IMAGE_HEIGHT        = 18;
 
 //  Private variables for the class
 	private     BoardPoint 		location            = null;
@@ -53,7 +53,7 @@ public class GameCharacter implements Intersectable {
 	}
 	
 	public void setLocation(BoardPoint location) {
-		this.location = location;
+		this.location   = location;
 	}
 
     public void setLocation(int x, int y) {

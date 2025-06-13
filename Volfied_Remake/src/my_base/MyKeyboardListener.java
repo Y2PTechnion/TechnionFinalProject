@@ -2,7 +2,6 @@ package my_base;
 
 import my_game.Grid;
 import java.awt.event.KeyEvent;
-
 import base.KeyboardListener;
 
 public class MyKeyboardListener extends KeyboardListener{

@@ -7,10 +7,10 @@ import base.PeriodicLoop;
  * This class demonstrates how you can show something for a specific time period.
  */
 public class StatusLine {
-	private String text;
+	private String  text            = "";
 	// expiration time will store the time when the text should stop showing.
-	private long expirationTime;
-	private Color color = Color.GREEN;
+	private long    expirationTime  = 0;
+	private Color   color           = Color.GREEN;
 	
 	public Color getColor() {
 		return color;
@@ -25,8 +25,8 @@ public class StatusLine {
 	}
 	
 	public void showText(String text, Color color, long miliseconds) {
-		this.text = text;
-		this.color = color;
+		this.text   = text;
+		this.color  = color;
 		/**
 		 * When we start showing the text, we set the expiration time to be 
 		 * the current time + a delay period (miliseconds)
@@ -44,5 +44,4 @@ public class StatusLine {
 			text = "";
 		}
 	}
-
 }

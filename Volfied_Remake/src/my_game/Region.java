@@ -1,9 +1,10 @@
 package my_game;
 
 public class Region {
-	private         BoardPoint  location;
+	private         BoardPoint  location                                = null;
 	private         boolean     visible                                 = true;
-	private         String      guid; // the id of the graphic element that represents this entity
+    // the id of the graphic element that represents this entity
+	private         String      guid                                    = ""; 
     private static  int         MAXIMUM_NUMBER_OF_REGIONS_IN_GRID       = 0;
     private static  int         currentNumberOfConqueredRegionsInGrid   = 0;
 	

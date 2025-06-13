@@ -1,7 +1,6 @@
 package my_game;
 
 import java.awt.Color;
-
 import base.Game;
 import base.GameCanvas;
 import my_base.MyContent;

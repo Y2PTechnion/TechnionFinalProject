@@ -4,7 +4,7 @@ import base.PeriodicLoop;
 
 public class MyPeriodicLoop extends PeriodicLoop {
 
-	private MyContent content;
+	private MyContent content   = null;
 
 	public void setContent(MyContent content) {
 		this.content = content;
@@ -25,16 +25,11 @@ public class MyPeriodicLoop extends PeriodicLoop {
 		// Let the super class do its work first
 		super.execute();
 
-
-
 		if (null != content.gameControl()) {
 			content.gameControl().gameStep();
             //  Do someting only if game control was initialized.
             //  Redraw the space pilot periodically by calling the correct method
   //          redrawSpacePilot();
 		}			
-		
-
 	}
-
 }

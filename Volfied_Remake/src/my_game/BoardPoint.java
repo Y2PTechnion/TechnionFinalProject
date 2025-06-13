@@ -7,7 +7,8 @@ package my_game;
 public class BoardPoint {
   
         // Although not recommended to use public variables, allows easy access through p.x
-        public int x, y;
+        public int  x   = 0;
+        public int  y   = 0;
     
         public BoardPoint(int x, int y) {
             this.x = x;

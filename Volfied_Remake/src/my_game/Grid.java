@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Grid {
 	
-	public enum Direction{
+	public enum Direction {
 		RIGHT (1,0, 0),
 		LEFT(-1,0, 1),
 		UP (0,-1, 2),
@@ -17,12 +17,15 @@ public class Grid {
 			this.yVec   = yVec;
             this.index  = index;
 		}
+
 		public int xVec() {
 			return this.xVec;
 		}
+
 		public int yVec() {
 			return this.yVec;
 		}
+
 		public int index() {
 			return this.index;
 		}
@@ -30,12 +33,12 @@ public class Grid {
 	
 // Grid size in cells
 // Each cell is 24x24 pixels, so the grid size in pixels is 504x336
-	public static final int GRID_X_SIZE_IN_CELLS = 51;
-	public static final int GRID_Y_SIZE_IN_CELLS = 30;	
+	public static final int     GRID_X_SIZE_IN_CELLS    = 51;
+	public static final int     GRID_Y_SIZE_IN_CELLS    = 30;	
 	
-	private Board               board;
-	private ArrayList<GridLine> lines           = new ArrayList<GridLine>();
-	private Region[][]          regions         = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
+	private Board               board                   = null;
+	private ArrayList<GridLine> lines                   = new ArrayList<GridLine>();
+	private Region[][]          regions                 = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
 	
 	public Grid(Board board) {
 		this.board  = board;

@@ -40,7 +40,7 @@ public class SmallEnemy extends GameCharacter {
 	public void move() {
 						
 		// First try to move according to policy
-		BoardPoint desired = new BoardPoint(getLocation().x + directionPolicy.xVec(), getLocation().y + directionPolicy.yVec());
+		BoardPoint desired  = new BoardPoint(getLocation().x + directionPolicy.xVec(), getLocation().y + directionPolicy.yVec());
 		// if move is possible, i.e., maze does not block
 		if (!grid.blocksMove(getLocation(), desired)) {
 			currentDirection = directionPolicy;

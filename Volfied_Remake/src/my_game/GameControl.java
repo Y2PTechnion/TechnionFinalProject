@@ -1,12 +1,11 @@
 package my_game;
 
 import java.awt.Color;
-
 import my_base.MyContent;
 
 public class GameControl {
-    private MyContent   content;
-	private Board       board;
+    private MyContent   content = null;
+	private Board       board   = null;
 
     public GameControl(MyContent content) {
         this.content    = content;

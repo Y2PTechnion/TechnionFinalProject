@@ -40,7 +40,7 @@ class Region {
 	+getStatus()
 }
 
-Region ..* Intersectable : implements
+Region .right.* Intersectable : implements
 
 RegionStatus *-- Region
 
@@ -84,17 +84,28 @@ class SmallEnemy {
 }
 
 class GameCharacter {
-	-health
-	-position
+	-location
+	-name
+	-imageWidth
+	-imageHeight
+	#grid
+	#directionPolicy
+	#currentDirection
 
 	+move()
-	+takeDamage()
+	+getImageWidth()
+	+getImageHeight()
+	+name()
+	+getCurrentDirection()
+	+setCurrentDirection()
+	+getLocation()
+	+setLocation()
 }
 
 
 SpacePilot -down-|> GameCharacter  : is a
 SmallEnemy -down-|> GameCharacter  : is a
-GameCharacter .down.* Intersectable : implements
+GameCharacter .left.* Intersectable : implements
 
 class SmallEnemies {
 }
