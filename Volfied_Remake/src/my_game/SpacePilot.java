@@ -15,6 +15,10 @@ import my_game.Grid.Direction;
  * @author (YuvalYossiPablo)
  */
 public class SpacePilot implements Intersectable {
+//  Private constants for the class
+	private final int       IMAGE_WIDTH             = 18;
+	private final int       IMAGE_HEIGHT            = 18;
+
 	private BoardPoint 		location;
 	private String 			imageId                 = "";
     private int             imageIndex              = 0;
@@ -27,8 +31,7 @@ public class SpacePilot implements Intersectable {
     private Grid       	    grid;
 	private final String[]	images = {"YellowSpaceshipRight", "YellowSpaceshipLeft",
 			"YellowSpaceshipUp", "YellowSpaceshipDown", "YellowSpaceshipUp"};
-	private final int       IMAGE_WIDTH             = 36;
-	private final int       IMAGE_HEIGHT            = 36;
+
 
     /**
         * SpacePilot constructor method

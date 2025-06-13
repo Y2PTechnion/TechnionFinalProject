@@ -28,7 +28,7 @@ public class Board {
 	 */
 	private final       int         BOARD_X_OFFSET  = 80;
 	private final       int         BOARD_Y_OFFSET  = 120;
-	public static final int         BOARD_SCALE     = 36;
+	public static final int         BOARD_SCALE     = 18;
 	private             GameCanvas  canvas;
 	private             MyContent   content;
 	

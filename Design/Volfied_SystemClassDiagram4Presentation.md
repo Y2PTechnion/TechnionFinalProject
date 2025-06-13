@@ -71,30 +71,30 @@ class Board {
 Board "1" *-left- "many" Grid : contains
 
 class SpacePilot {
-	-health
 	-score
-	-position
 	-isOutsideSafePlace
 
-	+move()
 	+attack()
-	+takeDamage()
 	+getScore()
 	+setIsOutsideSafePlace()
 }
 
-SpacePilot ..* Intersectable : implements
-
 class SmallEnemy {
-	-health
 	-speed
+}
+
+class GameCharacter {
+	-health
 	-position
 
 	+move()
 	+takeDamage()
 }
 
-SmallEnemy ..* Intersectable : implements
+
+SpacePilot -down-|> GameCharacter  : is a
+SmallEnemy -down-|> GameCharacter  : is a
+GameCharacter .down.* Intersectable : implements
 
 class SmallEnemies {
 }
