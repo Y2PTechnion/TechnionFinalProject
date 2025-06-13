@@ -30,8 +30,8 @@ public class Grid {
 	
 // Grid size in cells
 // Each cell is 24x24 pixels, so the grid size in pixels is 504x336
-	public static final int GRID_X_SIZE_IN_CELLS = 21;
-	public static final int GRID_Y_SIZE_IN_CELLS = 14;	
+	public static final int GRID_X_SIZE_IN_CELLS = 63;
+	public static final int GRID_Y_SIZE_IN_CELLS = 52;	
 	
 	private Board               board;
 	private ArrayList<GridLine> lines           = new ArrayList<GridLine>();

@@ -2,6 +2,7 @@ package my_game;
 
 import java.awt.Color;
 
+import base.Game;
 import base.GameCanvas;
 import my_base.MyContent;
 import my_game.Grid.Direction;
@@ -9,6 +10,7 @@ import shapes.Circle;
 import shapes.Image;
 import shapes.Rectangle;
 import shapes.Text;
+import ui_elements.GameText;
 
 /**
  * The Board class is responsible for the display of the elements.
@@ -179,6 +181,8 @@ public class Board {
 		t1.setText(content.score().getText());
 		Text t2 = (Text) canvas.getShape(content.score().guidPercentage());
 		t2.setText(content.score().getPercentage());
+        GameText    gameText = (GameText) Game.UI().dashboard().getUIElement("percengage");
+  //      gameText.setText(content.score().getPercentage());
 	}
 
 	public void updateStatusLine() {

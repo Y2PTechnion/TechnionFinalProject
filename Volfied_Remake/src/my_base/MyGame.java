@@ -77,13 +77,12 @@
 package my_base;
 
 import java.awt.Color;
-
 import base.Game;
 import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
-
-import shapes.Text;
+import ui_elements.GameButton;
+import ui_elements.GameText;
 
 public class MyGame extends Game {
 	
@@ -122,7 +121,8 @@ public class MyGame extends Game {
 		
 		dashboard.setBackground(Color.BLACK);
 
-  //      dashboard.addUIElement(new Text("score", "Score: 0", 20, 20, 200, 40, Color.GREEN));
+        dashboard.addUIElement(new GameText("e1", "%", 60, 40, 400, 10));
+ //       dashboard.addUIElement(new Text("score", "Score: 0", 20, 20, 200, 40, Color.GREEN));
 
 		// Add a the Polygon buttons
 //		dashboard.addUIElement(new EditPolygonButton("editButton", "Edit", 60, 40));
