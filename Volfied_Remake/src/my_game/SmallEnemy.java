@@ -101,5 +101,4 @@ public class SmallEnemy extends GameCharacter {
 
 		}
 	}
-}
-		
+}		

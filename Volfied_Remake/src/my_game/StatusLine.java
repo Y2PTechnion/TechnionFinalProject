@@ -7,6 +7,7 @@ import base.PeriodicLoop;
  * This class demonstrates how you can show something for a specific time period.
  */
 public class StatusLine {
+//  Private variables for the class
 	private String  text            = "";
 	// expiration time will store the time when the text should stop showing.
 	private long    expirationTime  = 0;

@@ -1,9 +1,18 @@
 package my_game;
 
 public class GridLine {
-	public  BoardPoint  p1  = null;
-    public  BoardPoint  p2  = null;
-	
+//  Private variables for the class
+	private BoardPoint  p1  = null;
+    private BoardPoint  p2  = null;
+
+    public BoardPoint p1() {
+        return this.p1;
+    }
+
+    public BoardPoint p2() {
+        return this.p2;
+    }
+
 	public GridLine(BoardPoint p1, BoardPoint p2) {
 		this.p1 = p1;
 		this.p2 = p2;

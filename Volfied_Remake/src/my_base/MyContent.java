@@ -37,7 +37,7 @@ public class MyContent extends GameContent {
 		score 			= new Score();
 		statusLine 		= new StatusLine();
 		statusLine.showText("Good Luck!", Color.GREEN, 3000);
-		gameControl = new GameControl(this);
+		gameControl     = new GameControl(this);
 	}	
 	
 	public Grid grid() {

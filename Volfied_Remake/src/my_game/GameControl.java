@@ -4,6 +4,7 @@ import java.awt.Color;
 import my_base.MyContent;
 
 public class GameControl {
+//  Private variables for the class
     private MyContent   content = null;
 	private Board       board   = null;
 
@@ -55,7 +56,6 @@ public class GameControl {
 			}
 		}
 	}
-
 
 	public Region conquerCurrentRegion(BoardPoint location) {
 		Region  rg  = content.grid().regions()[location.x][location.y];

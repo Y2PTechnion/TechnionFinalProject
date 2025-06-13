@@ -74,6 +74,4 @@ public class MyMouseHandler extends MouseHandler {
 	public void screenReleased(int x, int y) {
 		super.screenReleased(x,y);
 	}
-
-
 }

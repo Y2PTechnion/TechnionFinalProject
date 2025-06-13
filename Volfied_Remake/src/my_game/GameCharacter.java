@@ -24,6 +24,8 @@ public class GameCharacter implements Intersectable {
 	private     String 			name                = "";
 	private     int         	imageWidth          = 0;
 	private     int         	imageHeight         = 0;
+
+//  Protected variables for the class
     protected   Grid       	    grid                = null;
 	protected   Direction 		directionPolicy     = Direction.STOPPED;
 	protected   Direction 		currentDirection    = Direction.STOPPED;
@@ -106,4 +108,4 @@ public class GameCharacter implements Intersectable {
 
         return vertices;
     }
-}	
+}

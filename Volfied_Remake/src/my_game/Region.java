@@ -1,6 +1,7 @@
 package my_game;
 
 public class Region {
+//  Private variables for the class
 	private         BoardPoint  location                                = null;
 	private         boolean     visible                                 = true;
     // the id of the graphic element that represents this entity
@@ -58,5 +59,4 @@ public class Region {
 	public boolean isShown() {
 		return visible;
 	}
-
 }

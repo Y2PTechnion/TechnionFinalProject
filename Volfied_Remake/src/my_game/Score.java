@@ -5,6 +5,7 @@ package my_game;
  * It is responsible for resetting and increasing the score, as well managing its text.
  */
 public class Score {
+//  Private variables for the class
 	private int     score                       = 0;
     private double  conqueredRegionsPercentage  = 0.0;
 	
@@ -45,5 +46,4 @@ public class Score {
         String  stringConquredRegionsPercentage = String.format("%.2f", conqueredRegionsPercentage);
 		return (stringConquredRegionsPercentage + "  %") ;
 	}
-
 }
