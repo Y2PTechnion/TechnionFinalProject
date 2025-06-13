@@ -81,7 +81,6 @@ import base.Game;
 import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
-import ui_elements.GameButton;
 import ui_elements.GameText;
 
 public class MyGame extends Game {

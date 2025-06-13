@@ -1,8 +1,6 @@
 package my_base;
 
-import base.Game;
 import base.PeriodicLoop;
-import my_game.BoardPoint;
 
 public class MyPeriodicLoop extends PeriodicLoop {
 

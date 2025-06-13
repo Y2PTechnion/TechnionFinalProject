@@ -2,8 +2,7 @@ package my_base;
 
 import java.awt.Color;
 
-import base.Game;
-import base.GameCanvas;
+
 import base.GameContent;
 import my_game.Grid;
 import my_game.SpacePilot;

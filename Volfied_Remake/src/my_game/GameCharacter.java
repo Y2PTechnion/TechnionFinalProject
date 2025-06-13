@@ -20,11 +20,11 @@ public class GameCharacter implements Intersectable {
 	private final int       IMAGE_HEIGHT            = 18;
 
 //  Private variables for the class
-	private BoardPoint 		location;
-	private String 			name                    = "";
-	private int         	imageWidth      		= 0;
-	private int         	imageHeight     		= 0;
-    protected   Grid       	    grid;
+	private     BoardPoint 		location            = null;
+	private     String 			name                = "";
+	private     int         	imageWidth          = 0;
+	private     int         	imageHeight         = 0;
+    protected   Grid       	    grid                = null;
 	protected   Direction 		directionPolicy     = Direction.STOPPED;
 	protected   Direction 		currentDirection    = Direction.STOPPED;
 
@@ -61,11 +61,6 @@ public class GameCharacter implements Intersectable {
 		this.location.y = y;
     }
 
-	public void moveLocation(int dx, int dy) {
-		this.location.x += dx;
-		this.location.y += dy;
-	}
-
 	public Direction getCurrentDirection() {
 		return currentDirection;
 	}
@@ -74,10 +69,6 @@ public class GameCharacter implements Intersectable {
 		currentDirection    = direction;
 	}
 
-	public Direction getDirectionPolicy() {
-		return directionPolicy;
-	}
-		
 	public int getImageWidth() {
 		return imageWidth;
 	}
@@ -90,7 +81,7 @@ public class GameCharacter implements Intersectable {
 		return this.name;
 	}
 
-	public void move() {
+	protected void move() {
 
 	}
 	

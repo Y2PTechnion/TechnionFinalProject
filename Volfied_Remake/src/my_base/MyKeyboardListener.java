@@ -1,8 +1,6 @@
 package my_base;
 
 import my_game.Grid;
-import my_ui_elements.DirectionCombo;
-
 import java.awt.event.KeyEvent;
 
 import base.KeyboardListener;
