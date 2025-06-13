@@ -17,7 +17,7 @@ public class MyPeriodicLoop extends PeriodicLoop {
         // After changing the space pilot self location, move also its image in the canvas accordingly.
  //       BoardPoint boardPoint = content.spacePilot().getLocation();
  //       if (null != boardPoint) {
- //           Game.UI().canvas().moveShapeToLocation(content.spacePilot().getImageID(), 
+ //           Game.UI().canvas().moveShapeToLocation(content.spacePilot().name(), 
   //          boardPoint.x, boardPoint.y);
   //      }
 //}

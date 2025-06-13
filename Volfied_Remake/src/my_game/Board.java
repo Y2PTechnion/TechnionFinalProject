@@ -78,7 +78,7 @@ public class Board {
 	}
 	
 	private void addSpacePilot(SpacePilot spacePilot) {
-        Image image = new Image(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()+".jpg", 
+        Image image = new Image(spacePilot.name(), "resources/" + spacePilot.getImageName()+".jpg", 
             spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
             transX(spacePilot.getLocation().x)-18, transY(spacePilot.getLocation().y)-18);
 //		image.setShapeListener(this);
@@ -96,7 +96,7 @@ public class Board {
 	private void addSmallEnemies() {
 		Image image;
 		for (SmallEnemy s: content.smallEnemies().getSmallEnemies()) {
-			image = new Image(s.name(), "resources/" + s.name() + ".png", 36,36, transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
+			image = new Image(s.name(), "resources/" + s.name() + ".png", s.getImageWidth(), s.getImageHeight(), transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
 			canvas.addShape(image);
 		}
     }
@@ -126,39 +126,39 @@ public class Board {
 //		if (spacePilot.changedDirection()) {
 			switch (spacePilot.getCurrentDirection()) {
                 case RIGHT: {
-    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case LEFT: {
-    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case UP: {
-    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case DOWN: {
-    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 
                 case STOPPED:
                 default: {
-    				canvas.changeImage(spacePilot.getImageID(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                         spacePilot.getImageWidth(), spacePilot.getImageHeight());
                     break;
                 }
 			}
 //		}
 		
-		canvas.moveShapeToLocation(spacePilot.getImageID(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
+		canvas.moveShapeToLocation(spacePilot.name(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
         // Reset the direction to stopped, so that the next move will be according to the policy
         spacePilot.setCurrentDirection(Direction.STOPPED);
 //		Text t1 = (Text) canvas.getShape("policy");
