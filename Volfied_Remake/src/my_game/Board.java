@@ -1,3 +1,79 @@
+/////////////////////////////////////////////////////////////////////////////
+//                   ALL STUDENTS COMPLETE THESE SECTIONS
+// Title:            Final Project
+// Files:            MyGame.java
+// Semester:         Spring 2025
+//
+// Author:           YuvalYossiPablo
+// Email:            
+// CS Login:         
+// Lecturer's Name:  Rami Marelly, Ph.D.
+// Lab Section:      00860222
+//
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+//
+//                   CHECK ASSIGNMENT PAGE TO see IF PAIR-PROGRAMMING IS ALLOWED
+//                   If pair programming is allowed:
+//                   1. Read PAIR-PROGRAMMING policy (in cs302 policy) 
+//                   2. choose a partner wisely
+//                   3. REGISTER THE TEAM BEFORE YOU WORK TOGETHER 
+//                      a. one partner creates the team
+//                      b. the other partner must join the team
+//                   4. complete this section for each program file.
+//
+// Pair Partner:     Yossi Huttner
+// Email:            yossihuttner@yahoo.com
+// CS Login:         yossef.h@campus.technion.ac.il
+// Lecturer's Name:  Rami Marelly, Ph.D.
+// Lab Section:      00860222
+//
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+//
+//                   CHECK ASSIGNMENT PAGE TO see IF PAIR-PROGRAMMING IS ALLOWED
+//                   If pair programming is allowed:
+//                   1. Read PAIR-PROGRAMMING policy (in cs302 policy) 
+//                   2. choose a partner wisely
+//                   3. REGISTER THE TEAM BEFORE YOU WORK TOGETHER 
+//                      a. one partner creates the team
+//                      b. the other partner must join the team
+//                   4. complete this section for each program file.
+//
+// Pair Partner:     Yuval Shechter
+// Email:            yuvalshe@gmail.com
+// CS Login:         y.shechter@campus.technion.ac.il
+// Lecturer's Name:  Rami Marelly, Ph.D.
+// Lab Section:      00860222
+//
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+//
+//                   CHECK ASSIGNMENT PAGE TO see IF PAIR-PROGRAMMING IS ALLOWED
+//                   If pair programming is allowed:
+//                   1. Read PAIR-PROGRAMMING policy (in cs302 policy) 
+//                   2. choose a partner wisely
+//                   3. REGISTER THE TEAM BEFORE YOU WORK TOGETHER 
+//                      a. one partner creates the team
+//                      b. the other partner must join the team
+//                   4. complete this section for each program file.
+//
+// Pair Partner:     Pablo Daniel Jelsky
+// Email:            PabloDanielJelsky@gmail.com
+// CS Login:         pablo.jelsky@campus.technion.ac.il
+// Lecturer's Name:  Rami Marelly, Ph.D.
+// Lab Section:      00860222
+//
+//////////////////// STUDENTS WHO GET HELP FROM OTHER THAN THEIR PARTNER //////
+//                   must fully acknowledge and credit those sources of help.
+//                   Instructors and TAs do not have to be credited here,
+//                   but tutors, roommates, relatives, strangers, etc do.
+//
+// Persons:          Identify persons by name, relationship to you, and email.
+//                   Describe in detail the the ideas and help they provided.
+//
+// Online sources:   The headers in this file were taken as an example from
+//                   https://pages.cs.wisc.edu/~cs302/resources/guides/commenting.html
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
+
 package my_game;
 
 import java.awt.Color;
@@ -5,7 +81,6 @@ import base.Game;
 import base.GameCanvas;
 import my_base.MyContent;
 import my_game.Grid.Direction;
-import shapes.Circle;
 import shapes.Image;
 import shapes.Rectangle;
 import shapes.Text;
@@ -21,14 +96,15 @@ import ui_elements.GameText;
 public class Board {
 	
 	/**
-	 * The maze does not take all the canvas, so the board defines the three configuration params:
-	 * X & Y Offsets - the top left point of the maze in the canvas
+	 * The grid does not take all the canvas, so the board defines the three configuration params:
+	 * X & Y Offsets - the top left point of the grid in the canvas
 	 * Scale - the multiplication factor that to convert a grid cell into pixels.
 	 */
 //  Private constants for the class
-	private final       int         BOARD_X_OFFSET  = 40;
-	private final       int         BOARD_Y_OFFSET  = 120;
-	private static final int        BOARD_SCALE     = 18;
+	private final       int         BOARD_X_OFFSET                                  = 40;
+	private final       int         BOARD_Y_OFFSET                                  = 120;
+	private static final int        BOARD_SCALE                                     = 18;
+    private final       int         QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS    = 3;
 
 //  Private variables for the class
 	private             GameCanvas  canvas;
@@ -46,64 +122,80 @@ public class Board {
 		canvas.deleteAllShapes();
 		Grid grid	= content.grid();
 		canvas.setBackground(Color.BLACK);
-//		canvas.addShape(new Image("title", "resources/PacmanTitle.png", 372, 123, 300, -10));
+
+		// Represent each line as a thin 4-pixel wide rectangle
+		Rectangle   background   = new Rectangle("background", transX(0) + 4, transY(0) + 4, 
+            transX(Grid.GRID_X_SIZE_IN_CELLS-3) + 4, transY(Grid.GRID_Y_SIZE_IN_CELLS-8) + 16);
+
+		background.setColor(Color.GRAY);
+        background.setFillColor(Color.GRAY);
+        background.setIsFilled(true);
+		background.setWeight(2);
+        background.setzOrder(5);
+		canvas.addShape(background);
+
+        //		canvas.addShape(new Image("title", "resources/PacmanTitle.png", 372, 123, 300, -10));
 		addScore(content.score());
-		grid.addGridToBoard();		
-        addSpacePilot(content.spacePilot());
-		addSmallEnemies();
+		grid.addGridToBoard();	
+
+        //  Add the space pilot and small enemies to the canvas
+        addSpacePilotToCanvas(content.spacePilot());
+		addSmallEnemiesToCanvas();
+
+
 		addStatusLine();
 //		content.historyIndication().addToCanvas();
 	}
 
 	/**
-	 * Every maze line is drawn as a very thin rectangle
+	 * Every grid line is drawn as a very thin rectangle
 	 */
+	public void addGridLimitLine(GridLine line, int lineIndex) {
+		int minX    = Math.min(line.p1().x, line.p2().x);
+		int maxX    = Math.max(line.p1().x, line.p2().x);
+		int minY    = Math.min(line.p1().y, line.p2().y);
+		int maxY    = Math.max(line.p1().y, line.p2().y);
+
+		// Represent each line as a thin 2-pixel wide rectangle
+		Rectangle   rectangle   = new Rectangle("bl" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
+            BOARD_SCALE * (maxX-minX) + 4, BOARD_SCALE * (maxY-minY) + 4);
+
+		rectangle.setColor(Color.GREEN);
+		rectangle.setWeight(2);
+		canvas.addShape(rectangle);
+	}
+
 	public void addLine(GridLine line, int lineIndex) {
 		int minX    = Math.min(line.p1().x, line.p2().x);
 		int maxX    = Math.max(line.p1().x, line.p2().x);
 		int minY    = Math.min(line.p1().y, line.p2().y);
 		int maxY    = Math.max(line.p1().y, line.p2().y);
 
-		// Represent each line as a thin 4-pixel wide rectangle
+		// Represent each line as a thin 2-pixel wide rectangle
 		Rectangle   rectangle   = new Rectangle("ml" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
             BOARD_SCALE * (maxX-minX) + 4, BOARD_SCALE * (maxY-minY) + 4);
 
-		rectangle.setColor(Color.BLUE);
+		rectangle.setColor(Color.GREEN);
 		rectangle.setWeight(2);
 		canvas.addShape(rectangle);
 	}
 	
 	public void addRegion(Region rg) {
-		Circle circle   = new Circle(rg.getGuid(), transX(rg.getLocation().x), transY(rg.getLocation().y), 3);
-		circle.setColor(Color.WHITE);
-		circle.setFillColor(Color.WHITE);
-		circle.setIsFilled(true);
-		canvas.addShape(circle);
-	}
-	
-	private void addSpacePilot(SpacePilot spacePilot) {
-        Image image = new Image(spacePilot.name(), "resources/" + spacePilot.getImageName()+".jpg", 
-            spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
-            transX(spacePilot.getLocation().x)-18, transY(spacePilot.getLocation().y)-18);
-//		image.setShapeListener(this);
-		image.setzOrder(3);
+//		Circle circle   = new Circle(rg.getGuid(), transX(rg.getLocation().x), transY(rg.getLocation().y), 3);
+//		circle.setColor(Color.WHITE);
+//		circle.setFillColor(Color.WHITE);
+//		circle.setIsFilled(true);
+//		canvas.addShape(circle);
 
-//        spacePilot.setLocation(467, 620);
-//		Image image = new Image("pacman", "resources/pacman_right.png", 48,48, transX(pacman.getLocation().x)-24, transY(pacman.getLocation().y)-24);
-		canvas.addShape(image);
-//		Text t2 = new Text("policy", pacman.getDirectionPolicy().toString() , BOARD_X_OFFSET,70);
-//		t2.setColor(Color.YELLOW);
-//		t2.setFontSize(40);
-//		canvas.addShape(t2);
+        Rectangle rectangle = new Rectangle(rg.getGuid(), 
+            transX(rg.getLocation().x), transY(rg.getLocation().y), 16, 16);
+        rectangle.setColor(Color.WHITE);
+        rectangle.setFillColor(Color.WHITE);
+        rectangle.setIsFilled(true);
+        rectangle.setzOrder(3);
+		canvas.addShape(rectangle);
 	}
 	
-	private void addSmallEnemies() {
-		Image image;
-		for (SmallEnemy s: content.smallEnemies().getSmallEnemies()) {
-			image = new Image(s.name(), "resources/" + s.name() + ".png", s.getImageWidth(), s.getImageHeight(), transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
-			canvas.addShape(image);
-		}
-    }
 
 	private void addScore(Score score) {
 		Text t2     = new Text(score.guid(), score.getText() , 70,70);
@@ -124,60 +216,18 @@ public class Board {
 		canvas.addShape(t2);
 	}
 
-	public void updateSpacePilotInCanvas() {
-		SpacePilot spacePilot   = content.spacePilot();
-
-//		if (spacePilot.changedDirection()) {
-			switch (spacePilot.getCurrentDirection()) {
-                case RIGHT: {
-    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
-                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
-                    break;
-                }
-
-                case LEFT: {
-    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
-                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
-                    break;
-                }
-
-                case UP: {
-    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
-                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
-                    break;
-                }
-
-                case DOWN: {
-    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
-                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
-                    break;
-                }
-
-                case STOPPED:
-                default: {
-    				canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
-                        spacePilot.getImageWidth(), spacePilot.getImageHeight());
-                    break;
-                }
-			}
-//		}
-		
-		canvas.moveShapeToLocation(spacePilot.name(), transX(spacePilot.getLocation().x)-24, transY(spacePilot.getLocation().y)-24);
-        // Reset the direction to stopped, so that the next move will be according to the policy
-        spacePilot.setCurrentDirection(Direction.STOPPED);
-//		Text t1 = (Text) canvas.getShape("policy");
-//		t1.setText(pacman.getDirectionPolicy().toString());
-	}
-	
-	public void updateSmallEnemiesInCanvas() {
-		for (SmallEnemy s: content.smallEnemies().getSmallEnemies()) {
-			canvas.moveShapeToLocation(s.name(), transX(s.getLocation().x)-24, transY(s.getLocation().y)-24);
-		}
-		
-	}
-
 	public void updateRegion(Region rg) {
+        //  Remove the old region rectangle
 		canvas.deleteShape(rg.getGuid());
+
+        //  Add a new rectangle for the region
+        Rectangle rectangle = new Rectangle(rg.getGuid(), 
+            transX(rg.getLocation().x), transY(rg.getLocation().y), 18, 18);
+        rectangle.setColor(Color.BLACK);
+        rectangle.setFillColor(Color.BLACK);
+        rectangle.setIsFilled(true);
+        rectangle.setzOrder(10);
+		canvas.addShape(rectangle);
 	}
 	
 	public void updateScore() {
@@ -185,7 +235,7 @@ public class Board {
 		t1.setText(content.score().getText());
 		Text t2 = (Text) canvas.getShape(content.score().guidPercentage());
 		t2.setText(content.score().getPercentage());
-        GameText    gameText = (GameText) Game.UI().dashboard().getUIElement("percengage");
+        GameText    gameText = (GameText) Game.UI().dashboard().getUIElement("percentage");
   //      gameText.setText(content.score().getPercentage());
 	}
 
@@ -195,12 +245,142 @@ public class Board {
 		t1.setColor(content.statusLine().getColor());
 	}
 
-	//transform an X coordinate from the maze coordinates to the canvas coordinates
+	//  transform an X coordinate from the grid coordinates to the canvas coordinates
 	private int transX(int x) {
-		return BOARD_X_OFFSET + x*BOARD_SCALE;
+		return BOARD_X_OFFSET + (x * BOARD_SCALE);
 	}
-	//transform a Y coordinate from the maze coordinates to the canvas coordinates
+
+	//  transform a Y coordinate from the grid coordinates to the canvas coordinates
 	private int transY(int y) {
-		return BOARD_Y_OFFSET + y*BOARD_SCALE;
+		return BOARD_Y_OFFSET + (y * BOARD_SCALE);
+	}
+
+  /**
+    * addSpacePilotToCanvas method
+    * 
+    * @implNote addSpacePilotToCanvas method to add the space pilot into the canvas
+    *
+    * @param (SpacePilot spacePilot)
+    * @return (none)
+    */
+    private void addSpacePilotToCanvas(SpacePilot spacePilot) {
+        //  Create the graphic image for the space pilot
+        Image image = new Image(spacePilot.name(), 
+            "resources/" + spacePilot.getImageName() + ".jpg", 
+            spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
+            transX(spacePilot.getLocation().x), transY(spacePilot.getLocation().y));
+        //  Set the image into the upper Z order (0)
+		image.setzOrder(0);
+        //  Add the space pilot graphic into the canvas
+		canvas.addShape(image);
+	}
+	
+  /**
+    * updateSpacePilotInCanvas method
+    * 
+    * @implNote updateSpacePilotInCanvas method to update the space pilot position (in canvas)
+    *
+    * @param (none)
+    * @return (none)
+    */
+	public void updateSpacePilotInCanvas() {
+		SpacePilot spacePilot   = content.spacePilot();
+
+        switch (spacePilot.getCurrentDirection()) {
+            case RIGHT: {
+                canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                    spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                break;
+            }
+
+            case LEFT: {
+                canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                    spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                break;
+            }
+
+            case UP: {
+                canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                    spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                break;
+            }
+
+            case DOWN: {
+                canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                    spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                break;
+            }
+
+            case STOPPED:
+            default: {
+                canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
+                    spacePilot.getImageWidth(), spacePilot.getImageHeight());
+                break;
+            }
+        }
+    
+        //  Move the space pilot shape (graphic image) to the new location
+		canvas.moveShapeToLocation(spacePilot.name(), 
+            transX(spacePilot.getLocation().x), 
+            transY(spacePilot.getLocation().y));
+
+        //  Reset the direction to stopped, so that the next move will be according to the policy
+        spacePilot.setCurrentDirection(Direction.STOPPED);
+	}
+
+  /**
+    * addSmallEnemiesToCanvas method
+    * 
+    * @implNote addSmallEnemiesToCanvas method to add all the small enemies'
+    *               into the canvas
+    *
+    * @param (none)
+    * @return (none)
+    */
+	private void addSmallEnemiesToCanvas() {
+		Image       image                           = null;
+        int         smallEnemyCounter               = 0;
+        String[]    smallEnemyGraphicsNameArray     = new String[QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS];
+
+        //  'Navigate' into the array of small enemies
+		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) {
+            
+            String      smallEnemyGraphicsName          = s.name();
+            if (smallEnemyCounter < QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS)
+            {
+                //  If there is a graphic for the specific small enemy
+                smallEnemyGraphicsNameArray[smallEnemyCounter] = smallEnemyGraphicsName;
+            }
+            else
+            {
+                //  If there is NO a graphic for the specific small enemy,
+                //  then 'reuse' one of the previous graphics
+                smallEnemyGraphicsName  = smallEnemyGraphicsNameArray[smallEnemyCounter % QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS];
+            }
+  
+            //  Create a specific graphic image for this small enemy
+			image   = new Image(s.name(), "resources/" + smallEnemyGraphicsName + ".png", s.getImageWidth(), s.getImageHeight(), transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
+            //  Set the image into the upper Z order (0)
+            image.setzOrder(0);
+            //  Add the graphics of the specific small enemy into the canvas
+            canvas.addShape(image);
+            smallEnemyCounter++;
+		}
+    }
+
+  /**
+    * updateSmallEnemiesInCanvas method
+    * 
+    * @implNote updateSmallEnemiesInCanvas method to update all the small enemies'
+    *               positions (in canvas)
+    *
+    * @param (none)
+    * @return (none)
+    */
+	public void updateSmallEnemiesInCanvas() {
+		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) {
+            //  Move the small enemy shape (graphic image) to the new location
+   			canvas.moveShapeToLocation(s.name(), transX(s.getLocation().x), transY(s.getLocation().y));
+		}
 	}
 }

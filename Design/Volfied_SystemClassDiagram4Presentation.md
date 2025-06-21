@@ -4,7 +4,7 @@
 
 @startuml
 
-title Volfied remake arcage game class diagram
+title Volfied remake arcade game class diagram
 
 interface GameContent {
 	+initContent()
@@ -40,7 +40,7 @@ class Region {
 	+getStatus()
 }
 
-Region .right.* Intersectable : implements
+Region .right-.* Intersectable : implements
 
 RegionStatus *-- Region
 
