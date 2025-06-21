@@ -36,4 +36,15 @@ public class BoardPoint {
     public void setY(int y) {
         this.y  = y;
     }
+
+    public boolean isEqual(BoardPoint boardPoint) {
+        boolean bIsEqual    = false;
+        if (this.x == boardPoint.getX()
+            && this.y == boardPoint.getY())
+        {
+            bIsEqual    = true;
+        }
+
+        return bIsEqual;
+    }
 }

@@ -123,8 +123,7 @@ public class GameControl {
 		SmallEnemies	smallEnemies	= content.smallEnemies();
 		
 		for (SmallEnemy s : smallEnemies.getSmallEnemies()) {
-			if (s.getLocation().getX() == spacePilot.getLocation().getX() 
-                    && s.getLocation().getY() == spacePilot.getLocation().getY()) {
+			if (s.getLocation().isEqual(spacePilot.getLocation())) {
 				content.score().reset();
 				content.statusLine().showText("Oops ...", Color.RED, 2000);
                 //  Reset the grid
