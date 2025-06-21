@@ -34,6 +34,9 @@ enum Direction {
 class Grid {
 }
 
+class BoardPoint {
+}
+
 Direction *-down- Grid
 
 class Board #back:lightblue {
@@ -76,6 +79,7 @@ class GameCharacter #back:lightblue {
 SmallEnemy -left-|> GameCharacter  : is a
 GameCharacter .left.* Intersectable : implements
 GameCharacter -> Grid : points to a
+GameCharacter "1" *-- "1" BoardPoint : contains
 
 class SmallEnemies #back:lightblue {
 	+SmallEnemies(int quantityOfSmallEnemiesInGame)
