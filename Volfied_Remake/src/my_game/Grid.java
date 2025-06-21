@@ -116,7 +116,7 @@ public class Grid {
 //  Private variables for the class
 	private Board               board                   = null;
 	private ArrayList<GridLine> gridLimitLines          = new ArrayList<GridLine>();
-    private ArrayList<GridLine> lines                   = new ArrayList<GridLine>();
+    private ArrayList<GridLine> gridSpacePilotLines     = new ArrayList<GridLine>();
 	private Region[][]          regions                 = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
 	
 	public Grid(Board board) {
@@ -157,8 +157,8 @@ public class Grid {
 	
 	public void initRegions() {
 		int numRegions = 0;
-		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
-			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
+		for (int y = 0; y < GRID_Y_SIZE_IN_CELLS; y++) {
+			for (int x = 0; x < GRID_X_SIZE_IN_CELLS; x++) {
 				if (!isOnGridLine(x, y)) {
 					regions[x][y] = new Region(x,y);
 					numRegions++;
@@ -170,8 +170,8 @@ public class Grid {
 	}
 
     public void resetRegions() {
-		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
-			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
+		for (int y = 0; y < GRID_Y_SIZE_IN_CELLS; y++) {
+			for (int x = 0; x < GRID_X_SIZE_IN_CELLS; x++) {
 				if ((null != regions()[x][y])
                         && (false == regions()[x][y].isShown())) {
 					board.addRegion(regions()[x][y]);
@@ -182,9 +182,9 @@ public class Grid {
         Region.resetConqueredRegions();
     }
 
-	public void addGridLines(BoardPoint p1, BoardPoint p2) {
-		// Internal lines
-		lines.add(new GridLine(p1, p2));
+	public void addGridSpacePilotLines(BoardPoint p1, BoardPoint p2) {
+		// Internal space pilot lines
+		gridSpacePilotLines.add(new GridLine(p1, p2));
     }
 
 	public void addGridToBoard() {
@@ -193,8 +193,8 @@ public class Grid {
 			board.addGridLimitLine(gridLimitLine, ++i);
 		}
 		
-		for (int y = 1; y < GRID_Y_SIZE_IN_CELLS; y++) {
-			for (int x = 1; x < GRID_X_SIZE_IN_CELLS; x++) {
+		for (int y = 0; y < GRID_Y_SIZE_IN_CELLS; y++) {
+			for (int x = 0; x < GRID_X_SIZE_IN_CELLS; x++) {
 				if (null != regions()[x][y]) {
 					board.addRegion(regions()[x][y]);
 				}
@@ -205,8 +205,8 @@ public class Grid {
 	public boolean blocksMove(BoardPoint p1, BoardPoint p2) {
 		
 		//  Check if any of the lines blocks the move and if so, return true
-		for (GridLine line : lines) {
-			if (line.blocksMove(p1, p2)) {
+		for (GridLine gridSpacePilotLine : gridSpacePilotLines) {
+			if (gridSpacePilotLine.blocksMove(p1, p2)) {
 				return true;
 			}
 		}
@@ -224,8 +224,8 @@ public class Grid {
 	public boolean isOnGridLine(int x, int y) {
 		
 		//Check if the point is on any of the lines and if so, return true
-		for (GridLine line: lines) {
-			if (line.isOnLine(x, y)) {
+		for (GridLine gridSpacePilotLine: gridSpacePilotLines) {
+			if (gridSpacePilotLine.isOnLine(x, y)) {
 				return true;
 			}
 		}
@@ -249,8 +249,8 @@ public class Grid {
 		return this.gridLimitLines;
 	}
 
-	public ArrayList<GridLine> lines() {
-		return this.lines;
+	public ArrayList<GridLine> gridSpacePilotLines() {
+		return this.gridSpacePilotLines;
 	}
 
 	public Region[][] regions() {

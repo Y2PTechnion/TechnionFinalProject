@@ -100,7 +100,7 @@ public class GameCharacter implements Intersectable {
 	private     String 			name                = "";
 	private     int         	imageWidth          = 0;
 	private     int         	imageHeight         = 0;
-
+    
 //  Protected variables for the class
     protected   Grid       	    grid                = null;
 	protected   Direction 		directionPolicy     = Direction.STOPPED;
@@ -160,8 +160,8 @@ public class GameCharacter implements Intersectable {
         * @return (none)
         */
     public void setLocation(int x, int y) {
-    	this.location.x = x;
-		this.location.y = y;
+    	this.location.setX(x);
+		this.location.setY(y);
     }
 
     /**
@@ -244,8 +244,8 @@ public class GameCharacter implements Intersectable {
         final int WIDTH     = this.imageWidth;
         final int HEIGHT    = this.imageHeight;
 
-        final int LEFT_X    = this.location.x;
-        final int TOP_Y     = this.location.y;
+        final int LEFT_X    = this.location.getX();
+        final int TOP_Y     = this.location.getY();
 
         //  Create the vertices of the rectangle representing the GameCharacter
         //  to be used for intersection detection

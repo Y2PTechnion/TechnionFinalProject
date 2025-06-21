@@ -151,10 +151,10 @@ public class Board {
 	 * Every grid line is drawn as a very thin rectangle
 	 */
 	public void addGridLimitLine(GridLine line, int lineIndex) {
-		int minX    = Math.min(line.p1().x, line.p2().x);
-		int maxX    = Math.max(line.p1().x, line.p2().x);
-		int minY    = Math.min(line.p1().y, line.p2().y);
-		int maxY    = Math.max(line.p1().y, line.p2().y);
+		int minX    = Math.min(line.p1().getX(), line.p2().getX());
+		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
+		int minY    = Math.min(line.p1().getY(), line.p2().getY());
+		int maxY    = Math.max(line.p1().getY(), line.p2().getY());
 
 		// Represent each line as a thin 2-pixel wide rectangle
 		Rectangle   rectangle   = new Rectangle("bl" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
@@ -166,10 +166,10 @@ public class Board {
 	}
 
 	public void addLine(GridLine line, int lineIndex) {
-		int minX    = Math.min(line.p1().x, line.p2().x);
-		int maxX    = Math.max(line.p1().x, line.p2().x);
-		int minY    = Math.min(line.p1().y, line.p2().y);
-		int maxY    = Math.max(line.p1().y, line.p2().y);
+		int minX    = Math.min(line.p1().getX(), line.p2().getX());
+		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
+		int minY    = Math.min(line.p1().getY(), line.p2().getY());
+		int maxY    = Math.max(line.p1().getY(), line.p2().getY());
 
 		// Represent each line as a thin 2-pixel wide rectangle
 		Rectangle   rectangle   = new Rectangle("ml" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
@@ -188,7 +188,10 @@ public class Board {
 //		canvas.addShape(circle);
 
         Rectangle rectangle = new Rectangle(rg.getGuid(), 
-            transX(rg.getLocation().x), transY(rg.getLocation().y), 16, 16);
+            transX(rg.getLocation().getX()), 
+            transY(rg.getLocation().getY()), 
+            16, 
+            16);
         rectangle.setColor(Color.WHITE);
         rectangle.setFillColor(Color.WHITE);
         rectangle.setIsFilled(true);
@@ -222,13 +225,22 @@ public class Board {
 
         //  Add a new rectangle for the region
         Rectangle rectangle = new Rectangle(rg.getGuid(), 
-            transX(rg.getLocation().x), transY(rg.getLocation().y), 18, 18);
+            transX(rg.getLocation().getX()), 
+            transY(rg.getLocation().getY()), 
+            18, 
+            18);
         rectangle.setColor(Color.BLACK);
         rectangle.setFillColor(Color.BLACK);
         rectangle.setIsFilled(true);
         rectangle.setzOrder(10);
 		canvas.addShape(rectangle);
 	}
+
+    public void updateSpacePilotGridLine(Region rg) {
+	    Grid grid	= content.grid();
+        grid.addGridSpacePilotLines(rg.getLocation(), content.spacePilot().getLocation());
+    }
+
 	
 	public void updateScore() {
 		Text t1 = (Text) canvas.getShape(content.score().guid());
@@ -268,7 +280,8 @@ public class Board {
         Image image = new Image(spacePilot.name(), 
             "resources/" + spacePilot.getImageName() + ".jpg", 
             spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
-            transX(spacePilot.getLocation().x), transY(spacePilot.getLocation().y));
+            transX(spacePilot.getLocation().getX()), 
+            transY(spacePilot.getLocation().getY()));
         //  Set the image into the upper Z order (0)
 		image.setzOrder(0);
         //  Add the space pilot graphic into the canvas
@@ -321,8 +334,8 @@ public class Board {
     
         //  Move the space pilot shape (graphic image) to the new location
 		canvas.moveShapeToLocation(spacePilot.name(), 
-            transX(spacePilot.getLocation().x), 
-            transY(spacePilot.getLocation().y));
+            transX(spacePilot.getLocation().getX()), 
+            transY(spacePilot.getLocation().getY()));
 
         //  Reset the direction to stopped, so that the next move will be according to the policy
         spacePilot.setCurrentDirection(Direction.STOPPED);
@@ -359,7 +372,11 @@ public class Board {
             }
   
             //  Create a specific graphic image for this small enemy
-			image   = new Image(s.name(), "resources/" + smallEnemyGraphicsName + ".png", s.getImageWidth(), s.getImageHeight(), transX(s.getLocation().x)-18, transY(s.getLocation().y)-18);
+			image   = new Image(s.name(), "resources/" + smallEnemyGraphicsName + ".png", 
+                s.getImageWidth(), 
+                s.getImageHeight(), 
+                transX(s.getLocation().getX()), 
+                transY(s.getLocation().getY()));
             //  Set the image into the upper Z order (0)
             image.setzOrder(0);
             //  Add the graphics of the specific small enemy into the canvas
@@ -380,7 +397,9 @@ public class Board {
 	public void updateSmallEnemiesInCanvas() {
 		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) {
             //  Move the small enemy shape (graphic image) to the new location
-   			canvas.moveShapeToLocation(s.name(), transX(s.getLocation().x), transY(s.getLocation().y));
+   			canvas.moveShapeToLocation(s.name(), 
+                transX(s.getLocation().getX()), 
+                transY(s.getLocation().getY()));
 		}
 	}
 }

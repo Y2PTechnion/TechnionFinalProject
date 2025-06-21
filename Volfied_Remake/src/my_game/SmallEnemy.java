@@ -145,7 +145,8 @@ public class SmallEnemy extends GameCharacter {
 	public void move() {
 						
 		//  First try to move according to policy
-		BoardPoint desired  = new BoardPoint(getLocation().x + directionPolicy.xVec(), getLocation().y + directionPolicy.yVec());
+		BoardPoint desired  = new BoardPoint(getLocation().getX() + directionPolicy.xVec(), 
+            getLocation().getY() + directionPolicy.yVec());
 		
 //  if move is possible, i.e., grid does not block
 		if (!grid.blocksMove(getLocation(), desired)) {
@@ -159,7 +160,8 @@ public class SmallEnemy extends GameCharacter {
 		}
 
 		//  If reached here, desired policy is not applicable, move in current direction
-		BoardPoint next = new BoardPoint(getLocation().x + currentDirection.xVec(), getLocation().y + currentDirection.yVec());
+		BoardPoint next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
+            getLocation().getY() + currentDirection.yVec());
 		
         if (grid.blocksMove(getLocation(), next)) {
 			switch (currentDirection) {
@@ -196,7 +198,8 @@ public class SmallEnemy extends GameCharacter {
 			updateDirectionPolicy();
 
 			//  recalculate next point according to new direction
-			next = new BoardPoint(getLocation().x + currentDirection.xVec(), getLocation().y + currentDirection.yVec());
+			next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
+                getLocation().getY() + currentDirection.yVec());
 		}
 
 		//  move to next point

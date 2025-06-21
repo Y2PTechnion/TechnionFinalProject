@@ -105,7 +105,8 @@ public class GameControl {
 
 		if (null != rg) {
 			board.updateRegion(rg);
-            System.out.println("Space pilot at: " + rg.getLocation().x + ", " + rg.getLocation().y + ", " + rg.getGuid());
+   //         board.updateSpacePilotGridLine(rg);
+            System.out.println("Space pilot at: " + rg.getLocation().getX() + ", " + rg.getLocation().getY() + ", " + rg.getGuid());
 		}
 
 		handleCollisions();
@@ -122,8 +123,8 @@ public class GameControl {
 		SmallEnemies	smallEnemies	= content.smallEnemies();
 		
 		for (SmallEnemy s : smallEnemies.getSmallEnemies()) {
-			if (s.getLocation().x == spacePilot.getLocation().x 
-                    && s.getLocation().y == spacePilot.getLocation().y) {
+			if (s.getLocation().getX() == spacePilot.getLocation().getX() 
+                    && s.getLocation().getY() == spacePilot.getLocation().getY()) {
 				content.score().reset();
 				content.statusLine().showText("Oops ...", Color.RED, 2000);
                 //  Reset the grid
@@ -134,7 +135,7 @@ public class GameControl {
 	}
 
 	public Region conquerCurrentRegion(BoardPoint location) {
-		Region  rg  = content.grid().regions()[location.x][location.y];
+		Region  rg  = content.grid().regions()[location.getX()][location.getY()];
 
 		if (true == rg.isShown()) {
 			rg.hide();
