@@ -101,7 +101,7 @@ public class GameControl
 //			content.historyPlayer().playState();
 //		} else {
 			content.spacePilot().move();
-			content.smallEnemies().move();
+ 			content.smallEnemies().move();
 //		}
 		board.updateSpacePilotInCanvas();
 		board.updateSmallEnemiesInCanvas();

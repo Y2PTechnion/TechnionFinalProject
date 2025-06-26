@@ -82,6 +82,7 @@ import base.GameCanvas;
 import my_base.MyContent;
 import my_game.Grid.Direction;
 import shapes.Image;
+import shapes.Line;
 import shapes.Rectangle;
 import shapes.Text;
 import ui_elements.GameText;
@@ -107,9 +108,13 @@ public class Board
 	private static final int        BOARD_SCALE                                     = 18;
     private final       int         QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS    = 3;
 
+    private final       int         GRID_LINE_Z_ORDER                               = 11;   // Highest (on top of everything)
+
 //  Private variables for the class
 	private             GameCanvas  canvas;
 	private             MyContent   content;
+    private             int         gridBorderLine                                  = 0;
+    private             int         gridSpacePilotLine                              = 0;
 	
 	public void setCanvas(GameCanvas canvas) 
     {
@@ -154,36 +159,122 @@ public class Board
 	/**
 	 * Every grid line is drawn as a very thin rectangle
 	 */
-	public void addGridLimitLine(GridLine line, int lineIndex) 
+	public void addGridBorderLine(GridLine line) 
     {
 		int minX    = Math.min(line.p1().getX(), line.p2().getX());
 		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
 		int minY    = Math.min(line.p1().getY(), line.p2().getY());
 		int maxY    = Math.max(line.p1().getY(), line.p2().getY());
 
-		// Represent each line as a thin 2-pixel wide rectangle
-		Rectangle   rectangle   = new Rectangle("bl" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
-            BOARD_SCALE * (maxX-minX) + 4, BOARD_SCALE * (maxY-minY) + 4);
+		// Represent each line as a thin 2-pixel wide
+        Line    lineShape   = null;
 
-		rectangle.setColor(Color.GREEN);
-		rectangle.setWeight(2);
-		canvas.addShape(rectangle);
+        if (minX == maxX)   
+        {
+            //  Vertical line
+            if (0 == minX)
+            {
+                //  Vertical left line
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+                transY(line.p1().getY()) + BOARD_SCALE/2, 
+                transX(line.p2().getX()) + BOARD_SCALE/2, 
+                transY(line.p2().getY()-1) + BOARD_SCALE/2);
+            }
+            else
+            {
+                //  Vertical right line
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p1().getY()) + BOARD_SCALE/2, 
+                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getY()-1) + BOARD_SCALE/2);
+            }
+        }  
+        else if (minY == maxY) 
+        {
+            //  Horizontal line
+            if (0 == minY)
+            {
+                //  Horizonal upper line
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+                transY(line.p1().getY()) + BOARD_SCALE/2, 
+                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getY()) + BOARD_SCALE/2);  
+            }
+            else
+            {
+                //  Horizonal bottom line
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+                transY(line.p1().getY()-1) + BOARD_SCALE/2, 
+                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getY()-1) + BOARD_SCALE/2);  
+            }
+        }
+
+        lineShape.setColor(Color.GREEN);
+        lineShape.setWeight(2); 
+        lineShape.setzOrder(GRID_LINE_Z_ORDER);    
+
+        //  Add the line to the canvas
+        canvas.addShape(lineShape); 
 	}
 
-	public void addLine(GridLine line, int lineIndex) 
+	public void addGridSpacePilotLine(GridLine line) 
     {
 		int minX    = Math.min(line.p1().getX(), line.p2().getX());
 		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
 		int minY    = Math.min(line.p1().getY(), line.p2().getY());
 		int maxY    = Math.max(line.p1().getY(), line.p2().getY());
 
-		// Represent each line as a thin 2-pixel wide rectangle
-		Rectangle   rectangle   = new Rectangle("ml" + lineIndex, transX(minX) - 2, transY(minY) - 2, 
-            BOARD_SCALE * (maxX-minX) + 4, BOARD_SCALE * (maxY-minY) + 4);
+	    // Represent each line as a thin 2-pixel wide
+        Line    lineShape   = null;
 
-		rectangle.setColor(Color.GREEN);
-		rectangle.setWeight(2);
-		canvas.addShape(rectangle);
+        if (minX == maxX)   
+        {
+            //  Vertical line
+            if (0 == minX)
+            {
+                //  Vertical left line
+                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+                transY(line.p1().getY()) + BOARD_SCALE/2, 
+                transX(line.p2().getX()) + BOARD_SCALE/2, 
+                transY(line.p2().getY()-1) + BOARD_SCALE/2);
+            }
+            else
+            {
+                //  Vertical right line
+                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p1().getY()) + BOARD_SCALE/2, 
+                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getY()-1) + BOARD_SCALE/2);
+            }
+        }  
+        else if (minY == maxY) 
+        {
+            //  Horizontal line
+            if (0 == minY)
+            {
+                //  Horizonal upper line
+                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+                transY(line.p1().getY()) + BOARD_SCALE/2, 
+                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getY()) + BOARD_SCALE/2);  
+            }
+            else
+            {
+                //  Horizonal bottom line
+                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+                transY(line.p1().getY()-1) + BOARD_SCALE/2, 
+                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getY()-1) + BOARD_SCALE/2);  
+            }
+        }
+
+        lineShape.setColor(Color.GREEN);
+        lineShape.setWeight(2); 
+        lineShape.setzOrder(GRID_LINE_Z_ORDER);    
+
+        //  Add the line to the canvas
+        canvas.addShape(lineShape); 
 	}
 	
 	public void addRegion(Region rg) 

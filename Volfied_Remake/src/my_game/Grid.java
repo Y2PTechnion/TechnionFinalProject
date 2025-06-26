@@ -277,27 +277,28 @@ public class Grid
         Region.resetConqueredRegions();
     }
 
-	public void addGridSpacePilotLines(BoardPoint p1, BoardPoint p2) 
+	public void addGridSpacePilotLines(BoardPoint firstSpacePilotLinePoint, BoardPoint secondSpacePilotLinePoint) 
     {
-		// Internal space pilot lines
-		gridSpacePilotLines.add(new GridLine(p1, p2));
+		//  Internal space pilot lines
+		gridSpacePilotLines.add(new GridLine(firstSpacePilotLinePoint, secondSpacePilotLinePoint));
     }
 
 	public void addGridToBoard() 
     {
-		int i = 0;
+        //  Add grid border lines to board
 		for (GridLine gridBorderOnlyForSpacePilotLine : gridBorderOnlyForSpacePilotLines()) 
         {
-			board.addGridLimitLine(gridBorderOnlyForSpacePilotLine, ++i);
+			board.addGridBorderLine(gridBorderOnlyForSpacePilotLine);
 		}
 		
-		for (int y = 0; y < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; y++) 
+        //  Add regions into the board
+		for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
         {
-			for (int x = 0; x < TOTAL_GAME_CELLS_IN_X_PER_ROW; x++) 
+			for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-				if (null != regions()[x][y]) 
+				if (null != regions()[column][row]) 
                 {
-					board.addRegion(regions()[x][y]);
+					board.addRegion(regions()[column][row]);
 				}
 			}
 		}
@@ -317,6 +318,7 @@ public class Grid
 	public boolean blocksMove(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
     {
         boolean isTheMovingBlockedByLogic   = false;
+
         //  First blocking moving according to type of object
 		if (gameCharacter instanceof SmallEnemy)
         {

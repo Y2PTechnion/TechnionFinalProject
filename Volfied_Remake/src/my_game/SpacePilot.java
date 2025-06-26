@@ -168,10 +168,10 @@ public class SpacePilot extends GameCharacter
 		BoardPoint desired = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
             getLocation().getY() + currentDirection.yVec());
 
-		// if move is possible, i.e., grid does not block
+		//  if move is possible, i.e., grid does not block
         BoardPoint current = getLocation();
 
-		if (!grid.blocksMove(current, desired, this)) 
+		if (false == grid.blocksMove(current, desired, this)) 
         {
             setLocation(desired);
 			return;

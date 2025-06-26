@@ -81,27 +81,63 @@ public class GridLine
 	private BoardPoint  p1  = null;
     private BoardPoint  p2  = null;
 
-    public BoardPoint p1() 
-    {
-        return this.p1;
-    }
-
-    public BoardPoint p2() 
-    {
-        return this.p2;
-    }
-
+    /**
+        * GridLine() constructor method
+        * 
+        * @implNote Constructor method with two BoardPoint parameters
+        *
+        * @param (BoardPoint p1) (First point of the line)
+        * @param (BoardPoint p2) (Second point of the line)
+        * @return (none) 
+        */
 	public GridLine(BoardPoint p1, BoardPoint p2) 
     {
 		this.p1 = p1;
 		this.p2 = p2;
 	}
 	
+    /**
+        * GridLine() constructor method
+        * 
+        * @implNote Constructor method with two BoardPoint parameters
+        *
+        * @param (int x1) (Column of the first point of the line)
+        * @param (int y1) (Row of the first point of the line)
+        * @param (int x2) (Column of the second point of the line)
+        * @param (int y2) (Row of the second point of the line)
+        * @return (none) 
+        */
 	public GridLine(int x1, int y1, int x2, int y2) 
     {
 		this.p1 = new BoardPoint(x1, y1);
 		this.p2 = new BoardPoint(x2, y2);
 	}
+
+    /**
+        * p1 method
+        * 
+        * @implNote First point of the line getter method
+        *
+        * @param (none)
+        * @return (BoardPoint) 
+        */
+    public BoardPoint p1() 
+    {
+        return this.p1;
+    }
+
+    /**
+        * p2 method
+        * 
+        * @implNote Second point of the line getter method
+        *
+        * @param (none)
+        * @return (BoardPoint) 
+        */
+    public BoardPoint p2() 
+    {
+        return this.p2;
+    }
 
 	public boolean blocksMove(BoardPoint p1, BoardPoint p2) 
     {
