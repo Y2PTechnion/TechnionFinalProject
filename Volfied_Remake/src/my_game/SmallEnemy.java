@@ -151,74 +151,73 @@ public class SmallEnemy extends GameCharacter
     @Override
 	public void move() 
     {
-						
 		//  First try to move according to policy
 		BoardPoint desired  = new BoardPoint(getLocation().getX() + directionPolicy.xVec(), 
             getLocation().getY() + directionPolicy.yVec());
 		
 //  if move is possible, i.e., grid does not block
-		if (!grid.blocksMove(getLocation(), desired, this)) 
+		if (false == grid.blocksMove(getLocation(), desired, this)) 
         {
 			currentDirection = directionPolicy;
             setLocation(desired);
 
 			//  After moving to next location, update movement direction randomly for next movement
 			updateDirectionPolicy();
-
-			return;
 		}
-
-		//  If reached here, desired policy is not applicable, move in current direction
-		BoardPoint next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
-            getLocation().getY() + currentDirection.yVec());
-		
-        if (grid.blocksMove(getLocation(), next, this)) 
+        else
         {
-			switch (currentDirection) 
-            {
-				case RIGHT: 
-                {
-                    //  If the current direction is right and reached the limits, then move left
-					currentDirection = Direction.LEFT;
-					break;
-                }
-
-				case LEFT: 
-                {
-                    //  If the current direction is left and reached the limits, then move right
-					currentDirection = Direction.RIGHT;
-					break;
-                }
-
-				case UP: 
-                {
-                    //  If the current direction is up and reached the limits, then move down
-					currentDirection = Direction.DOWN;
-					break;
-                }
-
-				case DOWN: 
-                {
-                    //  If the current direction is down and reached the limits, then move up
-					currentDirection = Direction.UP;
-					break;
-                }
-
-                case STOPPED: 
-                {
-                    //  Do nothing
-                    break;
-                }
-			}
-
-			updateDirectionPolicy();
-
-			//  recalculate next point according to new direction
-			next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
+            //  If reached here, desired policy is not applicable, move in current direction
+            BoardPoint next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
                 getLocation().getY() + currentDirection.yVec());
-		}
+            
+            if (true == grid.blocksMove(getLocation(), next, this)) 
+            {
+                switch (currentDirection) 
+                {
+                    case RIGHT: 
+                    {
+                        //  If the current direction is right and reached the limits, then move left
+                        currentDirection = Direction.LEFT;
+                        break;
+                    }
 
-		//  move to next point
-        setLocation(next);
+                    case LEFT: 
+                    {
+                        //  If the current direction is left and reached the limits, then move right
+                        currentDirection = Direction.RIGHT;
+                        break;
+                    }
+
+                    case UP: 
+                    {
+                        //  If the current direction is up and reached the limits, then move down
+                        currentDirection = Direction.DOWN;
+                        break;
+                    }
+
+                    case DOWN: 
+                    {
+                        //  If the current direction is down and reached the limits, then move up
+                        currentDirection = Direction.UP;
+                        break;
+                    }
+
+                    case STOPPED: 
+                    {
+                        //  Do nothing
+                        break;
+                    }
+                }
+
+                updateDirectionPolicy();
+
+                //  recalculate next point according to new direction
+                next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
+                    getLocation().getY() + currentDirection.yVec());
+            }
+
+            //  move to next point
+            setLocation(next);
+        }
 	}
 }		

@@ -316,7 +316,7 @@ public class Grid
         */
 	public boolean blocksMove(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
     {
-        boolean isTheMovingBlocked  = false;
+        boolean isTheMovingBlockedByLogic   = false;
         //  First blocking moving according to type of object
 		if (gameCharacter instanceof SmallEnemy)
         {
@@ -326,12 +326,12 @@ public class Grid
             if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
             {
                 //  Do NOT let the small enemies to navigate on the borders of the grid
-                isTheMovingBlocked  = true;
+                isTheMovingBlockedByLogic  = true;
             }
             else if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
             {
                 //  Do NOT let the small enemies to navigate over the regions conquered by the space pilot
-                isTheMovingBlocked  = true;
+                isTheMovingBlockedByLogic  = true;
             }
         }
         else if (gameCharacter instanceof SpacePilot)
@@ -342,10 +342,10 @@ public class Grid
         { 
             //  Should not happen
             System.out.println("Calling to blocksMove() from an undefined object");
-            isTheMovingBlocked  = true;
+            isTheMovingBlockedByLogic  = true;
         }
 
-        if (false == isTheMovingBlocked)
+        if (false == isTheMovingBlockedByLogic)
         {
             //  Only check if still the moving has not been blocked
 
@@ -354,11 +354,11 @@ public class Grid
             {
                 if (gridSpacePilotLine.blocksMove(sourcePoint, destinationPoint))   
                 {
-                    isTheMovingBlocked  = true;
+                    isTheMovingBlockedByLogic  = true;
                 }
             }
 
-            if (false == isTheMovingBlocked)
+            if (false == isTheMovingBlockedByLogic)
             {
                 //  Only check if still the moving has not been blocked
 
@@ -366,14 +366,14 @@ public class Grid
                 {
                     if (gridBorderOnlyForSpacePilotLine.blocksMove(sourcePoint, destinationPoint)) 
                     {
-                        isTheMovingBlocked  =  true;
+                        isTheMovingBlockedByLogic  =  true;
                     }
                 }
             }
         }
 
-		//  If reached here, there is no blocking line
-		return isTheMovingBlocked;
+		//  If reached here, there is no blocking moving by logic
+		return isTheMovingBlockedByLogic;
 	}
 
 	public boolean isOnGridLine(int x, int y) 
@@ -396,7 +396,7 @@ public class Grid
 		return Region.getNumberOfUnconqueredRegions();
 	}
 
-	public double getPercentageOfConqueredRegions( ) 
+	public double getPercentageOfConqueredRegions() 
     {
 		return (Region.getNumberOfConqueredRegions() * 100.0 / Region.getMaximumNumberOfRelevantRegionsForGameInGrid());
 	}

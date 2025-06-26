@@ -117,8 +117,18 @@ public class SmallEnemies
         */
 	public void initSmallEnemies(Grid grid) 
     {
+        //  Define the small enemy counter
+        int         smallEnemyCounter                       = 0;
+        //  Define the minimum and maximum numbers for randomally rows and columns
+        final   int FIRST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES = 1;
+        final   int FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES    = 1;
+        final   int LAST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES  = Grid.getTotalGameCellsInXPerRow() - 1;
+        final   int LAST_RELEVANT_ROW_FOR_SMALL_ENEMIES     = Grid.getTotalGameCellsInYPerColumn() - 1;
+        final   int RELEVANT_COLUMN_RANGE_FOR_SMALL_ENEMIES = LAST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES 
+                                                                - FIRST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES;
+        final   int RELEVANT_ROW_RANGE_FOR_SMALL_ENEMIES    = LAST_RELEVANT_ROW_FOR_SMALL_ENEMIES 
+                                                                - FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES;
 
-        int smallEnemyCounter = 0;
 
         //  'Navigate' into the small enemies array
         for (SmallEnemy s : smallEnemies) 
@@ -127,8 +137,10 @@ public class SmallEnemies
 		    s   = new SmallEnemy("smallEnemy" + (smallEnemyCounter + 1), grid);
 
             //  Set randomally each one of the enemies in the board inside the grid limits
-		    s.setLocation(new BoardPoint((int) (Math.random() * Grid.getTotalGameCellsInXPerRow()), 
-                (int) (Math.random() * Grid.getTotalGameCellsInYPerColumn())));
+		    s.setLocation(new BoardPoint((int) (Math.random() * RELEVANT_COLUMN_RANGE_FOR_SMALL_ENEMIES)    
+                        + FIRST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES, 
+                (int) (Math.random() * RELEVANT_ROW_RANGE_FOR_SMALL_ENEMIES) 
+                        + FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES));
 
             //  Set the SmallEnemy in the array ofthe SmallEnemies
 		    smallEnemies[smallEnemyCounter++] = s;
