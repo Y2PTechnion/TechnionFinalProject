@@ -78,9 +78,12 @@ package my_game;
 
 import java.util.ArrayList;
 
-public class Grid {
-	
-	public enum Direction {
+import my_game.Region.RegionStatus;
+
+public class Grid 
+{
+	public enum Direction 
+    {
 		RIGHT (1,0, 0),
 		LEFT(-1,0, 1),
 		UP (0,-1, 2),
@@ -88,50 +91,86 @@ public class Grid {
         STOPPED(0,0, 4);
 		
 		private final int xVec, yVec, index;
-		private Direction(int xVec, int yVec, int index) {
+		private Direction(int xVec, int yVec, int index) 
+        {
 			this.xVec   = xVec;
 			this.yVec   = yVec;
             this.index  = index;
 		}
 
-		public int xVec() {
+		public int xVec() 
+        {
 			return this.xVec;
 		}
 
-		public int yVec() {
+		public int yVec() 
+        {
 			return this.yVec;
 		}
 
-		public int index() {
+		public int index() 
+        {
 			return this.index;
 		}
 	}
 	
 //  Private constants for the class
     // Grid size in cells
-    // Each cell is 18x18 pixels, so the grid size in pixels is 900x540
-	public static final int     GRID_X_SIZE_IN_CELLS    = 50;
-	public static final int     GRID_Y_SIZE_IN_CELLS    = 30;	
+    // Each cell is 18x18 pixels, so the grid total size in pixels is 936x576 (52x32 cells)
+    private static final int    BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW          = 2;
+    private static final int    BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_Y_PER_COLUMN       = 2;
+    private static final int    GAME_CELLS_FOR_ENEMIES_AND_SPACE_PILOT_IN_X_PER_ROW     = 50;
+    private static final int    GAME_CELLS_FOR_ENEMIES_AND_SPACE_PILOT_IN_Y_PER_COLUMN  = 30;
+
+	public static final int     TOTAL_GAME_CELLS_IN_X_PER_ROW       = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW 
+                                                                + GAME_CELLS_FOR_ENEMIES_AND_SPACE_PILOT_IN_X_PER_ROW;
+	public static final int     TOTAL_GAME_CELLS_IN_Y_PER_COLUMN    = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_Y_PER_COLUMN
+                                                                + GAME_CELLS_FOR_ENEMIES_AND_SPACE_PILOT_IN_Y_PER_COLUMN;	
 	
 //  Private variables for the class
-	private Board               board                   = null;
-	private ArrayList<GridLine> gridLimitLines          = new ArrayList<GridLine>();
-    private ArrayList<GridLine> gridSpacePilotLines     = new ArrayList<GridLine>();
-	private Region[][]          regions                 = new Region[GRID_X_SIZE_IN_CELLS][GRID_Y_SIZE_IN_CELLS];
+	private Board               board                               = null;
+	private ArrayList<GridLine> gridBorderOnlyForSpacePilotLines    = new ArrayList<GridLine>();
+    private ArrayList<GridLine> gridSpacePilotLines                 = new ArrayList<GridLine>();
+    //  Region[column][row]
+	private Region[][]          regions                             = new Region[TOTAL_GAME_CELLS_IN_X_PER_ROW][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN];
 	
-	public Grid(Board board) {
+	public Grid(Board board) 
+    {
 		this.board  = board;
 		initGridLines();
 		initRegions();
 	}
 
-	private void initGridLines() {
-		// Frame
-		gridLimitLines.add(new GridLine(0, 0, GRID_X_SIZE_IN_CELLS, 0));
-		gridLimitLines.add(new GridLine(0, 0, 0, GRID_Y_SIZE_IN_CELLS));
-		gridLimitLines.add(new GridLine(0, GRID_Y_SIZE_IN_CELLS, GRID_X_SIZE_IN_CELLS, GRID_Y_SIZE_IN_CELLS));
-		gridLimitLines.add(new GridLine(GRID_X_SIZE_IN_CELLS, 0, GRID_X_SIZE_IN_CELLS, GRID_Y_SIZE_IN_CELLS));
-		
+    public static int getTotalGameCellsInXPerRow() 
+    {
+        return TOTAL_GAME_CELLS_IN_X_PER_ROW;
+    }
+
+    public static int getTotalGameCellsInYPerColumn() 
+    {
+        return TOTAL_GAME_CELLS_IN_Y_PER_COLUMN;
+    }
+
+	private void initGridLines() 
+    {
+
+		// Frame (Grid border lines, ONLY space pilot could navigate on them)
+            //  First row (0)
+            gridBorderOnlyForSpacePilotLines.add(new GridLine(0, 0, 
+                    TOTAL_GAME_CELLS_IN_X_PER_ROW, 0));
+
+            //  First column (0)
+            gridBorderOnlyForSpacePilotLines.add(new GridLine(0, 0, 
+                    0, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
+
+            //  Last row
+            gridBorderOnlyForSpacePilotLines.add(new GridLine(0, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN, 
+                    TOTAL_GAME_CELLS_IN_X_PER_ROW, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
+
+            //  Last column
+		    gridBorderOnlyForSpacePilotLines.add(new GridLine(TOTAL_GAME_CELLS_IN_X_PER_ROW, 0, 
+                TOTAL_GAME_CELLS_IN_X_PER_ROW, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
+            
 		// Inner lines
 		
 		//2 lines on 2nd row and 2 symmetric from bottom
@@ -155,105 +194,209 @@ public class Grid {
 //		lines.add(new MazeLine(13,MAZE_Y_SIZE- 6,19,MAZE_Y_SIZE - 6));
 	}
 	
-	public void initRegions() {
+	public void initRegions() 
+    {
 		int numRegions = 0;
-		for (int y = 0; y < GRID_Y_SIZE_IN_CELLS; y++) {
-			for (int x = 0; x < GRID_X_SIZE_IN_CELLS; x++) {
-				if (!isOnGridLine(x, y)) {
-					regions[x][y] = new Region(x,y);
+		for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
+        {
+			for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+				if (!isOnGridLine(column, row)) 
+                {
+					regions[column][row] = new Region(column, row);
 					numRegions++;
 				}
 			}
 		}
         //  Set the maximum number of regions in a grid
 		Region.setMaximumNumberOfRegionsInGrid(numRegions);
+
+		//  Frame (Grid border lines, ONLY space pilot could navigate on them)
+        //  Sets these cells that are on the border of the grid as 'border cells' (ONLY for space pilot to navigate on them)
+            //  First row (0)
+            for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+                regions[column][0].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+
+            //  First column (0)
+            for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
+            {
+                regions[0][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+
+            //  Last row
+            for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+                regions[column][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+
+            //  Last column
+            for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
+            {
+                regions[TOTAL_GAME_CELLS_IN_X_PER_ROW-1][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
 	}
 
-    public void resetRegions() {
-		for (int y = 0; y < GRID_Y_SIZE_IN_CELLS; y++) {
-			for (int x = 0; x < GRID_X_SIZE_IN_CELLS; x++) {
-				if ((null != regions()[x][y])
-                        && (false == regions()[x][y].isShown())) {
-					board.addRegion(regions()[x][y]);
-                    regions()[x][y].show();
+    public void resetRegions() 
+    {
+		for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
+        {
+			for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+				if ((null != regions()[column][row])
+                        && (false == regions()[column][row].isShown())) 
+                {
+					board.addRegion(regions()[column][row]);
+                    regions()[column][row].show();
 				}
 			}
 		}
+
         Region.resetConqueredRegions();
     }
 
-	public void addGridSpacePilotLines(BoardPoint p1, BoardPoint p2) {
+	public void addGridSpacePilotLines(BoardPoint p1, BoardPoint p2) 
+    {
 		// Internal space pilot lines
 		gridSpacePilotLines.add(new GridLine(p1, p2));
     }
 
-	public void addGridToBoard() {
+	public void addGridToBoard() 
+    {
 		int i = 0;
-		for (GridLine gridLimitLine : gridLimitLines()) {
-			board.addGridLimitLine(gridLimitLine, ++i);
+		for (GridLine gridBorderOnlyForSpacePilotLine : gridBorderOnlyForSpacePilotLines()) 
+        {
+			board.addGridLimitLine(gridBorderOnlyForSpacePilotLine, ++i);
 		}
 		
-		for (int y = 0; y < GRID_Y_SIZE_IN_CELLS; y++) {
-			for (int x = 0; x < GRID_X_SIZE_IN_CELLS; x++) {
-				if (null != regions()[x][y]) {
+		for (int y = 0; y < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; y++) 
+        {
+			for (int x = 0; x < TOTAL_GAME_CELLS_IN_X_PER_ROW; x++) 
+            {
+				if (null != regions()[x][y]) 
+                {
 					board.addRegion(regions()[x][y]);
 				}
 			}
 		}
 	}
 
-	public boolean blocksMove(BoardPoint p1, BoardPoint p2) {
-		
-		//  Check if any of the lines blocks the move and if so, return true
-		for (GridLine gridSpacePilotLine : gridSpacePilotLines) {
-			if (gridSpacePilotLine.blocksMove(p1, p2)) {
-				return true;
-			}
-		}
+    /**
+        * blocksMove method
+        * 
+        * @implNote this function checks if the move from sourcePoint to destinationPoint is blocked 
+        *           by any of the grid lines, border lines or space pilot lines, or any other constraints.
+        *
+        * @param BoardPoint sourcePoint (source point) 
+        * @param BoardPoint destinationPoint (destination point)
+        * @param GameCharacter gameCharacter (the game character that is trying to move)
+        * @return boolean (true if the move is blocked, false otherwise)
+        */
+	public boolean blocksMove(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
+    {
+        boolean isTheMovingBlocked  = false;
+        //  First blocking moving according to type of object
+		if (gameCharacter instanceof SmallEnemy)
+        {
+            //  If the method calling is a small enemy
+            final RegionStatus  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS  = regions[destinationPoint.getX()][destinationPoint.getY()].getRegionStatus();
 
-        for (GridLine gridLimitLine : gridLimitLines()) {
-			if (gridLimitLine.blocksMove(p1, p2)) {
-				return true;
-			}
+            if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+            {
+                //  Do NOT let the small enemies to navigate on the borders of the grid
+                isTheMovingBlocked  = true;
+            }
+            else if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+            {
+                //  Do NOT let the small enemies to navigate over the regions conquered by the space pilot
+                isTheMovingBlocked  = true;
+            }
+        }
+        else if (gameCharacter instanceof SpacePilot)
+        {
+            //  If the method calling is the space pilot 
+        }
+        else
+        { 
+            //  Should not happen
+            System.out.println("Calling to blocksMove() from an undefined object");
+            isTheMovingBlocked  = true;
+        }
+
+        if (false == isTheMovingBlocked)
+        {
+            //  Only check if still the moving has not been blocked
+
+            //  Check if any of the lines blocks the move and if so, return true
+            for (GridLine gridSpacePilotLine : gridSpacePilotLines) 
+            {
+                if (gridSpacePilotLine.blocksMove(sourcePoint, destinationPoint))   
+                {
+                    isTheMovingBlocked  = true;
+                }
+            }
+
+            if (false == isTheMovingBlocked)
+            {
+                //  Only check if still the moving has not been blocked
+
+                for (GridLine gridBorderOnlyForSpacePilotLine : gridBorderOnlyForSpacePilotLines()) 
+                {
+                    if (gridBorderOnlyForSpacePilotLine.blocksMove(sourcePoint, destinationPoint)) 
+                    {
+                        isTheMovingBlocked  =  true;
+                    }
+                }
+            }
         }
 
 		//  If reached here, there is no blocking line
-		return false;
+		return isTheMovingBlocked;
 	}
 
-	public boolean isOnGridLine(int x, int y) {
-		
+	public boolean isOnGridLine(int x, int y) 
+    {
 		//Check if the point is on any of the lines and if so, return true
-		for (GridLine gridSpacePilotLine: gridSpacePilotLines) {
-			if (gridSpacePilotLine.isOnLine(x, y)) {
+		for (GridLine gridSpacePilotLine: gridSpacePilotLines) 
+        {
+			if (gridSpacePilotLine.isOnLine(x, y)) 
+            {
 				return true;
 			}
 		}
+
 		//If reached here, it is not on any line
 		return false;
 	}
 
-	public int getCurrentNumberOfUnconqueredRegions( ) {
+	public int getCurrentNumberOfUnconqueredRegions( ) 
+    {
 		return Region.getNumberOfUnconqueredRegions();
 	}
 
-	public double getPercentageOfConqueredRegions( ) {
+	public double getPercentageOfConqueredRegions( ) 
+    {
 		return (Region.getNumberOfConqueredRegions() * 100.0 / Region.getMaximumNumberOfRegionsInGrid());
 	}
 
-	public void setRegionAsConquered() {
+	public void setRegionAsConquered() 
+    {
 		Region.setConqueredRegion();
 	}
 	
-	public ArrayList<GridLine> gridLimitLines() {
-		return this.gridLimitLines;
+	public ArrayList<GridLine> gridBorderOnlyForSpacePilotLines() 
+    {
+		return this.gridBorderOnlyForSpacePilotLines;
 	}
 
-	public ArrayList<GridLine> gridSpacePilotLines() {
+	public ArrayList<GridLine> gridSpacePilotLines() 
+    {
 		return this.gridSpacePilotLines;
 	}
 
-	public Region[][] regions() {
+	public Region[][] regions() 
+    {
 		return this.regions;
 	}
 }

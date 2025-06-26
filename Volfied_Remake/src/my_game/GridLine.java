@@ -75,52 +75,62 @@
 //////////////////////////// 80 columns wide //////////////////////////////////
 package my_game;
 
-public class GridLine {
+public class GridLine 
+{
 //  Private variables for the class
 	private BoardPoint  p1  = null;
     private BoardPoint  p2  = null;
 
-    public BoardPoint p1() {
+    public BoardPoint p1() 
+    {
         return this.p1;
     }
 
-    public BoardPoint p2() {
+    public BoardPoint p2() 
+    {
         return this.p2;
     }
 
-	public GridLine(BoardPoint p1, BoardPoint p2) {
+	public GridLine(BoardPoint p1, BoardPoint p2) 
+    {
 		this.p1 = p1;
 		this.p2 = p2;
 	}
 	
-	public GridLine(int x1, int y1, int x2, int y2) {
+	public GridLine(int x1, int y1, int x2, int y2) 
+    {
 		this.p1 = new BoardPoint(x1, y1);
 		this.p2 = new BoardPoint(x2, y2);
 	}
 
-	public boolean blocksMove(BoardPoint p1, BoardPoint p2) {
+	public boolean blocksMove(BoardPoint p1, BoardPoint p2) 
+    {
 		int minX = Math.min(this.p1.getX(), this.p2.getX());
 		int maxX = Math.max(this.p1.getX(), this.p2.getX());
 		int minY = Math.min(this.p1.getY(), this.p2.getY());
 		int maxY = Math.max(this.p1.getY(), this.p2.getY());
 		
 		//  both points are left to the line
-		if (p1.getX() < minX && p2.getX() < minX) {
+		if (p1.getX() < minX && p2.getX() < minX) 
+        {
 			return false;
         }
 
-		//  both points are right to the line
-		if (p1.getX() >= maxX && p2.getX() >= maxX) {
+		//  both points are right to the line (the modification to >= was done to include ALL the points in the grid)
+		if (p1.getX() >= maxX && p2.getX() >= maxX) 
+        {
 			return false;
         }
 
 		//  both points are above the line
-		if (p1.getY() < minY && p2.getY() < minY) {
+		if (p1.getY() < minY && p2.getY() < minY) 
+        {
 			return false;
         }
 
-		//  both points are below the line
-		if (p1.getY() >= maxY && p2.getY() >= maxY) {
+		//  both points are below the line (the modification to >= was done to include ALL the points in the grid)
+		if (p1.getY() >= maxY && p2.getY() >= maxY) 
+        {
 			return false;
         }
 		
@@ -130,7 +140,8 @@ public class GridLine {
 	
 	//  Checks whether the point x,y is on the line
 	//  The check is simple because it assumes only horizontal and vertical lines.
-	public boolean isOnLine(int x, int y) {
+	public boolean isOnLine(int x, int y) 
+    {
 
 		int minX = Math.min(this.p1.getX(), this.p2.getX());
 		int maxX = Math.max(this.p1.getX(), this.p2.getX());

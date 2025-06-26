@@ -88,7 +88,8 @@ import my_game.Grid.Direction;
  * 
  * @author (YuvalYossiPablo)
  */
-public class SmallEnemy extends GameCharacter {
+public class SmallEnemy extends GameCharacter 
+{
 //  Private variables for the class
 
     /**
@@ -100,7 +101,8 @@ public class SmallEnemy extends GameCharacter {
 		* @param (Grid grid) (grid)
         * @return (none)
         */
-	public SmallEnemy(String smallEnemyId, Grid grid) {
+	public SmallEnemy(String smallEnemyId, Grid grid) 
+    {
         //  Calls the base class (GameCharacter) constructor method
         super(smallEnemyId, grid);
 
@@ -109,23 +111,28 @@ public class SmallEnemy extends GameCharacter {
 	    currentDirection    = Direction.RIGHT;
 	}	
 
-	private void updateDirectionPolicy() {
-		switch (currentDirection) {
+	private void updateDirectionPolicy() 
+    {
+		switch (currentDirection) 
+        {
             case RIGHT: 
-            case LEFT: {
+            case LEFT: 
+            {
                 //  If the number falls between 0 and 0.5 and the policy is right or left, then move down, otherwise up
                 directionPolicy = (Math.random() <= 0.5 ? Direction.DOWN : Direction.UP);
                 break;
             }
 
             case UP:
-            case DOWN: {
+            case DOWN: 
+            {
                 //  If the number falls between 0 and 0.5 and the policy is up or down, then move right, otherwise left
                 directionPolicy = (Math.random() <= 0.5 ? Direction.RIGHT : Direction.LEFT);
                 break;
             }
 
-            case STOPPED: {
+            case STOPPED: 
+            {
                 //  Do nothing
                 break;
             }
@@ -142,14 +149,16 @@ public class SmallEnemy extends GameCharacter {
         * @return (none)
         */
     @Override
-	public void move() {
+	public void move() 
+    {
 						
 		//  First try to move according to policy
 		BoardPoint desired  = new BoardPoint(getLocation().getX() + directionPolicy.xVec(), 
             getLocation().getY() + directionPolicy.yVec());
 		
 //  if move is possible, i.e., grid does not block
-		if (!grid.blocksMove(getLocation(), desired)) {
+		if (!grid.blocksMove(getLocation(), desired, this)) 
+        {
 			currentDirection = directionPolicy;
             setLocation(desired);
 
@@ -163,33 +172,40 @@ public class SmallEnemy extends GameCharacter {
 		BoardPoint next = new BoardPoint(getLocation().getX() + currentDirection.xVec(), 
             getLocation().getY() + currentDirection.yVec());
 		
-        if (grid.blocksMove(getLocation(), next)) {
-			switch (currentDirection) {
-				case RIGHT: {
+        if (grid.blocksMove(getLocation(), next, this)) 
+        {
+			switch (currentDirection) 
+            {
+				case RIGHT: 
+                {
                     //  If the current direction is right and reached the limits, then move left
 					currentDirection = Direction.LEFT;
 					break;
                 }
 
-				case LEFT: {
+				case LEFT: 
+                {
                     //  If the current direction is left and reached the limits, then move right
 					currentDirection = Direction.RIGHT;
 					break;
                 }
 
-				case UP: {
+				case UP: 
+                {
                     //  If the current direction is up and reached the limits, then move down
 					currentDirection = Direction.DOWN;
 					break;
                 }
 
-				case DOWN: {
+				case DOWN: 
+                {
                     //  If the current direction is down and reached the limits, then move up
 					currentDirection = Direction.UP;
 					break;
                 }
 
-                case STOPPED: {
+                case STOPPED: 
+                {
                     //  Do nothing
                     break;
                 }

@@ -88,7 +88,8 @@ import my_game.SmallEnemies;
 import my_game.Score;
 import my_game.StatusLine;
 
-public class MyContent extends GameContent {
+public class MyContent extends GameContent 
+{
 //  Private constants for the class
     //  Quantity of small enemies to place in  the board
     private final int   	QUANTITY_OF_SMALL_ENEMIES   = 10;
@@ -103,7 +104,8 @@ public class MyContent extends GameContent {
 	private GameControl     gameControl;
 	
 	@Override
-	public void initContent() {
+	public void initContent() 
+    {
 		board 			= new Board();
 		board.setContent(this);
 		grid 			= new Grid(board);
@@ -111,7 +113,8 @@ public class MyContent extends GameContent {
         //  Create the space pilot and set its initial location
         //  The space pilot is the main character of the game
 		spacePilot		= new SpacePilot("spacePilot", grid);
-        spacePilot.setLocation(new BoardPoint(1,13));
+        //  Set the space pilot in the middle of last row of the grid
+        spacePilot.setLocation(new BoardPoint(Grid.getTotalGameCellsInXPerRow()/2,Grid.getTotalGameCellsInYPerColumn()-1));
 
         //  Creates the small enemies and sets their initial locations
         //  The small enemies are the enemies of the game
@@ -124,31 +127,38 @@ public class MyContent extends GameContent {
 		gameControl     = new GameControl(this);
 	}	
 	
-	public Grid grid() {
+	public Grid grid() 
+    {
 		return grid;
 	}
 	
-	public SpacePilot spacePilot() {
+	public SpacePilot spacePilot() 
+    {
 		return spacePilot;
 	}
 	
-	public SmallEnemies smallEnemies() {
+	public SmallEnemies smallEnemies() 
+    {
 		return smallEnemies;
 	}
 	
-	public Score score() {
+	public Score score() 
+    {
 		return score;
 	}
 
-	public StatusLine statusLine() {
+	public StatusLine statusLine() 
+    {
 		return statusLine;
 	}
 
-	public Board getBoard() {
+	public Board getBoard() 
+    {
 		return this.board;
 	}
 
-	public GameControl gameControl() {
+	public GameControl gameControl() 
+    {
 		return this.gameControl;
 	}
 }

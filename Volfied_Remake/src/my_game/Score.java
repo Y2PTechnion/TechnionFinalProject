@@ -79,45 +79,55 @@ package my_game;
  * This is a simple class that manages the score.
  * It is responsible for resetting and increasing the score, as well managing its text.
  */
-public class Score {
+public class Score 
+{
 //  Private variables for the class
 	private int     score                       = 0;
     private double  conqueredRegionsPercentage  = 0.0;
 	
-	public void reset() {
+	public void reset() 
+    {
 		score                       = 0;
         conqueredRegionsPercentage  = 0.0;
 	}
 	
-	public void add(int points) {
+	public void add(int points) 
+    {
 		score += points;
 	}
 
-    public void setConqueredRegionsPercentage(double conqueredRegionsPercentage) {
+    public void setConqueredRegionsPercentage(double conqueredRegionsPercentage) 
+    {
         this.conqueredRegionsPercentage = conqueredRegionsPercentage;
     }
 	
-	public void subtract(int points ) {
+	public void subtract(int points ) 
+    {
 		score -= points;
 	}
 	
-	public int points() {
+	public int points() 
+    {
 		return score;
 	}
 	
-	public String guid() {
+	public String guid() 
+    {
 		return "score";
 	}
 
-	public String guidPercentage() {
+	public String guidPercentage() 
+    {
 		return "percentage";
 	}
 	
-	public String getText() {
+	public String getText() 
+    {
 		return "1UP: " + score;
 	}
 
-	public String getPercentage() {
+	public String getPercentage() 
+    {
         String  stringConquredRegionsPercentage = String.format("%.2f", conqueredRegionsPercentage);
 		return (stringConquredRegionsPercentage + "  %") ;
 	}

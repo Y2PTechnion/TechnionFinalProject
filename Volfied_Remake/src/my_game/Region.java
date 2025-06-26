@@ -75,63 +75,110 @@
 //////////////////////////// 80 columns wide //////////////////////////////////
 package my_game;
 
-public class Region {
+public class Region 
+{
+    //  Region status enumerator
+	public enum RegionStatus 
+    {
+		REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT(0),
+		REGION_STATUS_EMPTY (1),
+		REGION_STATUS_CONQUERED_BY_SPACE_PILOT(2),
+        REGION_STATUS_SPACE_PILOT_OVER(3),
+        REGION_STATUS_SMALL_ENEMY_OVER(4),
+        REGION_STATUS_SPACE_PILOT_CONQUERING(5);
+		
+		private final int status;
+		private RegionStatus(int status) 
+        {
+            this.status  = status;
+		}
+
+		public int getStatus() 
+        {
+			return this.status;
+		}
+	}
+
 //  Private variables for the class
-	private         BoardPoint  location                                = null;
-	private         boolean     visible                                 = true;
+	private         BoardPoint      location                                = null;
+	private         boolean         visible                                 = true;
+    private         RegionStatus    regionStatus                            = RegionStatus.REGION_STATUS_EMPTY;
     // the id of the graphic element that represents this entity
-	private         String      guid                                    = ""; 
-    private static  int         MAXIMUM_NUMBER_OF_REGIONS_IN_GRID       = 0;
-    private static  int         currentNumberOfConqueredRegionsInGrid   = 0;
+	private         String          guid                                    = ""; 
+    private static  int             MAXIMUM_NUMBER_OF_REGIONS_IN_GRID       = 0;
+    private static  int             currentNumberOfConqueredRegionsInGrid   = 0;
 	
-	public Region (int x, int y) {
+	public Region (int x, int y) 
+    {
         this.location                           = new BoardPoint(x, y);
 		this.guid                               = "region_"+ x + "_" + y;
+        this.regionStatus                       = RegionStatus.REGION_STATUS_EMPTY;
         this.visible                            = true;
         currentNumberOfConqueredRegionsInGrid   = 0;
 	}
 	
-    public static void setMaximumNumberOfRegionsInGrid(int maximumNumberOfRegionsInGame) {
+    public static void setMaximumNumberOfRegionsInGrid(int maximumNumberOfRegionsInGame) 
+    {
         MAXIMUM_NUMBER_OF_REGIONS_IN_GRID   = maximumNumberOfRegionsInGame;
     }
 
-    public static int getMaximumNumberOfRegionsInGrid() {
+    public static int getMaximumNumberOfRegionsInGrid() 
+    {
         return (MAXIMUM_NUMBER_OF_REGIONS_IN_GRID);
     }
 
-    public static void resetConqueredRegions() {
+    public static void resetConqueredRegions() 
+    {
         currentNumberOfConqueredRegionsInGrid   = 0;
     }
 
-    public static void setConqueredRegion() {
+    public static void setConqueredRegion() 
+    {
         currentNumberOfConqueredRegionsInGrid++;
     }
 
-    public static int getNumberOfConqueredRegions() {
+    public void setRegionStatus(RegionStatus regionStatus) 
+    {
+        this.regionStatus   = regionStatus;
+    }
+
+    public RegionStatus getRegionStatus() 
+    {
+        return this.regionStatus;
+    }
+
+    public static int getNumberOfConqueredRegions() 
+    {
         return (currentNumberOfConqueredRegionsInGrid);
     }
 
-    public static int getNumberOfUnconqueredRegions() {
+    public static int getNumberOfUnconqueredRegions() 
+    {
         return (MAXIMUM_NUMBER_OF_REGIONS_IN_GRID - currentNumberOfConqueredRegionsInGrid);
     }
 
-	public void hide() {
+	public void hide() 
+    {
 		visible = false;
 	}
 
-	public void show() {
+	public void show() 
+    {
 		visible = true;
 	}
 	
-	public String getGuid() {
+	public String getGuid() 
+    {
 		return guid;
 	}
 	
-	public BoardPoint getLocation() {
+	public BoardPoint getLocation() 
+    {
 		return location;
 	}
 	
-	public boolean isShown() {
+	public boolean isShown() 
+    {
 		return visible;
 	}
 }

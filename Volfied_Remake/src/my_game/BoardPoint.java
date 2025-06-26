@@ -11,33 +11,40 @@ package my_game;
  * 
  * @author (YuvalYossiPablo)
  */
-public class BoardPoint {
+public class BoardPoint 
+{
 //  Private variables for the class
     private int x   = 0;
     private int y   = 0;
 
-    public BoardPoint(int x, int y) {
+    public BoardPoint(int x, int y) 
+    {
         this.x  = x;
         this.y  = y;
     }
 
-    public int getX() {
+    public int getX() 
+    {
         return this.x;
     }
 
-    public int getY() {
+    public int getY() 
+    {
         return this.y;
     }
 
-    public void setX(int x) {
+    public void setX(int x) 
+    {
         this.x  = x;
     }
 
-    public void setY(int y) {
+    public void setY(int y) 
+    {
         this.y  = y;
     }
 
-    public boolean isEqual(BoardPoint boardPoint) {
+    public boolean isEqual(BoardPoint boardPoint) 
+    {
         boolean bIsEqual    = false;
         if (this.x == boardPoint.getX()
             && this.y == boardPoint.getY())

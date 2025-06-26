@@ -78,17 +78,20 @@ package my_game;
 import java.awt.Color;
 import my_base.MyContent;
 
-public class GameControl {
+public class GameControl 
+{
 //  Private variables for the class
     private MyContent   content = null;
 	private Board       board   = null;
 
-    public GameControl(MyContent content) {
+    public GameControl(MyContent content) 
+    {
         this.content    = content;
         this.board      = content.getBoard();
     }
 
-	public void gameStep() {
+	public void gameStep() 
+    {
 		
 		Region rg   = conquerCurrentRegion(content.spacePilot().getLocation());
 
@@ -103,10 +106,11 @@ public class GameControl {
 		board.updateSpacePilotInCanvas();
 		board.updateSmallEnemiesInCanvas();
 
-		if (null != rg) {
+		if (null != rg) 
+        {
 			board.updateRegion(rg);
    //         board.updateSpacePilotGridLine(rg);
-            System.out.println("Space pilot at: " + rg.getLocation().getX() + ", " + rg.getLocation().getY() + ", " + rg.getGuid());
+            System.out.println("Space pilot at: " + rg.getLocation().getX() + ", " + rg.getLocation().getY() + ", " + rg.getGuid() + ", " + rg.getRegionStatus());
 		}
 
 		handleCollisions();
@@ -118,12 +122,15 @@ public class GameControl {
 		
 	}
 
-	private void handleCollisions() {
+	private void handleCollisions() 
+    {
 		SpacePilot 		spacePilot   	= content.spacePilot();
 		SmallEnemies	smallEnemies	= content.smallEnemies();
 		
-		for (SmallEnemy s : smallEnemies.getSmallEnemies()) {
-			if (s.getLocation().isEqual(spacePilot.getLocation())) {
+		for (SmallEnemy s : smallEnemies.getSmallEnemies()) 
+        {
+			if (s.getLocation().isEqual(spacePilot.getLocation())) 
+            {
 				content.score().reset();
 				content.statusLine().showText("Oops ...", Color.RED, 2000);
                 //  Reset the grid
@@ -133,17 +140,20 @@ public class GameControl {
 		}
 	}
 
-	public Region conquerCurrentRegion(BoardPoint location) {
+	public Region conquerCurrentRegion(BoardPoint location) 
+    {
 		Region  rg  = content.grid().regions()[location.getX()][location.getY()];
 
-		if (true == rg.isShown()) {
+		if (true == rg.isShown()) 
+        {
 			rg.hide();
 			content.score().add(1);
 			content.grid().setRegionAsConquered();
             content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
 
             //  Next lines won't be relevant later, only for fun by now
-			if (0 == content.grid().getCurrentNumberOfUnconqueredRegions()) {
+			if (0 == content.grid().getCurrentNumberOfUnconqueredRegions()) 
+            {
 				content.statusLine().showText("Great JOB !!!", Color.YELLOW, 5000);
 			}
 			return rg; 
@@ -152,7 +162,8 @@ public class GameControl {
 		return null;
 	}
 
-    private void conquerRegion(BoardPoint startPoint, int currentLine) {
+    private void conquerRegion(BoardPoint startPoint, int currentLine) 
+    {
 //  In the game Volfied, the algorithm to determine if a region is conquered involves several steps. 
 //  Here's a simplified version of how it works:
 

@@ -81,26 +81,31 @@ import base.PeriodicLoop;
 /**
  * This class demonstrates how you can show something for a specific time period.
  */
-public class StatusLine {
+public class StatusLine 
+{
 //  Private variables for the class
 	private String  text            = "";
 	// expiration time will store the time when the text should stop showing.
 	private long    expirationTime  = 0;
 	private Color   color           = Color.GREEN;
 	
-	public Color getColor() {
+	public Color getColor() 
+    {
 		return color;
 	}
 	
-	public String guid() {
+	public String guid() 
+    {
 		return "status";
 	}
 	
-	public String getText() {
+	public String getText() 
+    {
 		return text;		
 	}
 	
-	public void showText(String text, Color color, long miliseconds) {
+	public void showText(String text, Color color, long miliseconds) 
+    {
 		this.text   = text;
 		this.color  = color;
 		/**
@@ -110,13 +115,15 @@ public class StatusLine {
 		expirationTime = PeriodicLoop.elapsedTime() + miliseconds;
 	}
 	
-	public void refresh() {
+	public void refresh() 
+    {
 		/**
 		 * Every cycle of the periodic loop we check if the current time is later
 		 * than the expiration time. If it is, we stop showing the text.
 		 **/ 
 
-		if (PeriodicLoop.elapsedTime() > expirationTime) {
+		if (PeriodicLoop.elapsedTime() > expirationTime) 
+        {
 			text = "";
 		}
 	}

@@ -83,12 +83,13 @@ import base.GameCanvas;
 import base.GameDashboard;
 import ui_elements.GameText;
 
-public class MyGame extends Game {
-	
+public class MyGame extends Game 
+{	
 	private MyContent content;
 
 	@Override
-	protected void initCanvas() {
+	protected void initCanvas() 
+    {
 		/**
 		 * DO NOT TOUCH FIRST 2 ROWS !!!
 		 */
@@ -114,7 +115,8 @@ public class MyGame extends Game {
 	}
 	
 	@Override
-	protected void initDashboard() {
+	protected void initDashboard() 
+    {
 		super.initDashboard();
 		GameDashboard dashboard = gameUI.dashboard();
 		
@@ -145,7 +147,8 @@ public class MyGame extends Game {
 	}
 	
 	@Override
-	public void setGameContent(GameContent content) {
+	public void setGameContent(GameContent content) 
+    {
 		// Call the Game superclass to set its content 
 		super.setGameContent(content);
 		// point to the content with a variable of type MyContent so we have access to all
@@ -153,12 +156,18 @@ public class MyGame extends Game {
 		this.content    = (MyContent) content;
 	}
 	
-	public MyContent getContent() {
+	public MyContent getContent() 
+    {
 		return this.content;
 	}
 	
-	public static void main(String[] args) {
-		MyGame game 				= new MyGame();
+	public static void main(String[] args) 
+    {
+		MyGame game = new MyGame();
+
+        //  Set the size of the game UI to 1000 x 1000 pixels
+  //      gameUI.setSize(1000, 1000);
+
 		game.setGameContent(new MyContent());
 		MyPeriodicLoop periodicLoop = new MyPeriodicLoop();
 		periodicLoop.setContent(game.getContent());

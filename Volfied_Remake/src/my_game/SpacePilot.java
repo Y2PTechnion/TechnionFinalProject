@@ -88,7 +88,8 @@ import my_game.Grid.Direction;
  * 
  * @author (YuvalYossiPablo)
  */
-public class SpacePilot extends GameCharacter {
+public class SpacePilot extends GameCharacter 
+{
 //  Private variables for the class
     private int             imageIndex              = 0;
 
@@ -104,7 +105,8 @@ public class SpacePilot extends GameCharacter {
         * @param (String spacePilotId) (Space Pilot ID)
         * @return (none)
         */
-	public SpacePilot(String spacePilotId, Grid grid) {
+	public SpacePilot(String spacePilotId, Grid grid) 
+    {
         //  Calls the base class (GameCharacter) constructor method
         super(spacePilotId, grid);
 
@@ -125,7 +127,8 @@ public class SpacePilot extends GameCharacter {
         * @param (Direction direction) (arrow key direction)
         * @return (none)
         */
-	public void directionalKeyPressed(Direction direction) {
+	public void directionalKeyPressed(Direction direction) 
+    {
         //  Updates the image index according to arrow key pressed
         imageIndex          = direction.index();
 
@@ -141,7 +144,8 @@ public class SpacePilot extends GameCharacter {
         * @param (none)
         * @return (String) (image's name)
         */
-	public String getImageName() {
+	public String getImageName() 
+    {
 		return images[imageIndex];
 	}
 
@@ -155,7 +159,8 @@ public class SpacePilot extends GameCharacter {
         * @return (none)
         */
     @Override
-	public void move() {
+	public void move() 
+    {
 		//  Saves the direction policy as current direction
 		directionPolicy = currentDirection;
 				
@@ -166,9 +171,11 @@ public class SpacePilot extends GameCharacter {
 		// if move is possible, i.e., grid does not block
         BoardPoint current = getLocation();
 
-		if (!grid.blocksMove(current, desired)) {
+		if (!grid.blocksMove(current, desired, this)) 
+        {
             setLocation(desired);
-			return;}
+			return;
+        }
 		
 	// If reached here, desired policy is not applicable, move in opposite direction
 	//	BoardPoint next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());

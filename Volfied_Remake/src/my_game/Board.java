@@ -93,7 +93,8 @@ import ui_elements.GameText;
  * It is designed so that all of the game elements leave in the simple board grids
  * and all the conversions to canvas pixels are done only here.
  */
-public class Board {
+public class Board 
+{
 	
 	/**
 	 * The grid does not take all the canvas, so the board defines the three configuration params:
@@ -101,7 +102,7 @@ public class Board {
 	 * Scale - the multiplication factor that to convert a grid cell into pixels.
 	 */
 //  Private constants for the class
-	private final       int         BOARD_X_OFFSET                                  = 40;
+	private final       int         BOARD_X_OFFSET                                  = 20;
 	private final       int         BOARD_Y_OFFSET                                  = 120;
 	private static final int        BOARD_SCALE                                     = 18;
     private final       int         QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS    = 3;
@@ -110,22 +111,25 @@ public class Board {
 	private             GameCanvas  canvas;
 	private             MyContent   content;
 	
-	public void setCanvas(GameCanvas canvas) {
+	public void setCanvas(GameCanvas canvas) 
+    {
 		this.canvas = canvas;
 	}
 
-	public void setContent(MyContent content) {
+	public void setContent(MyContent content) 
+    {
 		this.content = content;
 	}
 
-	public void initBoard() {
+	public void initBoard() 
+    {
 		canvas.deleteAllShapes();
 		Grid grid	= content.grid();
 		canvas.setBackground(Color.BLACK);
 
 		// Represent each line as a thin 4-pixel wide rectangle
 		Rectangle   background   = new Rectangle("background", transX(0) + 4, transY(0) + 4, 
-            transX(Grid.GRID_X_SIZE_IN_CELLS-3) + 4, transY(Grid.GRID_Y_SIZE_IN_CELLS-8) + 16);
+            transX(Grid.getTotalGameCellsInXPerRow()-3) + 4, transY(Grid.getTotalGameCellsInYPerColumn()-8) + 16);
 
 		background.setColor(Color.GRAY);
         background.setFillColor(Color.GRAY);
@@ -150,7 +154,8 @@ public class Board {
 	/**
 	 * Every grid line is drawn as a very thin rectangle
 	 */
-	public void addGridLimitLine(GridLine line, int lineIndex) {
+	public void addGridLimitLine(GridLine line, int lineIndex) 
+    {
 		int minX    = Math.min(line.p1().getX(), line.p2().getX());
 		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
 		int minY    = Math.min(line.p1().getY(), line.p2().getY());
@@ -165,7 +170,8 @@ public class Board {
 		canvas.addShape(rectangle);
 	}
 
-	public void addLine(GridLine line, int lineIndex) {
+	public void addLine(GridLine line, int lineIndex) 
+    {
 		int minX    = Math.min(line.p1().getX(), line.p2().getX());
 		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
 		int minY    = Math.min(line.p1().getY(), line.p2().getY());
@@ -180,7 +186,8 @@ public class Board {
 		canvas.addShape(rectangle);
 	}
 	
-	public void addRegion(Region rg) {
+	public void addRegion(Region rg) 
+    {
 //		Circle circle   = new Circle(rg.getGuid(), transX(rg.getLocation().x), transY(rg.getLocation().y), 3);
 //		circle.setColor(Color.WHITE);
 //		circle.setFillColor(Color.WHITE);
@@ -200,7 +207,8 @@ public class Board {
 	}
 	
 
-	private void addScore(Score score) {
+	private void addScore(Score score) 
+    {
 		Text t2     = new Text(score.guid(), score.getText() , 70,70);
 		t2.setColor(Color.WHITE);
 		t2.setFontSize(40);
@@ -211,7 +219,8 @@ public class Board {
 		canvas.addShape(t3);
 	}
 
-	private void addStatusLine() {
+	private void addStatusLine() 
+    {
 		StatusLine status = content.statusLine();
 		Text t2 = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
 		t2.setColor(status.getColor());
@@ -219,7 +228,8 @@ public class Board {
 		canvas.addShape(t2);
 	}
 
-	public void updateRegion(Region rg) {
+	public void updateRegion(Region rg) 
+    {
         //  Remove the old region rectangle
 		canvas.deleteShape(rg.getGuid());
 
@@ -236,13 +246,15 @@ public class Board {
 		canvas.addShape(rectangle);
 	}
 
-    public void updateSpacePilotGridLine(Region rg) {
+    public void updateSpacePilotGridLine(Region rg) 
+    {
 	    Grid grid	= content.grid();
         grid.addGridSpacePilotLines(rg.getLocation(), content.spacePilot().getLocation());
     }
 
 	
-	public void updateScore() {
+	public void updateScore() 
+    {
 		Text t1 = (Text) canvas.getShape(content.score().guid());
 		t1.setText(content.score().getText());
 		Text t2 = (Text) canvas.getShape(content.score().guidPercentage());
@@ -251,19 +263,22 @@ public class Board {
   //      gameText.setText(content.score().getPercentage());
 	}
 
-	public void updateStatusLine() {
+	public void updateStatusLine() 
+    {
 		Text t1 = (Text) canvas.getShape(content.statusLine().guid());
 		t1.setText(content.statusLine().getText());
 		t1.setColor(content.statusLine().getColor());
 	}
 
 	//  transform an X coordinate from the grid coordinates to the canvas coordinates
-	private int transX(int x) {
+	private int transX(int x) 
+    {
 		return BOARD_X_OFFSET + (x * BOARD_SCALE);
 	}
 
 	//  transform a Y coordinate from the grid coordinates to the canvas coordinates
-	private int transY(int y) {
+	private int transY(int y) 
+    {
 		return BOARD_Y_OFFSET + (y * BOARD_SCALE);
 	}
 
@@ -275,7 +290,8 @@ public class Board {
     * @param (SpacePilot spacePilot)
     * @return (none)
     */
-    private void addSpacePilotToCanvas(SpacePilot spacePilot) {
+    private void addSpacePilotToCanvas(SpacePilot spacePilot) 
+    {
         //  Create the graphic image for the space pilot
         Image image = new Image(spacePilot.name(), 
             "resources/" + spacePilot.getImageName() + ".jpg", 
@@ -296,36 +312,43 @@ public class Board {
     * @param (none)
     * @return (none)
     */
-	public void updateSpacePilotInCanvas() {
+	public void updateSpacePilotInCanvas() 
+    {
 		SpacePilot spacePilot   = content.spacePilot();
 
-        switch (spacePilot.getCurrentDirection()) {
-            case RIGHT: {
+        switch (spacePilot.getCurrentDirection()) 
+        {
+            case RIGHT: 
+            {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
-            case LEFT: {
+            case LEFT: 
+            {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
-            case UP: {
+            case UP: 
+            {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
-            case DOWN: {
+            case DOWN: 
+            {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
             case STOPPED:
-            default: {
+            default: 
+            {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
@@ -350,13 +373,15 @@ public class Board {
     * @param (none)
     * @return (none)
     */
-	private void addSmallEnemiesToCanvas() {
+	private void addSmallEnemiesToCanvas() 
+    {
 		Image       image                           = null;
         int         smallEnemyCounter               = 0;
         String[]    smallEnemyGraphicsNameArray     = new String[QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS];
 
         //  'Navigate' into the array of small enemies
-		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) {
+		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) 
+        {
             
             String      smallEnemyGraphicsName          = s.name();
             if (smallEnemyCounter < QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS)
@@ -394,8 +419,10 @@ public class Board {
     * @param (none)
     * @return (none)
     */
-	public void updateSmallEnemiesInCanvas() {
-		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) {
+	public void updateSmallEnemiesInCanvas() 
+    {
+		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) 
+        {
             //  Move the small enemy shape (graphic image) to the new location
    			canvas.moveShapeToLocation(s.name(), 
                 transX(s.getLocation().getX()), 

@@ -85,7 +85,8 @@ package my_game;
  * 
  * @author (YuvalYossiPablo)
  */
-public class SmallEnemies {
+public class SmallEnemies 
+{
     //  Private variables for the class
 	private SmallEnemy[] smallEnemies   = null;
 
@@ -98,7 +99,8 @@ public class SmallEnemies {
         * @param (int quantityOfSmallEnemiesInGame)
         * @return (none)
         */
-	public SmallEnemies(int quantityOfSmallEnemiesInGame) {
+	public SmallEnemies(int quantityOfSmallEnemiesInGame) 
+    {
         //  Defines the array of small enemies depending on the quantity
         //  set by the application
         smallEnemies    = new SmallEnemy[quantityOfSmallEnemiesInGame];
@@ -113,18 +115,20 @@ public class SmallEnemies {
         * @param (Grid grid)
         * @return (none)
         */
-	public void initSmallEnemies(Grid grid) {
+	public void initSmallEnemies(Grid grid) 
+    {
 
         int smallEnemyCounter = 0;
 
         //  'Navigate' into the small enemies array
-        for (SmallEnemy s : smallEnemies) {
+        for (SmallEnemy s : smallEnemies) 
+        {
             //  Create a new SmallEnemy object in the grid
 		    s   = new SmallEnemy("smallEnemy" + (smallEnemyCounter + 1), grid);
 
             //  Set randomally each one of the enemies in the board inside the grid limits
-		    s.setLocation(new BoardPoint((int) (Math.random() * Grid.GRID_X_SIZE_IN_CELLS), 
-                (int) (Math.random() * Grid.GRID_Y_SIZE_IN_CELLS)));
+		    s.setLocation(new BoardPoint((int) (Math.random() * Grid.getTotalGameCellsInXPerRow()), 
+                (int) (Math.random() * Grid.getTotalGameCellsInYPerColumn())));
 
             //  Set the SmallEnemy in the array ofthe SmallEnemies
 		    smallEnemies[smallEnemyCounter++] = s;
@@ -139,9 +143,11 @@ public class SmallEnemies {
         * @param (none)
         * @return (none)
       */
-	public void move() {
+	public void move() 
+    {
         //  'Navigate' into the small enemies array
-		for (SmallEnemy s : smallEnemies) {
+		for (SmallEnemy s : smallEnemies) 
+        {
             //  Call the smallEnemy move method for
             //  each one of the small enemies in the array
 			s.move();
@@ -157,7 +163,8 @@ public class SmallEnemies {
         * @param (none)
         * @return (SmallEnemy[])
         */
-	public SmallEnemy[] getSmallEnemies() {
+	public SmallEnemy[] getSmallEnemies() 
+    {
 		return smallEnemies;
 	}
 }

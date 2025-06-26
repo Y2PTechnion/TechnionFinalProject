@@ -90,7 +90,8 @@ import my_game.Grid.Direction;
  * 
  * @author (YuvalYossiPablo)
  */
-public class GameCharacter implements Intersectable {
+public class GameCharacter implements Intersectable 
+{
 //  Private constants for the class
 	private final int           IMAGE_WIDTH         = 18;
 	private final int           IMAGE_HEIGHT        = 18;
@@ -117,7 +118,8 @@ public class GameCharacter implements Intersectable {
         * @param (Grid grid) (grid)
         * @return (none)
         */
-	public GameCharacter(String gameCharacterId, Grid grid) {
+	public GameCharacter(String gameCharacterId, Grid grid) 
+    {
 		this.name           = gameCharacterId;
         this.grid           = grid;
 
@@ -134,7 +136,8 @@ public class GameCharacter implements Intersectable {
         * @param none
         * @return (BoardPoint)
         */
-	public BoardPoint getLocation() {
+	public BoardPoint getLocation() 
+    {
 		return this.location;
 	}
 	
@@ -146,7 +149,8 @@ public class GameCharacter implements Intersectable {
         * @param (BoardPoint location) (the location to set)
         * @return (none)
         */
-	public void setLocation(BoardPoint location) {
+	public void setLocation(BoardPoint location) 
+    {
 		this.location   = location;
 	}
 
@@ -159,7 +163,8 @@ public class GameCharacter implements Intersectable {
         * @param (int y) (y coordinate)
         * @return (none)
         */
-    public void setLocation(int x, int y) {
+    public void setLocation(int x, int y) 
+    {
     	this.location.setX(x);
 		this.location.setY(y);
     }
@@ -172,7 +177,8 @@ public class GameCharacter implements Intersectable {
         * @param none
         * @return (Direction)
         */
-	public Direction getCurrentDirection() {
+	public Direction getCurrentDirection() 
+    {
 		return currentDirection;
 	}
 
@@ -184,7 +190,8 @@ public class GameCharacter implements Intersectable {
         * @param Direction direction (the direction to set)
         * @return (none)
         */
-	public void setCurrentDirection(Direction direction) {
+	public void setCurrentDirection(Direction direction) 
+    {
 		currentDirection    = direction;
 	}
 
@@ -196,7 +203,8 @@ public class GameCharacter implements Intersectable {
         * @param none
         * @return (image width)
         */
-	public int getImageWidth() {
+	public int getImageWidth() 
+    {
 		return imageWidth;
 	}
 	
@@ -208,7 +216,8 @@ public class GameCharacter implements Intersectable {
         * @param none
         * @return (image height)
         */
-	public int getImageHeight() {
+	public int getImageHeight() 
+    {
 		return imageHeight;
 	}
 
@@ -220,7 +229,8 @@ public class GameCharacter implements Intersectable {
         * @param none
         * @return (String name)
         */
-	public String name() {
+	public String name() 
+    {
 		return this.name;
 	}
 
@@ -232,7 +242,8 @@ public class GameCharacter implements Intersectable {
         * @param none
         * @return (none)
         */
-	protected void move() {
+	protected void move() 
+    {
 
 	}
 	
@@ -240,7 +251,8 @@ public class GameCharacter implements Intersectable {
     //  Intersectable base class method to be implemented
     //  Intersectable base class method to be implemented
     @Override
-    public ScreenPoint[] getIntersectionVertices() {
+    public ScreenPoint[] getIntersectionVertices() 
+    {
         final int WIDTH     = this.imageWidth;
         final int HEIGHT    = this.imageHeight;
 
@@ -249,7 +261,8 @@ public class GameCharacter implements Intersectable {
 
         //  Create the vertices of the rectangle representing the GameCharacter
         //  to be used for intersection detection
-        ScreenPoint[] vertices = {
+        ScreenPoint[] vertices = 
+        {
                 new ScreenPoint(LEFT_X, TOP_Y),
                 new ScreenPoint(LEFT_X + WIDTH, TOP_Y),
                 new ScreenPoint(LEFT_X + WIDTH, TOP_Y + HEIGHT),
