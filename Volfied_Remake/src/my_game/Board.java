@@ -109,6 +109,7 @@ public class Board
     private final       int         QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS    = 3;
 
     private final       int         GRID_LINE_Z_ORDER                               = 11;   // Highest (on top of everything)
+    private final       int         GRID_BACKGROUND_Z_ORDER                         = 5;    // In the middle
 
 //  Private variables for the class
 	private             GameCanvas  canvas;
@@ -133,14 +134,16 @@ public class Board
 		canvas.setBackground(Color.BLACK);
 
 		// Represent each line as a thin 4-pixel wide rectangle
-		Rectangle   background   = new Rectangle("background", transX(0) + 4, transY(0) + 4, 
-            transX(Grid.getTotalGameCellsInXPerRow()-3) + 4, transY(Grid.getTotalGameCellsInYPerColumn()-8) + 16);
+		Rectangle   background   = new Rectangle("background", 
+            transX(0) + BOARD_SCALE/2, 
+            transY(0) + + BOARD_SCALE/2, 
+            ((Grid.getTotalGameCellsInXPerRow()-1) * BOARD_SCALE), ((Grid.getTotalGameCellsInYPerColumn()-1) * BOARD_SCALE));
 
 		background.setColor(Color.GRAY);
         background.setFillColor(Color.GRAY);
         background.setIsFilled(true);
 		background.setWeight(2);
-        background.setzOrder(5);
+        background.setzOrder(GRID_BACKGROUND_Z_ORDER);
 		canvas.addShape(background);
 
         //		canvas.addShape(new Image("title", "resources/PacmanTitle.png", 372, 123, 300, -10));
@@ -294,10 +297,9 @@ public class Board
         rectangle.setFillColor(Color.WHITE);
         rectangle.setIsFilled(true);
         rectangle.setzOrder(3);
-		canvas.addShape(rectangle);
+//		canvas.addShape(rectangle);
 	}
 	
-
 	private void addScore(Score score) 
     {
 		Text t2     = new Text(score.guid(), score.getText() , 70,70);

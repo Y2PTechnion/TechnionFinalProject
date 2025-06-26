@@ -92,8 +92,7 @@ public class GameControl
 
 	public void gameStep() 
     {
-		
-		Region rg   = conquerCurrentRegion(content.spacePilot().getLocation());
+		Region region   = conquerCurrentRegion(content.spacePilot().getLocation());
 
 		// If history is played, restore locations from history.
 		// Otherwise, move space pilot and small enemies according to
@@ -106,11 +105,12 @@ public class GameControl
 		board.updateSpacePilotInCanvas();
 		board.updateSmallEnemiesInCanvas();
 
-		if (null != rg) 
+		if (null != region) 
         {
-			board.updateRegion(rg);
+			board.updateRegion(region);
    //         board.updateSpacePilotGridLine(rg);
-            System.out.println("Space pilot at: " + rg.getLocation().getX() + ", " + rg.getLocation().getY() + ", " + rg.getGuid() + ", " + rg.getRegionStatus());
+            System.out.println("Space pilot at: " + region.getLocation().getX() + ", " 
+                + region.getLocation().getY() + ", " + region.getGuid() + ", " + region.getRegionStatus());
 		}
 
 		handleCollisions();
