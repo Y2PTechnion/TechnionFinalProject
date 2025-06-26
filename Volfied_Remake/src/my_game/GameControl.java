@@ -142,13 +142,13 @@ public class GameControl
 
 	public Region conquerCurrentRegion(BoardPoint location) 
     {
-		Region  rg  = content.grid().regions()[location.getX()][location.getY()];
+		Region  region  = content.grid().regions()[location.getX()][location.getY()];
 
-		if (true == rg.isShown()) 
+		if (true == region.isShown()) 
         {
-			rg.hide();
+			region.hide();
 			content.score().add(1);
-			content.grid().setRegionAsConquered();
+			content.grid().setRegionAsConquered(region);
             content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
 
             //  Next lines won't be relevant later, only for fun by now
@@ -156,7 +156,8 @@ public class GameControl
             {
 				content.statusLine().showText("Great JOB !!!", Color.YELLOW, 5000);
 			}
-			return rg; 
+
+			return region; 
 		}
 
 		return null;

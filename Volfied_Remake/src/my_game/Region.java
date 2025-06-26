@@ -100,31 +100,31 @@ public class Region
 	}
 
 //  Private variables for the class
-	private         BoardPoint      location                                = null;
-	private         boolean         visible                                 = true;
-    private         RegionStatus    regionStatus                            = RegionStatus.REGION_STATUS_EMPTY;
+	private         BoardPoint      location                                        = null;
+	private         boolean         visible                                         = true;
+    private         RegionStatus    regionStatus                                    = RegionStatus.REGION_STATUS_EMPTY;
     // the id of the graphic element that represents this entity
-	private         String          guid                                    = ""; 
-    private static  int             MAXIMUM_NUMBER_OF_REGIONS_IN_GRID       = 0;
-    private static  int             currentNumberOfConqueredRegionsInGrid   = 0;
+	private         String          guid                                            = ""; 
+    private static  int             MAXIMUM_NUMBER_OF_RELEVANT_GAME_REGIONS_IN_GRID = 0;
+    private static  int             currentNumberOfConqueredRegionsInGrid           = 0;
 	
 	public Region (int x, int y) 
     {
-        this.location                           = new BoardPoint(x, y);
-		this.guid                               = "region_"+ x + "_" + y;
-        this.regionStatus                       = RegionStatus.REGION_STATUS_EMPTY;
-        this.visible                            = true;
-        currentNumberOfConqueredRegionsInGrid   = 0;
+        this.location                               = new BoardPoint(x, y);
+		this.guid                                   = "region_"+ x + "_" + y;
+        this.regionStatus                           = RegionStatus.REGION_STATUS_EMPTY;
+        this.visible                                = true;
+        currentNumberOfConqueredRegionsInGrid       = 0;
 	}
 	
-    public static void setMaximumNumberOfRegionsInGrid(int maximumNumberOfRegionsInGame) 
+    public static void setMaximumNumberOfRelevantRegionsForGameInGrid(int maximumNumberOfRegionsInGame) 
     {
-        MAXIMUM_NUMBER_OF_REGIONS_IN_GRID   = maximumNumberOfRegionsInGame;
+        MAXIMUM_NUMBER_OF_RELEVANT_GAME_REGIONS_IN_GRID = maximumNumberOfRegionsInGame;
     }
 
-    public static int getMaximumNumberOfRegionsInGrid() 
+    public static int getMaximumNumberOfRelevantRegionsForGameInGrid() 
     {
-        return (MAXIMUM_NUMBER_OF_REGIONS_IN_GRID);
+        return (MAXIMUM_NUMBER_OF_RELEVANT_GAME_REGIONS_IN_GRID);
     }
 
     public static void resetConqueredRegions() 
@@ -132,9 +132,26 @@ public class Region
         currentNumberOfConqueredRegionsInGrid   = 0;
     }
 
-    public static void setConqueredRegion() 
+    public void setConqueredRegion() 
     {
-        currentNumberOfConqueredRegionsInGrid++;
+        switch (this.regionStatus)
+        {
+            case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
+            case REGION_STATUS_SMALL_ENEMY_OVER:
+            case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
+            case REGION_STATUS_SPACE_PILOT_OVER:
+            {
+                break;
+            }
+
+            case REGION_STATUS_EMPTY:
+            case REGION_STATUS_SPACE_PILOT_CONQUERING:
+            default:
+            {
+                currentNumberOfConqueredRegionsInGrid++;
+                break;
+            }
+        }
     }
 
     public void setRegionStatus(RegionStatus regionStatus) 
@@ -154,7 +171,7 @@ public class Region
 
     public static int getNumberOfUnconqueredRegions() 
     {
-        return (MAXIMUM_NUMBER_OF_REGIONS_IN_GRID - currentNumberOfConqueredRegionsInGrid);
+        return (MAXIMUM_NUMBER_OF_RELEVANT_GAME_REGIONS_IN_GRID - currentNumberOfConqueredRegionsInGrid);
     }
 
 	public void hide() 

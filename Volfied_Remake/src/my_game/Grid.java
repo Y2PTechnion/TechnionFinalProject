@@ -196,46 +196,67 @@ public class Grid
 	
 	public void initRegions() 
     {
-		int numRegions = 0;
+		int numberOfRelevantGameRegions = 0;
 		for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
         {
 			for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-				if (!isOnGridLine(column, row)) 
+//				if (!isOnGridLine(column, row)) 
                 {
 					regions[column][row] = new Region(column, row);
-					numRegions++;
+					numberOfRelevantGameRegions++;
 				}
 			}
 		}
-        //  Set the maximum number of regions in a grid
-		Region.setMaximumNumberOfRegionsInGrid(numRegions);
 
 		//  Frame (Grid border lines, ONLY space pilot could navigate on them)
         //  Sets these cells that are on the border of the grid as 'border cells' (ONLY for space pilot to navigate on them)
             //  First row (0)
             for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-                regions[column][0].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[column][0].getRegionStatus())
+                {
+                    regions[column][0].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    //  Removing from the number of relevant game regions the border regions
+                    numberOfRelevantGameRegions--;
+                }
             }
 
             //  First column (0)
             for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
             {
-                regions[0][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[0][row].getRegionStatus())
+                {
+                    regions[0][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    //  Removing from the number of relevant game regions the border regions
+                    numberOfRelevantGameRegions--;
+                }
             }
 
             //  Last row
             for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-                regions[column][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[column][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1].getRegionStatus())
+                {
+                    regions[column][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    //  Removing from the number of relevant game regions the border regions
+                    numberOfRelevantGameRegions--;
+                }
             }
 
             //  Last column
             for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
             {
-                regions[TOTAL_GAME_CELLS_IN_X_PER_ROW-1][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[TOTAL_GAME_CELLS_IN_X_PER_ROW-1][row].getRegionStatus())
+                {
+                    regions[TOTAL_GAME_CELLS_IN_X_PER_ROW-1][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    //  Removing from the number of relevant game regions the border regions
+                    numberOfRelevantGameRegions--;
+                }
             }
+
+        //  Set the maximum number of relevant regions for game in a grid
+		Region.setMaximumNumberOfRelevantRegionsForGameInGrid(numberOfRelevantGameRegions);
 	}
 
     public void resetRegions() 
@@ -370,19 +391,19 @@ public class Grid
 		return false;
 	}
 
-	public int getCurrentNumberOfUnconqueredRegions( ) 
+	public int getCurrentNumberOfUnconqueredRegions() 
     {
 		return Region.getNumberOfUnconqueredRegions();
 	}
 
 	public double getPercentageOfConqueredRegions( ) 
     {
-		return (Region.getNumberOfConqueredRegions() * 100.0 / Region.getMaximumNumberOfRegionsInGrid());
+		return (Region.getNumberOfConqueredRegions() * 100.0 / Region.getMaximumNumberOfRelevantRegionsForGameInGrid());
 	}
 
-	public void setRegionAsConquered() 
+	public void setRegionAsConquered(Region region) 
     {
-		Region.setConqueredRegion();
+		region.setConqueredRegion();
 	}
 	
 	public ArrayList<GridLine> gridBorderOnlyForSpacePilotLines() 
