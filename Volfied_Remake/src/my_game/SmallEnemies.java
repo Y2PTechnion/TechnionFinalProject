@@ -119,6 +119,9 @@ public class SmallEnemies
     {
         //  Define the small enemy counter
         int         smallEnemyCounter                       = 0;
+        int         smallEnemyFirstRandomColumn             = 0;
+        int         smallEnemyFirstRandomRow                = 0;
+
         //  Define the minimum and maximum numbers for randomally rows and columns
         final   int FIRST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES = 1;
         final   int FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES    = 1;
@@ -129,21 +132,23 @@ public class SmallEnemies
         final   int RELEVANT_ROW_RANGE_FOR_SMALL_ENEMIES    = LAST_RELEVANT_ROW_FOR_SMALL_ENEMIES 
                                                                 - FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES;
 
-
         //  'Navigate' into the small enemies array
         for (SmallEnemy s : smallEnemies) 
         {
             //  Create a new SmallEnemy object in the grid
 		    s   = new SmallEnemy("smallEnemy" + (smallEnemyCounter + 1), grid);
 
+            //  Get the column and row first random numbers inside the allowed limits
+            smallEnemyFirstRandomColumn                     = (int) (Math.random() * RELEVANT_COLUMN_RANGE_FOR_SMALL_ENEMIES)    
+                                                                + FIRST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES;
+            smallEnemyFirstRandomRow                        = (int) (Math.random() * RELEVANT_ROW_RANGE_FOR_SMALL_ENEMIES) 
+                                                                + FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES;
+
             //  Set randomally each one of the enemies in the board inside the grid limits
-		    s.setLocation(new BoardPoint((int) (Math.random() * RELEVANT_COLUMN_RANGE_FOR_SMALL_ENEMIES)    
-                        + FIRST_RELEVANT_COLUMN_FOR_SMALL_ENEMIES, 
-                (int) (Math.random() * RELEVANT_ROW_RANGE_FOR_SMALL_ENEMIES) 
-                        + FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES));
+		    s.setLocation(new BoardPoint(smallEnemyFirstRandomColumn, smallEnemyFirstRandomRow));
 
             //  Set the SmallEnemy in the array ofthe SmallEnemies
-		    smallEnemies[smallEnemyCounter++] = s;
+		    smallEnemies[smallEnemyCounter++]               = s;
         }
 	}
 	
