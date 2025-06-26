@@ -110,7 +110,7 @@ public class GridLine {
         }
 
 		//  both points are right to the line
-		if (p1.getX() > maxX && p2.getX() > maxX) {
+		if (p1.getX() >= maxX && p2.getX() >= maxX) {
 			return false;
         }
 
@@ -120,7 +120,7 @@ public class GridLine {
         }
 
 		//  both points are below the line
-		if (p1.getY() > maxY && p2.getY() > maxY) {
+		if (p1.getY() >= maxY && p2.getY() >= maxY) {
 			return false;
         }
 		
