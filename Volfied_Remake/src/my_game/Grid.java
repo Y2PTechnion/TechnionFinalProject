@@ -472,8 +472,13 @@ public class Grid
 
         if (ORIGINAL_REGION_STATUS != newRegionStatus) 
         { 
-            //  Avoid infinite recursion if newColor is same as original
+            //  Avoid infinite recursion if newRegionStatus is same as original
             dfs(region, startingBoardPoint, ORIGINAL_REGION_STATUS, newRegionStatus);
+        }
+        else if (RegionStatus.REGION_STATUS_EMPTY != newRegionStatus) 
+        {
+            //  Avoid infinite recursion if newRegionStatus is same as original
+            dfs(region, startingBoardPoint, RegionStatus.REGION_STATUS_EMPTY, newRegionStatus);
         }
 
         return region;
