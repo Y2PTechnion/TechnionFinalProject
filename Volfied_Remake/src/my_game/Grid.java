@@ -438,6 +438,7 @@ public class Grid
                 if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions[row][column].getRegionStatus())
                 {
                     getNumberOfConqueredRegions++;
+// TODO:                    board.updateRegion(regions[row][column]);
                 }
             }
         }
@@ -502,26 +503,26 @@ public class Grid
         final int           COLUMN              = boardPoint.getColumn();
         final RegionStatus  NEW_REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
 
+        if (ROW >= 0 && ROW < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
+            && COLUMN >= 0 && COLUMN < TOTAL_GAME_CELLS_IN_X_PER_ROW 
+            && NEW_REGION_STATUS == originalRegionStatus) 
+        {
+            //  Change the region status of the current region
+            region[ROW][COLUMN].setRegionStatus(newRegionStatus);
 
-        if (ROW < 0 || ROW >= TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
-            || COLUMN < 0 || COLUMN >= TOTAL_GAME_CELLS_IN_X_PER_ROW 
-            || NEW_REGION_STATUS != originalRegionStatus) 
+            //  Explore 4-directional neighbors
+            final BoardPoint BOARD_POINT_DOWN   = new BoardPoint(ROW + 1, COLUMN);
+            final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);        
+            final BoardPoint BOARD_POINT_RIGHT  = new BoardPoint(ROW, COLUMN + 1);
+            final BoardPoint BOARD_POINT_LEFT   = new BoardPoint(ROW, COLUMN - 1);
+            dfs(region, BOARD_POINT_DOWN, originalRegionStatus, newRegionStatus);   //  Down
+            dfs(region, BOARD_POINT_UP, originalRegionStatus, newRegionStatus);     //  Up
+            dfs(region, BOARD_POINT_RIGHT, originalRegionStatus, newRegionStatus);  //  Right
+            dfs(region, BOARD_POINT_LEFT, originalRegionStatus, newRegionStatus);   //  Left
+        }
+        else
         {
             //  Base case: out of bounds or not the target region status
-            return; 
         }
-
-        //  Change the region status of the current region
-        region[ROW][COLUMN].setRegionStatus(newRegionStatus);
-
-        //  Explore 4-directional neighbors
-        final BoardPoint boardPointDown     = new BoardPoint(ROW + 1, COLUMN);
-        final BoardPoint boardPointUp       = new BoardPoint(ROW - 1, COLUMN);        
-        final BoardPoint boardPointRight    = new BoardPoint(ROW, COLUMN + 1);
-        final BoardPoint boardPointLeft     = new BoardPoint(ROW, COLUMN - 1);
-        dfs(region, boardPointDown, originalRegionStatus, newRegionStatus);    //  Down
-        dfs(region, boardPointUp, originalRegionStatus, newRegionStatus);      //  Up
-        dfs(region, boardPointRight, originalRegionStatus, newRegionStatus);   //  Right
-        dfs(region, boardPointLeft, originalRegionStatus, newRegionStatus);    //  Left
     }
 }

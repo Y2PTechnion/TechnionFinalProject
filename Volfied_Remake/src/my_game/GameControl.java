@@ -101,7 +101,8 @@ public class GameControl
 
         //  Logic section of gameStep()         
             //  Space pilot moving method
-            final BoardPoint    destinationLocation = spacePilotMoving(sourceLocation, regionsAfterFloodFill);
+            final boolean       regionsWereConquered    = spacePilotMoving(sourceLocation, regionsAfterFloodFill);
+            final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
             //  Handle collisions between small enemies and space pilot
@@ -117,6 +118,20 @@ public class GameControl
             //  Update grid space pilot lines in canvas
             content.grid().addGridSpacePilotLines(sourceLocation, destinationLocation);
         }
+
+//        if (true == regionsWereConquered)
+//        {
+//            for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
+//            {
+//                for (int column = 0; column < Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+//                {
+//                    if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regionsAfterFloodFill[row][column].getRegionStatus())
+//                    {
+//                        content.getBoard().updateRegion(regionsAfterFloodFill[row][column]);   
+//                   }
+//                }
+//            }
+//        }
 
         //      Update small enemies in canvas
 		board.updateSmallEnemiesInCanvas();
@@ -180,8 +195,10 @@ public class GameControl
 		return null;
 	}
 
-    private BoardPoint spacePilotMoving(BoardPoint sourceLocation, Region[][] regionsAfterFloodFill)
+    private boolean  spacePilotMoving(BoardPoint sourceLocation, Region[][] regionsAfterFloodFill)
     {
+        boolean regionsWereConquered    = false;
+
         //  Try to move the space pilot, if it was moved
         content.spacePilot().move();
 
@@ -209,6 +226,8 @@ public class GameControl
                     final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
                     //  Set to null the location pointer
                     firstSpacePilotLocationOutsideSafeZone  = null;
+
+                    regionsWereConquered    = true;
                 }
 
                 //  The space pilot has reached a region that is already conquered
@@ -246,7 +265,7 @@ public class GameControl
             }
         }
 
-        return destinationLocation;
+        return regionsWereConquered;
     }
 
     private void conquerRegion(BoardPoint startPoint, int currentLine) 
