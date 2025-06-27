@@ -280,7 +280,9 @@ public class Grid
 	public void addGridSpacePilotLines(BoardPoint firstSpacePilotLinePoint, BoardPoint secondSpacePilotLinePoint) 
     {
 		//  Internal space pilot lines
-		gridSpacePilotLines.add(new GridLine(firstSpacePilotLinePoint, secondSpacePilotLinePoint));
+//		gridSpacePilotLines.add(new GridLine(firstSpacePilotLinePoint, secondSpacePilotLinePoint));
+        //  Add the space pilot line to the board
+        board.addGridSpacePilotLine(new GridLine(firstSpacePilotLinePoint, secondSpacePilotLinePoint));
     }
 
 	public void addGridToBoard() 
@@ -422,4 +424,82 @@ public class Grid
     {
 		return this.regions;
 	}
+
+    /**
+        * floodFill algorithm method
+        * 
+        * @implNote The Flood Fill algorithm is used to determine and modify a connected region 
+        *           of a multi-dimensional array (often a 2D grid or image). It is commonly used 
+        *           in image editing software for the "bucket fill" tool and in games like Minesweeper.
+        *           Starting from a given seed point, the algorithm identifies all adjacent cells that 
+        *           share a specific "target" color or value and replaces them with a new "replacement" 
+        *           color or value. This process continues recursively or iteratively until the entire 
+        *           connected region is processed.
+        *
+        * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
+        *
+        * @param (Region[][] region) (The region represented as a 2D array of integers, where each integer represents a color)
+        * @param (BoardPoint location) (the starting location to begin the flood fill)
+        * @param (int newColor) (the new color to fill the connected region with)
+        * @return (Region[][]) (the modified region after the flood fill operation)
+        */
+    public Region[][] floodFill(Region[][] region, BoardPoint startingBoardPoint, RegionStatus newRegionStatus) 
+    {
+        final int startingRow                   = startingBoardPoint.getY();
+        final int startingColumn                = startingBoardPoint.getX();
+        final RegionStatus originalRegionStatus = region[startingColumn][startingRow].getRegionStatus();
+
+        if (originalRegionStatus != newRegionStatus) 
+        { 
+            //  Avoid infinite recursion if newColor is same as original
+            dfs(region, startingBoardPoint, originalRegionStatus, newRegionStatus);
+        }
+
+        return region;
+    }
+
+    /**
+        * dfs algorithm method
+        * 
+        * @implNote Recursive (DFS - Depth-First Search) Approach
+        *           Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. 
+        *           The algorithm starts at the root node (selecting some arbitrary node as the root node in the case of a graph) 
+        *           and explores as far as possible along each branch before backtracking. 
+        *           Extra memory, usually a stack, is needed to keep track of the nodes discovered so far along a specified 
+        *           branch which helps in backtracking of the graph.
+        *
+        * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
+        *
+        * @param (int[][] image) (The image represented as a 2D array of integers, where each integer represents a color)
+        * @param (BoardPoint location) (the node to start the DFS from)
+        * @param (int originalColor) (the original color to be replaced)
+        * @param (int newColor) (the new color to fill the connected region with)
+        * @return (none)
+        */
+    private void dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
+    {
+        int row     = boardPoint.getY();
+        int column  = boardPoint.getX();
+
+        if (row < 0 || row >= TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
+            || column < 0 || column >= TOTAL_GAME_CELLS_IN_X_PER_ROW 
+            || region[column][row].getRegionStatus() != originalRegionStatus) 
+        {
+            //  Base case: out of bounds or not the target color
+            return; 
+        }
+
+        //  Change the color of the current pixel
+        region[column][row].setRegionStatus(newRegionStatus); 
+
+        //  Explore 4-directional neighbors
+        final BoardPoint boardPointDown     = new BoardPoint(column, row + 1);
+        final BoardPoint boardPointUp       = new BoardPoint(column, row - 1);        
+        final BoardPoint boardPointRight    = new BoardPoint(column + 1, row);
+        final BoardPoint boardPointLeft     = new BoardPoint(column - 1, row);
+        dfs(region, boardPointDown, originalRegionStatus, newRegionStatus);    //  Down
+        dfs(region, boardPointUp, originalRegionStatus, newRegionStatus);      //  Up
+        dfs(region, boardPointRight, originalRegionStatus, newRegionStatus);   //  Right
+        dfs(region, boardPointLeft, originalRegionStatus, newRegionStatus);    //  Left
+    }
 }

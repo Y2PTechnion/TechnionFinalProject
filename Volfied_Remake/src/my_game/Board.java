@@ -234,42 +234,18 @@ public class Board
         if (minX == maxX)   
         {
             //  Vertical line
-            if (0 == minX)
-            {
-                //  Vertical left line
-                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-                transY(line.p1().getY()) + BOARD_SCALE/2, 
-                transX(line.p2().getX()) + BOARD_SCALE/2, 
-                transY(line.p2().getY()-1) + BOARD_SCALE/2);
-            }
-            else
-            {
-                //  Vertical right line
-                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p1().getY()) + BOARD_SCALE/2, 
-                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p2().getY()-1) + BOARD_SCALE/2);
-            }
+            lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+            transY(line.p1().getY()) + BOARD_SCALE/2, 
+            transX(line.p2().getX()) + BOARD_SCALE/2, 
+            transY(line.p2().getY()) + BOARD_SCALE/2);
         }  
         else if (minY == maxY) 
         {
             //  Horizontal line
-            if (0 == minY)
-            {
-                //  Horizonal upper line
-                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-                transY(line.p1().getY()) + BOARD_SCALE/2, 
-                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p2().getY()) + BOARD_SCALE/2);  
-            }
-            else
-            {
-                //  Horizonal bottom line
-                lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-                transY(line.p1().getY()-1) + BOARD_SCALE/2, 
-                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p2().getY()-1) + BOARD_SCALE/2);  
-            }
+            lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
+            transY(line.p1().getY()) + BOARD_SCALE/2, 
+            transX(line.p2().getX()) + BOARD_SCALE/2, 
+            transY(line.p2().getY()) + BOARD_SCALE/2);
         }
 
         lineShape.setColor(Color.GREEN);

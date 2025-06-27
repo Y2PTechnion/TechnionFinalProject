@@ -92,19 +92,33 @@ public class GameControl
 
 	public void gameStep() 
     {
-		Region region   = conquerCurrentRegion(content.spacePilot().getLocation());
+        //  Logic section of gameStep()
+            Region region       = conquerCurrentRegion(content.spacePilot().getLocation());
+            //  Get space pilot source location
+            final BoardPoint    sourceLocation      = content.spacePilot().getLocation();
+            //  Try to move the space pilot, if it was moved
+            content.spacePilot().move();
+            //  Get space pilot destination location
+            final BoardPoint    destinationLocation = content.spacePilot().getLocation();
+            //  Try to move the small enemies randomally
+            content.smallEnemies().move();
+            //  Handle collisions between small enemies and space pilot
+		    handleCollisions();
 
-		// If history is played, restore locations from history.
-		// Otherwise, move space pilot and small enemies according to
-//		if (content.historyPlayer().isPlaying()) {
-//			content.historyPlayer().playState();
-//		} else {
-			content.spacePilot().move();
- 			content.smallEnemies().move();
-//		}
+        //  Graphics (canvas) section of gameStep()
+        //      Update space pilot in canvas
 		board.updateSpacePilotInCanvas();
+
+        if ((sourceLocation.getX() != destinationLocation.getX())
+            || (sourceLocation.getY() != destinationLocation.getY()))
+        {
+            //  Update grid space pilot lines in canvas
+            content.grid().addGridSpacePilotLines(sourceLocation, destinationLocation);
+        }
+        //      Update small enemies in canvas
 		board.updateSmallEnemiesInCanvas();
 
+        //  Update section of gameStep()
 		if (null != region) 
         {
 			board.updateRegion(region);
@@ -112,14 +126,11 @@ public class GameControl
             System.out.println("Space pilot at: " + region.getLocation().getX() + ", " 
                 + region.getLocation().getY() + ", " + region.getGuid() + ", " + region.getRegionStatus());
 		}
-
-		handleCollisions();
 		board.updateScore();
 		content.statusLine().refresh();
 		board.updateStatusLine();
 //		content.historyRecorder().recordState();
-//        checkGameOver();
-		
+//      checkGameOver();
 	}
 
 	private void handleCollisions() 
