@@ -94,72 +94,12 @@ public class GameControl
 
 	public void gameStep() 
     {
+        Region                  region              = conquerCurrentRegion(content.spacePilot().getLocation());
+        final BoardPoint        sourceLocation      = content.spacePilot().getLocation();
 
-
-        //  Logic section of gameStep()
-            Region region       = conquerCurrentRegion(content.spacePilot().getLocation());
-            //  Get space pilot source location and region status
-            final BoardPoint    sourceLocation      = content.spacePilot().getLocation();
-            final Region        sourceRegion        = content.grid().regions()[sourceLocation.getRow()][sourceLocation.getColumn()];
-            final RegionStatus  sourceRegionStatus  = sourceRegion.getRegionStatus(); 
-           
-            //  Try to move the space pilot, if it was moved
-            content.spacePilot().move();
-
-            //  Get space pilot destination location
-            final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
-            final Region        destinationRegion       = content.grid().regions()[destinationLocation.getRow()][destinationLocation.getColumn()]; 
-            final RegionStatus  destinationRegionStatus = destinationRegion.getRegionStatus(); 
-
-            switch (destinationRegionStatus)
-            {
-                case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
-                case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
-                {
-                    if (true == getSpacePilotIsOutsideSafeZone)
-                    {
-                        //  The space pilot has reached one of the safe places
-                        //  after conquering
-                        //  Perform flood fill algorithm
-                        Region[][]  regionsAfterFloodFill = content.grid().floodFill(content.grid().regions(), 
-                                            firstSpacePilotLocationOutsideSafeZone, 
-                                            RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-                        firstSpacePilotLocationOutsideSafeZone  = null;
-                    }
-
-                    getSpacePilotIsOutsideSafeZone  = false;
-                    break;
-                }
-
-                case REGION_STATUS_SPACE_PILOT_CONQUERING:
-                {
-                    //  Do nothing, the region is being conquered
-                    break;
-                }
-
-                case REGION_STATUS_EMPTY:
-                {
-                    if (false == getSpacePilotIsOutsideSafeZone)
-                    {
-                        //  The space pilot has in this movement
-                        //  go out from the safe zone
-                        getSpacePilotIsOutsideSafeZone          = true;
-                        firstSpacePilotLocationOutsideSafeZone  = destinationLocation;
-                    }
-
-                    //  Set the region as a region being conquered
-                    destinationRegion.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
-                    break;
-                }
-
-                case REGION_STATUS_SPACE_PILOT_OVER:
-                case REGION_STATUS_SMALL_ENEMY_OVER:
-                default:
-                {
-                    System.out.println("In gameStep() should not happen");
-                }
-            }
-            
+        //  Logic section of gameStep()         
+            //  Space pilot moving method
+            final BoardPoint    destinationLocation = spacePilotMoving(sourceLocation);
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
             //  Handle collisions between small enemies and space pilot
@@ -175,6 +115,7 @@ public class GameControl
             //  Update grid space pilot lines in canvas
             content.grid().addGridSpacePilotLines(sourceLocation, destinationLocation);
         }
+
         //      Update small enemies in canvas
 		board.updateSmallEnemiesInCanvas();
 
@@ -236,6 +177,79 @@ public class GameControl
 
 		return null;
 	}
+
+    private BoardPoint spacePilotMoving(BoardPoint sourceLocation)
+    {
+        //  Get space pilot source location and region status
+        final Region        sourceRegion        = content.grid().regions()[sourceLocation.getRow()][sourceLocation.getColumn()];
+        final RegionStatus  sourceRegionStatus  = sourceRegion.getRegionStatus(); 
+        
+        //  Try to move the space pilot, if it was moved
+        content.spacePilot().move();
+
+        //  Get space pilot destination location
+        final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
+        final Region        destinationRegion       = content.grid().regions()[destinationLocation.getRow()][destinationLocation.getColumn()]; 
+        final RegionStatus  destinationRegionStatus = destinationRegion.getRegionStatus(); 
+
+        switch (destinationRegionStatus)
+        {
+            case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
+            case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
+            {
+                if (true == getSpacePilotIsOutsideSafeZone)
+                {
+                    //  The space pilot has reached one of the safe places
+                    //  after conquering
+                    //  Perform flood fill algorithm
+                    Region[][]  regionsAfterFloodFill = content.grid().floodFillAlgorithm(
+                                        content.grid().regions(), 
+                                        firstSpacePilotLocationOutsideSafeZone, 
+                                        RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+
+                    //  Update the number of conquered regions
+                    final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
+                    //  Set to null the location pointer
+                    firstSpacePilotLocationOutsideSafeZone  = null;
+                }
+
+                //  The space pilot has reached a region that is already conquered
+                getSpacePilotIsOutsideSafeZone  = false;
+                break;
+            }
+
+            case REGION_STATUS_SPACE_PILOT_CONQUERING:
+            {
+                //  Do nothing, the region is being conquered
+                break;
+            }
+
+            case REGION_STATUS_EMPTY:
+            {
+                if (false == getSpacePilotIsOutsideSafeZone)
+                {
+                    //  The space pilot has in this movement
+                    //  go out from the safe zone
+                    //  The space pilot has reached a region that is NOT already conquered
+                    getSpacePilotIsOutsideSafeZone          = true;
+                    firstSpacePilotLocationOutsideSafeZone  = destinationLocation;
+                }
+
+                //  Set the region as a region being conquered
+                destinationRegion.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
+                break;
+            }
+
+            case REGION_STATUS_SPACE_PILOT_OVER:
+            case REGION_STATUS_SMALL_ENEMY_OVER:
+            default:
+            {
+                System.out.println("In gameStep() should not happen");
+            }
+        }
+
+        return destinationLocation;
+    }
 
     private void conquerRegion(BoardPoint startPoint, int currentLine) 
     {

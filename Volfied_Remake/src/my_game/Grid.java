@@ -370,7 +370,7 @@ public class Grid
 
                 for (GridLine gridBorderOnlyForSpacePilotLine : gridBorderOnlyForSpacePilotLines()) 
                 {
-                    if (gridBorderOnlyForSpacePilotLine.blocksMove(sourcePoint, destinationPoint)) 
+                    if (true == gridBorderOnlyForSpacePilotLine.blocksMove(sourcePoint, destinationPoint)) 
                     {
                         isTheMovingBlockedByLogic  =  true;
                     }
@@ -387,7 +387,7 @@ public class Grid
 		//Check if the point is on any of the lines and if so, return true
 		for (GridLine gridSpacePilotLine: gridSpacePilotLines) 
         {
-			if (gridSpacePilotLine.isOnLine(x, y)) 
+			if (true == gridSpacePilotLine.isOnLine(x, y)) 
             {
 				return true;
 			}
@@ -427,8 +427,26 @@ public class Grid
 		return this.regions;
 	}
 
+    public int updateNumberOfConqueredRegions(Region[][] region)
+    {
+        int getNumberOfConqueredRegions = 0;
+
+        for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
+        {
+            for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+                if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions[row][column].getRegionStatus())
+                {
+                    getNumberOfConqueredRegions++;
+                }
+            }
+        }
+
+        return getNumberOfConqueredRegions;
+    }
+
     /**
-        * floodFill algorithm method
+        * floodFillAlgorithm algorithm method
         * 
         * @implNote The Flood Fill algorithm is used to determine and modify a connected region 
         *           of a multi-dimensional array (often a 2D grid or image). It is commonly used 
@@ -440,12 +458,12 @@ public class Grid
         *
         * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
         *
-        * @param (Region[][] region) (The region represented as a 2D array of integers, where each integer represents a color)
+        * @param (Region[][] region) (The region represented as a 2D array of Region, where each one having a region status)
         * @param (BoardPoint location) (the starting location to begin the flood fill)
-        * @param (int newColor) (the new color to fill the connected region with)
+        * @param (RegionStatus newRegionStatus) (the new region status to set the connected region)
         * @return (Region[][]) (the modified region after the flood fill operation)
         */
-    public Region[][] floodFill(Region[][] region, BoardPoint startingBoardPoint, RegionStatus newRegionStatus) 
+    public Region[][] floodFillAlgorithm(Region[][] region, BoardPoint startingBoardPoint, RegionStatus newRegionStatus) 
     {
         final int           STARTING_ROW            = startingBoardPoint.getRow();
         final int           STARTING_COLUMN         = startingBoardPoint.getColumn();
@@ -472,10 +490,10 @@ public class Grid
         *
         * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
         *
-        * @param (int[][] image) (The image represented as a 2D array of integers, where each integer represents a color)
-        * @param (BoardPoint location) (the node to start the DFS from)
-        * @param (int originalColor) (the original color to be replaced)
-        * @param (int newColor) (the new color to fill the connected region with)
+        * @param (Region[][] region) (The image represented as a 2D array of Region, where each integer represents a region status)
+        * @param (BoardPoint boardPoint) (the node to start the DFS from)
+        * @param (int originalRegionStatus) (the original region status to be replaced)
+        * @param (int newRegionStatus) (the new region status to set the connected region)
         * @return (none)
         */
     private void dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
@@ -489,11 +507,11 @@ public class Grid
             || COLUMN < 0 || COLUMN >= TOTAL_GAME_CELLS_IN_X_PER_ROW 
             || NEW_REGION_STATUS != originalRegionStatus) 
         {
-            //  Base case: out of bounds or not the target color
+            //  Base case: out of bounds or not the target region status
             return; 
         }
 
-        //  Change the color of the current pixel
+        //  Change the region status of the current region
         region[ROW][COLUMN].setRegionStatus(newRegionStatus);
 
         //  Explore 4-directional neighbors
