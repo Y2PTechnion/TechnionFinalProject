@@ -86,6 +86,7 @@ public class GameControl
 	private Board               board                                   = null;
     static  private boolean     getSpacePilotIsOutsideSafeZone          = false;
     static  private BoardPoint  firstSpacePilotLocationOutsideSafeZone  = null;
+
     public GameControl(MyContent content) 
     {
         this.content    = content;
@@ -96,7 +97,7 @@ public class GameControl
     {
         Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
         final BoardPoint        sourceLocation          = content.spacePilot().getLocation();
-        Region[][]              regionsAfterFloodFill   = new Region[32][52];
+        Region[][]              regionsAfterFloodFill   = new Region[Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW];
 
         //  Logic section of gameStep()         
             //  Space pilot moving method
@@ -203,20 +204,6 @@ public class GameControl
                                         content.grid().regions(), 
                                         firstSpacePilotLocationOutsideSafeZone, 
                                         RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-
-
-                    int getNumberOfConqueredRegions = 0;
-
-                    for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
-                    {
-                        for (int column = 0; column < Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
-                        {
-                            if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regionsAfterFloodFill[row][column].getRegionStatus())
-                            {
-                                getNumberOfConqueredRegions++;
-                            }
-                        }
-                    }
 
                     //  Update the number of conquered regions
                     final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
