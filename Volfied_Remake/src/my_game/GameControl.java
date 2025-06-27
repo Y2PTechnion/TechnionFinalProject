@@ -94,12 +94,13 @@ public class GameControl
 
 	public void gameStep() 
     {
-        Region                  region              = conquerCurrentRegion(content.spacePilot().getLocation());
-        final BoardPoint        sourceLocation      = content.spacePilot().getLocation();
+        Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
+        final BoardPoint        sourceLocation          = content.spacePilot().getLocation();
+        Region[][]              regionsAfterFloodFill   = new Region[32][52];
 
         //  Logic section of gameStep()         
             //  Space pilot moving method
-            final BoardPoint    destinationLocation = spacePilotMoving(sourceLocation);
+            final BoardPoint    destinationLocation = spacePilotMoving(sourceLocation, regionsAfterFloodFill);
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
             //  Handle collisions between small enemies and space pilot
@@ -178,12 +179,8 @@ public class GameControl
 		return null;
 	}
 
-    private BoardPoint spacePilotMoving(BoardPoint sourceLocation)
+    private BoardPoint spacePilotMoving(BoardPoint sourceLocation, Region[][] regionsAfterFloodFill)
     {
-        //  Get space pilot source location and region status
-        final Region        sourceRegion        = content.grid().regions()[sourceLocation.getRow()][sourceLocation.getColumn()];
-        final RegionStatus  sourceRegionStatus  = sourceRegion.getRegionStatus(); 
-        
         //  Try to move the space pilot, if it was moved
         content.spacePilot().move();
 
@@ -202,10 +199,24 @@ public class GameControl
                     //  The space pilot has reached one of the safe places
                     //  after conquering
                     //  Perform flood fill algorithm
-                    Region[][]  regionsAfterFloodFill = content.grid().floodFillAlgorithm(
+                    regionsAfterFloodFill = content.grid().floodFillAlgorithm(
                                         content.grid().regions(), 
                                         firstSpacePilotLocationOutsideSafeZone, 
                                         RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+
+
+                    int getNumberOfConqueredRegions = 0;
+
+                    for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
+                    {
+                        for (int column = 0; column < Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+                        {
+                            if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regionsAfterFloodFill[row][column].getRegionStatus())
+                            {
+                                getNumberOfConqueredRegions++;
+                            }
+                        }
+                    }
 
                     //  Update the number of conquered regions
                     final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
