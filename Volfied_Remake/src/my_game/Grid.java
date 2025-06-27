@@ -447,14 +447,14 @@ public class Grid
         */
     public Region[][] floodFill(Region[][] region, BoardPoint startingBoardPoint, RegionStatus newRegionStatus) 
     {
-        final int startingRow                   = startingBoardPoint.getRow();
-        final int startingColumn                = startingBoardPoint.getColumn();
-        final RegionStatus originalRegionStatus = region[startingColumn][startingRow].getRegionStatus();
+        final int           STARTING_ROW            = startingBoardPoint.getRow();
+        final int           STARTING_COLUMN         = startingBoardPoint.getColumn();
+        final RegionStatus  ORIGINAL_REGION_STATUS  = region[STARTING_ROW][STARTING_COLUMN].getRegionStatus();
 
-        if (originalRegionStatus != newRegionStatus) 
+        if (ORIGINAL_REGION_STATUS != newRegionStatus) 
         { 
             //  Avoid infinite recursion if newColor is same as original
-            dfs(region, startingBoardPoint, originalRegionStatus, newRegionStatus);
+            dfs(region, startingBoardPoint, ORIGINAL_REGION_STATUS, newRegionStatus);
         }
 
         return region;
@@ -480,25 +480,27 @@ public class Grid
         */
     private void dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
     {
-        final int row       = boardPoint.getRow();
-        final int column    = boardPoint.getColumn();
+        final int           ROW                 = boardPoint.getRow();
+        final int           COLUMN              = boardPoint.getColumn();
+        final RegionStatus  NEW_REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
 
-        if (row < 0 || row >= TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
-            || column < 0 || column >= TOTAL_GAME_CELLS_IN_X_PER_ROW 
-            || region[column][row].getRegionStatus() != originalRegionStatus) 
+
+        if (ROW < 0 || ROW >= TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
+            || COLUMN < 0 || COLUMN >= TOTAL_GAME_CELLS_IN_X_PER_ROW 
+            || NEW_REGION_STATUS != originalRegionStatus) 
         {
             //  Base case: out of bounds or not the target color
             return; 
         }
 
         //  Change the color of the current pixel
-        region[column][row].setRegionStatus(newRegionStatus);
+        region[ROW][COLUMN].setRegionStatus(newRegionStatus);
 
         //  Explore 4-directional neighbors
-        final BoardPoint boardPointDown     = new BoardPoint(row + 1, column);
-        final BoardPoint boardPointUp       = new BoardPoint(row - 1, column);        
-        final BoardPoint boardPointRight    = new BoardPoint(row, column + 1);
-        final BoardPoint boardPointLeft     = new BoardPoint(row, column - 1);
+        final BoardPoint boardPointDown     = new BoardPoint(ROW + 1, COLUMN);
+        final BoardPoint boardPointUp       = new BoardPoint(ROW - 1, COLUMN);        
+        final BoardPoint boardPointRight    = new BoardPoint(ROW, COLUMN + 1);
+        final BoardPoint boardPointLeft     = new BoardPoint(ROW, COLUMN - 1);
         dfs(region, boardPointDown, originalRegionStatus, newRegionStatus);    //  Down
         dfs(region, boardPointUp, originalRegionStatus, newRegionStatus);      //  Up
         dfs(region, boardPointRight, originalRegionStatus, newRegionStatus);   //  Right

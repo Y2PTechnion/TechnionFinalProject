@@ -77,13 +77,15 @@ package my_game;
 
 import java.awt.Color;
 import my_base.MyContent;
+import my_game.Region.RegionStatus;
 
 public class GameControl 
 {
 //  Private variables for the class
-    private MyContent   content = null;
-	private Board       board   = null;
-
+    private MyContent           content                                 = null;
+	private Board               board                                   = null;
+    static  private boolean     getSpacePilotIsOutsideSafeZone          = false;
+    static  private BoardPoint  firstSpacePilotLocationOutsideSafeZone  = null;
     public GameControl(MyContent content) 
     {
         this.content    = content;
@@ -92,14 +94,72 @@ public class GameControl
 
 	public void gameStep() 
     {
+
+
         //  Logic section of gameStep()
             Region region       = conquerCurrentRegion(content.spacePilot().getLocation());
-            //  Get space pilot source location
+            //  Get space pilot source location and region status
             final BoardPoint    sourceLocation      = content.spacePilot().getLocation();
+            final Region        sourceRegion        = content.grid().regions()[sourceLocation.getRow()][sourceLocation.getColumn()];
+            final RegionStatus  sourceRegionStatus  = sourceRegion.getRegionStatus(); 
+           
             //  Try to move the space pilot, if it was moved
             content.spacePilot().move();
+
             //  Get space pilot destination location
-            final BoardPoint    destinationLocation = content.spacePilot().getLocation();
+            final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
+            final Region        destinationRegion       = content.grid().regions()[destinationLocation.getRow()][destinationLocation.getColumn()]; 
+            final RegionStatus  destinationRegionStatus = destinationRegion.getRegionStatus(); 
+
+            switch (destinationRegionStatus)
+            {
+                case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
+                case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
+                {
+                    if (true == getSpacePilotIsOutsideSafeZone)
+                    {
+                        //  The space pilot has reached one of the safe places
+                        //  after conquering
+                        //  Perform flood fill algorithm
+                        Region[][]  regionsAfterFloodFill = content.grid().floodFill(content.grid().regions(), 
+                                            firstSpacePilotLocationOutsideSafeZone, 
+                                            RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                        firstSpacePilotLocationOutsideSafeZone  = null;
+                    }
+
+                    getSpacePilotIsOutsideSafeZone  = false;
+                    break;
+                }
+
+                case REGION_STATUS_SPACE_PILOT_CONQUERING:
+                {
+                    //  Do nothing, the region is being conquered
+                    break;
+                }
+
+                case REGION_STATUS_EMPTY:
+                {
+                    if (false == getSpacePilotIsOutsideSafeZone)
+                    {
+                        //  The space pilot has in this movement
+                        //  go out from the safe zone
+                        getSpacePilotIsOutsideSafeZone          = true;
+                        firstSpacePilotLocationOutsideSafeZone  = destinationLocation;
+                    }
+
+                    //  Set the region as a region being conquered
+                    destinationRegion.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
+                    break;
+                }
+
+                case REGION_STATUS_SPACE_PILOT_OVER:
+                case REGION_STATUS_SMALL_ENEMY_OVER:
+                default:
+                {
+                    System.out.println("In gameStep() should not happen");
+                }
+            }
+            
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
             //  Handle collisions between small enemies and space pilot
@@ -153,7 +213,10 @@ public class GameControl
 
 	public Region conquerCurrentRegion(BoardPoint location) 
     {
-		Region  region  = content.grid().regions()[location.getColumn()][location.getRow()];
+        final   int locationRow     = location.getRow();
+        final   int locationColumn  = location.getColumn();
+
+		Region      region          = content.grid().regions()[locationRow][locationColumn]; 
 
 		if (true == region.isShown()) 
         {
