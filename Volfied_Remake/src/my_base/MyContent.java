@@ -114,7 +114,8 @@ public class MyContent extends GameContent
         //  The space pilot is the main character of the game
 		spacePilot		= new SpacePilot("spacePilot", grid);
         //  Set the space pilot in the middle of last row of the grid
-        spacePilot.setLocation(new BoardPoint(Grid.getTotalGameCellsInXPerRow()/2,Grid.getTotalGameCellsInYPerColumn()-1));
+        spacePilot.setLocation(new BoardPoint(Grid.getTotalGameCellsInYPerColumn()-1, 
+                                                Grid.getTotalGameCellsInXPerRow()/2));
 
         //  Creates the small enemies and sets their initial locations
         //  The small enemies are the enemies of the game

@@ -165,8 +165,8 @@ public class GameCharacter implements Intersectable
         */
     public void setLocation(int x, int y) 
     {
-    	this.location.setX(x);
-		this.location.setY(y);
+    	this.location.setColumn(x);
+		this.location.setRow(y);
     }
 
     /**
@@ -256,8 +256,8 @@ public class GameCharacter implements Intersectable
         final int WIDTH     = this.imageWidth;
         final int HEIGHT    = this.imageHeight;
 
-        final int LEFT_X    = this.location.getX();
-        final int TOP_Y     = this.location.getY();
+        final int LEFT_X    = this.location.getColumn();
+        final int TOP_Y     = this.location.getRow();
 
         //  Create the vertices of the rectangle representing the GameCharacter
         //  to be used for intersection detection

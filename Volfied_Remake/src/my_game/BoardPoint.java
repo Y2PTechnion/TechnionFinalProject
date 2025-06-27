@@ -14,40 +14,40 @@ package my_game;
 public class BoardPoint 
 {
 //  Private variables for the class
-    private int x   = 0;
-    private int y   = 0;
+    private int row     = 0;
+    private int column  = 0;
 
-    public BoardPoint(int x, int y) 
+    public BoardPoint(int row, int column) 
     {
-        this.x  = x;
-        this.y  = y;
+        this.row    = row;
+        this.column = column;
     }
 
-    public int getX() 
+    public int getColumn() 
     {
-        return this.x;
+        return this.column;
     }
 
-    public int getY() 
+    public int getRow() 
     {
-        return this.y;
+        return this.row;
     }
 
-    public void setX(int x) 
+    public void setColumn(int column) 
     {
-        this.x  = x;
+        this.column = column;
     }
 
-    public void setY(int y) 
+    public void setRow(int row) 
     {
-        this.y  = y;
+        this.row    = row;
     }
 
     public boolean isEqual(BoardPoint boardPoint) 
     {
         boolean bIsEqual    = false;
-        if (this.x == boardPoint.getX()
-            && this.y == boardPoint.getY())
+        if (this.column == boardPoint.getColumn()
+            && this.row == boardPoint.getRow())
         {
             bIsEqual    = true;
         }

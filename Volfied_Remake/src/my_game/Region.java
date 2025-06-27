@@ -108,10 +108,10 @@ public class Region
     private static  int             MAXIMUM_NUMBER_OF_RELEVANT_GAME_REGIONS_IN_GRID = 0;
     private static  int             currentNumberOfConqueredRegionsInGrid           = 0;
 	
-	public Region (int x, int y) 
+	public Region(int row, int column) 
     {
-        this.location                               = new BoardPoint(x, y);
-		this.guid                                   = "region_"+ x + "_" + y;
+        this.location                               = new BoardPoint(row, column);
+		this.guid                                   = "region_"+ row + "_" + column;
         this.regionStatus                           = RegionStatus.REGION_STATUS_EMPTY;
         this.visible                                = true;
         currentNumberOfConqueredRegionsInGrid       = 0;

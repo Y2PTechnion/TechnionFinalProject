@@ -109,8 +109,8 @@ public class GridLine
         */
 	public GridLine(int x1, int y1, int x2, int y2) 
     {
-		this.p1 = new BoardPoint(x1, y1);
-		this.p2 = new BoardPoint(x2, y2);
+		this.p1 = new BoardPoint(y1, x1);
+		this.p2 = new BoardPoint(y2, x2);
 	}
 
     /**
@@ -141,31 +141,31 @@ public class GridLine
 
 	public boolean blocksMove(BoardPoint p1, BoardPoint p2) 
     {
-		int minX = Math.min(this.p1.getX(), this.p2.getX());
-		int maxX = Math.max(this.p1.getX(), this.p2.getX());
-		int minY = Math.min(this.p1.getY(), this.p2.getY());
-		int maxY = Math.max(this.p1.getY(), this.p2.getY());
+		int minX = Math.min(this.p1.getColumn(), this.p2.getColumn());
+		int maxX = Math.max(this.p1.getColumn(), this.p2.getColumn());
+		int minY = Math.min(this.p1.getRow(), this.p2.getRow());
+		int maxY = Math.max(this.p1.getRow(), this.p2.getRow());
 		
 		//  both points are left to the line
-		if (p1.getX() < minX && p2.getX() < minX) 
+		if (p1.getColumn() < minX && p2.getColumn() < minX) 
         {
 			return false;
         }
 
 		//  both points are right to the line (the modification to >= was done to include ALL the points in the grid)
-		if (p1.getX() >= maxX && p2.getX() >= maxX) 
+		if (p1.getColumn() >= maxX && p2.getColumn() >= maxX) 
         {
 			return false;
         }
 
 		//  both points are above the line
-		if (p1.getY() < minY && p2.getY() < minY) 
+		if (p1.getRow() < minY && p2.getRow() < minY) 
         {
 			return false;
         }
 
 		//  both points are below the line (the modification to >= was done to include ALL the points in the grid)
-		if (p1.getY() >= maxY && p2.getY() >= maxY) 
+		if (p1.getRow() >= maxY && p2.getRow() >= maxY) 
         {
 			return false;
         }
@@ -179,10 +179,10 @@ public class GridLine
 	public boolean isOnLine(int x, int y) 
     {
 
-		int minX = Math.min(this.p1.getX(), this.p2.getX());
-		int maxX = Math.max(this.p1.getX(), this.p2.getX());
-		int minY = Math.min(this.p1.getY(), this.p2.getY());
-		int maxY = Math.max(this.p1.getY(), this.p2.getY());
+		int minX = Math.min(this.p1.getColumn(), this.p2.getColumn());
+		int maxX = Math.max(this.p1.getColumn(), this.p2.getColumn());
+		int minY = Math.min(this.p1.getRow(), this.p2.getRow());
+		int maxY = Math.max(this.p1.getRow(), this.p2.getRow());
 
 		return (x >= minX && x <= maxX && y >= minY && y <= maxY);
 	}

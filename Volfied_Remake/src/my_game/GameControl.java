@@ -109,8 +109,8 @@ public class GameControl
         //      Update space pilot in canvas
 		board.updateSpacePilotInCanvas();
 
-        if ((sourceLocation.getX() != destinationLocation.getX())
-            || (sourceLocation.getY() != destinationLocation.getY()))
+        if ((sourceLocation.getColumn() != destinationLocation.getColumn())
+            || (sourceLocation.getRow() != destinationLocation.getRow()))
         {
             //  Update grid space pilot lines in canvas
             content.grid().addGridSpacePilotLines(sourceLocation, destinationLocation);
@@ -121,10 +121,10 @@ public class GameControl
         //  Update section of gameStep()
 		if (null != region) 
         {
-			board.updateRegion(region);
+//  TODO: Update region to new color			board.updateRegion(region);
    //         board.updateSpacePilotGridLine(rg);
-            System.out.println("Space pilot at: " + region.getLocation().getX() + ", " 
-                + region.getLocation().getY() + ", " + region.getGuid() + ", " + region.getRegionStatus());
+            System.out.println("Space pilot at: " + region.getLocation().getRow() + ", " 
+                + region.getLocation().getColumn() + ", " + region.getGuid() + ", " + region.getRegionStatus());
 		}
 		board.updateScore();
 		content.statusLine().refresh();
@@ -153,7 +153,7 @@ public class GameControl
 
 	public Region conquerCurrentRegion(BoardPoint location) 
     {
-		Region  region  = content.grid().regions()[location.getX()][location.getY()];
+		Region  region  = content.grid().regions()[location.getColumn()][location.getRow()];
 
 		if (true == region.isShown()) 
         {

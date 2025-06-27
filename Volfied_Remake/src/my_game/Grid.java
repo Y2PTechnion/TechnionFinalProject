@@ -132,7 +132,7 @@ public class Grid
 	private ArrayList<GridLine> gridBorderOnlyForSpacePilotLines    = new ArrayList<GridLine>();
     private ArrayList<GridLine> gridSpacePilotLines                 = new ArrayList<GridLine>();
     //  Region[column][row]
-	private Region[][]          regions                             = new Region[TOTAL_GAME_CELLS_IN_X_PER_ROW][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN];
+	private Region[][]          regions                             = new Region[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][TOTAL_GAME_CELLS_IN_X_PER_ROW];
 	
 	public Grid(Board board) 
     {
@@ -203,7 +203,7 @@ public class Grid
             {
 //				if (!isOnGridLine(column, row)) 
                 {
-					regions[column][row] = new Region(column, row);
+					regions[row][column] = new Region(row, column);
 					numberOfRelevantGameRegions++;
 				}
 			}
@@ -214,9 +214,9 @@ public class Grid
             //  First row (0)
             for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[column][0].getRegionStatus())
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[0][column].getRegionStatus())
                 {
-                    regions[column][0].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    regions[0][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
                     //  Removing from the number of relevant game regions the border regions
                     numberOfRelevantGameRegions--;
                 }
@@ -225,9 +225,9 @@ public class Grid
             //  First column (0)
             for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
             {
-                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[0][row].getRegionStatus())
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[row][0].getRegionStatus())
                 {
-                    regions[0][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    regions[row][0].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
                     //  Removing from the number of relevant game regions the border regions
                     numberOfRelevantGameRegions--;
                 }
@@ -236,9 +236,9 @@ public class Grid
             //  Last row
             for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[column][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1].getRegionStatus())
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1][column].getRegionStatus())
                 {
-                    regions[column][TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    regions[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
                     //  Removing from the number of relevant game regions the border regions
                     numberOfRelevantGameRegions--;
                 }
@@ -247,9 +247,9 @@ public class Grid
             //  Last column
             for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
             {
-                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[TOTAL_GAME_CELLS_IN_X_PER_ROW-1][row].getRegionStatus())
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT != regions[row][TOTAL_GAME_CELLS_IN_X_PER_ROW-1].getRegionStatus())
                 {
-                    regions[TOTAL_GAME_CELLS_IN_X_PER_ROW-1][row].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+                    regions[row][TOTAL_GAME_CELLS_IN_X_PER_ROW-1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
                     //  Removing from the number of relevant game regions the border regions
                     numberOfRelevantGameRegions--;
                 }
@@ -265,11 +265,11 @@ public class Grid
         {
 			for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-				if ((null != regions()[column][row])
-                        && (false == regions()[column][row].isShown())) 
+				if ((null != regions()[row][column])
+                        && (false == regions()[row][column].isShown())) 
                 {
-					board.addRegion(regions()[column][row]);
-                    regions()[column][row].show();
+					board.addRegion(regions()[row][column]);
+                    regions()[row][column].show();
 				}
 			}
 		}
@@ -298,9 +298,9 @@ public class Grid
         {
 			for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-				if (null != regions()[column][row]) 
+				if (null != regions()[row][column]) 
                 {
-					board.addRegion(regions()[column][row]);
+					board.addRegion(regions()[row][column]);
 				}
 			}
 		}
@@ -324,8 +324,10 @@ public class Grid
         //  First blocking moving according to type of object
 		if (gameCharacter instanceof SmallEnemy)
         {
+            final int   destinationRow      = destinationPoint.getRow();
+            final int   destinationColumn   = destinationPoint.getColumn();
             //  If the method calling is a small enemy
-            final RegionStatus  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS  = regions[destinationPoint.getX()][destinationPoint.getY()].getRegionStatus();
+            final RegionStatus  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS  = regions[destinationRow][destinationColumn].getRegionStatus();
 
             if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
             {
@@ -445,8 +447,8 @@ public class Grid
         */
     public Region[][] floodFill(Region[][] region, BoardPoint startingBoardPoint, RegionStatus newRegionStatus) 
     {
-        final int startingRow                   = startingBoardPoint.getY();
-        final int startingColumn                = startingBoardPoint.getX();
+        final int startingRow                   = startingBoardPoint.getRow();
+        final int startingColumn                = startingBoardPoint.getColumn();
         final RegionStatus originalRegionStatus = region[startingColumn][startingRow].getRegionStatus();
 
         if (originalRegionStatus != newRegionStatus) 
@@ -478,8 +480,8 @@ public class Grid
         */
     private void dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
     {
-        int row     = boardPoint.getY();
-        int column  = boardPoint.getX();
+        final int row       = boardPoint.getRow();
+        final int column    = boardPoint.getColumn();
 
         if (row < 0 || row >= TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
             || column < 0 || column >= TOTAL_GAME_CELLS_IN_X_PER_ROW 
@@ -490,13 +492,13 @@ public class Grid
         }
 
         //  Change the color of the current pixel
-        region[column][row].setRegionStatus(newRegionStatus); 
+        region[column][row].setRegionStatus(newRegionStatus);
 
         //  Explore 4-directional neighbors
-        final BoardPoint boardPointDown     = new BoardPoint(column, row + 1);
-        final BoardPoint boardPointUp       = new BoardPoint(column, row - 1);        
-        final BoardPoint boardPointRight    = new BoardPoint(column + 1, row);
-        final BoardPoint boardPointLeft     = new BoardPoint(column - 1, row);
+        final BoardPoint boardPointDown     = new BoardPoint(row + 1, column);
+        final BoardPoint boardPointUp       = new BoardPoint(row - 1, column);        
+        final BoardPoint boardPointRight    = new BoardPoint(row, column + 1);
+        final BoardPoint boardPointLeft     = new BoardPoint(row, column - 1);
         dfs(region, boardPointDown, originalRegionStatus, newRegionStatus);    //  Down
         dfs(region, boardPointUp, originalRegionStatus, newRegionStatus);      //  Up
         dfs(region, boardPointRight, originalRegionStatus, newRegionStatus);   //  Right

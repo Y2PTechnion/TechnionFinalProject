@@ -145,7 +145,7 @@ public class SmallEnemies
                                                                 + FIRST_RELEVANT_ROW_FOR_SMALL_ENEMIES;
 
             //  Set randomally each one of the enemies in the board inside the grid limits
-		    s.setLocation(new BoardPoint(smallEnemyFirstRandomColumn, smallEnemyFirstRandomRow));
+		    s.setLocation(new BoardPoint(smallEnemyFirstRandomRow, smallEnemyFirstRandomColumn));
 
             //  Set the SmallEnemy in the array ofthe SmallEnemies
 		    smallEnemies[smallEnemyCounter++]               = s;

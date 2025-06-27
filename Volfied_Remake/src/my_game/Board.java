@@ -164,10 +164,10 @@ public class Board
 	 */
 	public void addGridBorderLine(GridLine line) 
     {
-		int minX    = Math.min(line.p1().getX(), line.p2().getX());
-		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
-		int minY    = Math.min(line.p1().getY(), line.p2().getY());
-		int maxY    = Math.max(line.p1().getY(), line.p2().getY());
+		int minX    = Math.min(line.p1().getColumn(), line.p2().getColumn());
+		int maxX    = Math.max(line.p1().getColumn(), line.p2().getColumn());
+		int minY    = Math.min(line.p1().getRow(), line.p2().getRow());
+		int maxY    = Math.max(line.p1().getRow(), line.p2().getRow());
 
 		// Represent each line as a thin 2-pixel wide
         Line    lineShape   = null;
@@ -178,18 +178,18 @@ public class Board
             if (0 == minX)
             {
                 //  Vertical left line
-                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-                transY(line.p1().getY()) + BOARD_SCALE/2, 
-                transX(line.p2().getX()) + BOARD_SCALE/2, 
-                transY(line.p2().getY()-1) + BOARD_SCALE/2);
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
+                transY(line.p1().getRow()) + BOARD_SCALE/2, 
+                transX(line.p2().getColumn()) + BOARD_SCALE/2, 
+                transY(line.p2().getRow()-1) + BOARD_SCALE/2);
             }
             else
             {
                 //  Vertical right line
-                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p1().getY()) + BOARD_SCALE/2, 
-                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p2().getY()-1) + BOARD_SCALE/2);
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getColumn()-1) + BOARD_SCALE/2, 
+                transY(line.p1().getRow()) + BOARD_SCALE/2, 
+                transX(line.p2().getColumn()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getRow()-1) + BOARD_SCALE/2);
             }
         }  
         else if (minY == maxY) 
@@ -198,18 +198,18 @@ public class Board
             if (0 == minY)
             {
                 //  Horizonal upper line
-                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-                transY(line.p1().getY()) + BOARD_SCALE/2, 
-                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p2().getY()) + BOARD_SCALE/2);  
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
+                transY(line.p1().getRow()) + BOARD_SCALE/2, 
+                transX(line.p2().getColumn()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getRow()) + BOARD_SCALE/2);  
             }
             else
             {
                 //  Horizonal bottom line
-                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-                transY(line.p1().getY()-1) + BOARD_SCALE/2, 
-                transX(line.p2().getX()-1) + BOARD_SCALE/2, 
-                transY(line.p2().getY()-1) + BOARD_SCALE/2);  
+                lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
+                transY(line.p1().getRow()-1) + BOARD_SCALE/2, 
+                transX(line.p2().getColumn()-1) + BOARD_SCALE/2, 
+                transY(line.p2().getRow()-1) + BOARD_SCALE/2);  
             }
         }
 
@@ -223,10 +223,10 @@ public class Board
 
 	public void addGridSpacePilotLine(GridLine line) 
     {
-		int minX    = Math.min(line.p1().getX(), line.p2().getX());
-		int maxX    = Math.max(line.p1().getX(), line.p2().getX());
-		int minY    = Math.min(line.p1().getY(), line.p2().getY());
-		int maxY    = Math.max(line.p1().getY(), line.p2().getY());
+		int minX    = Math.min(line.p1().getColumn(), line.p2().getColumn());
+		int maxX    = Math.max(line.p1().getColumn(), line.p2().getColumn());
+		int minY    = Math.min(line.p1().getRow(), line.p2().getRow());
+		int maxY    = Math.max(line.p1().getRow(), line.p2().getRow());
 
 	    // Represent each line as a thin 2-pixel wide
         Line    lineShape   = null;
@@ -234,18 +234,18 @@ public class Board
         if (minX == maxX)   
         {
             //  Vertical line
-            lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-            transY(line.p1().getY()) + BOARD_SCALE/2, 
-            transX(line.p2().getX()) + BOARD_SCALE/2, 
-            transY(line.p2().getY()) + BOARD_SCALE/2);
+            lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
+            transY(line.p1().getRow()) + BOARD_SCALE/2, 
+            transX(line.p2().getColumn()) + BOARD_SCALE/2, 
+            transY(line.p2().getRow()) + BOARD_SCALE/2);
         }  
         else if (minY == maxY) 
         {
             //  Horizontal line
-            lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getX()) + BOARD_SCALE/2, 
-            transY(line.p1().getY()) + BOARD_SCALE/2, 
-            transX(line.p2().getX()) + BOARD_SCALE/2, 
-            transY(line.p2().getY()) + BOARD_SCALE/2);
+            lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
+            transY(line.p1().getRow()) + BOARD_SCALE/2, 
+            transX(line.p2().getColumn()) + BOARD_SCALE/2, 
+            transY(line.p2().getRow()) + BOARD_SCALE/2);
         }
 
         lineShape.setColor(Color.GREEN);
@@ -265,8 +265,8 @@ public class Board
 //		canvas.addShape(circle);
 
         Rectangle rectangle = new Rectangle(rg.getGuid(), 
-            transX(rg.getLocation().getX()), 
-            transY(rg.getLocation().getY()), 
+            transX(rg.getLocation().getColumn()), 
+            transY(rg.getLocation().getRow()), 
             16, 
             16);
         rectangle.setColor(Color.WHITE);
@@ -304,15 +304,15 @@ public class Board
 
         //  Add a new rectangle for the region
         Rectangle rectangle = new Rectangle(rg.getGuid(), 
-            transX(rg.getLocation().getX()), 
-            transY(rg.getLocation().getY()), 
+            transX(rg.getLocation().getColumn()), 
+            transY(rg.getLocation().getRow()), 
             18, 
             18);
         rectangle.setColor(Color.BLACK);
         rectangle.setFillColor(Color.BLACK);
         rectangle.setIsFilled(true);
         rectangle.setzOrder(10);
-		canvas.addShape(rectangle);
+        canvas.addShape(rectangle);
 	}
 
     public void updateSpacePilotGridLine(Region rg) 
@@ -365,8 +365,8 @@ public class Board
         Image image = new Image(spacePilot.name(), 
             "resources/" + spacePilot.getImageName() + ".jpg", 
             spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
-            transX(spacePilot.getLocation().getX()), 
-            transY(spacePilot.getLocation().getY()));
+            transX(spacePilot.getLocation().getColumn()), 
+            transY(spacePilot.getLocation().getRow()));
         //  Set the image into the upper Z order (0)
 		image.setzOrder(0);
         //  Add the space pilot graphic into the canvas
@@ -426,8 +426,8 @@ public class Board
     
         //  Move the space pilot shape (graphic image) to the new location
 		canvas.moveShapeToLocation(spacePilot.name(), 
-            transX(spacePilot.getLocation().getX()), 
-            transY(spacePilot.getLocation().getY()));
+                transX(spacePilot.getLocation().getColumn()),
+                transY(spacePilot.getLocation().getRow()));
 
         //  Reset the direction to stopped, so that the next move will be according to the policy
         spacePilot.setCurrentDirection(Direction.STOPPED);
@@ -469,8 +469,8 @@ public class Board
 			image   = new Image(s.name(), "resources/" + smallEnemyGraphicsName + ".png", 
                 s.getImageWidth(), 
                 s.getImageHeight(), 
-                transX(s.getLocation().getX()), 
-                transY(s.getLocation().getY()));
+                transX(s.getLocation().getColumn()), 
+                transY(s.getLocation().getRow()));
             //  Set the image into the upper Z order (0)
             image.setzOrder(0);
             //  Add the graphics of the specific small enemy into the canvas
@@ -494,8 +494,8 @@ public class Board
         {
             //  Move the small enemy shape (graphic image) to the new location
    			canvas.moveShapeToLocation(s.name(), 
-                transX(s.getLocation().getX()), 
-                transY(s.getLocation().getY()));
+                transX(s.getLocation().getColumn()), 
+                transY(s.getLocation().getRow()));
 		}
 	}
 }
