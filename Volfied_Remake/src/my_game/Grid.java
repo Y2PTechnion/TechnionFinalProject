@@ -361,27 +361,30 @@ public class Grid
         */
 	public boolean blocksMove(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
     {
-        boolean             isTheMovingBlockedByLogic       = false;
-        final int           DESTINATION_ROW                 = destinationPoint.getRow();
-        final int           DESTINATION_COLUMN              = destinationPoint.getColumn();
-        final RegionStatus  DESTINATION_CELL_REGION_STATUS  = regions[DESTINATION_ROW][DESTINATION_COLUMN].getRegionStatus();
-
+        boolean             isTheMovingBlockedByLogic   = false;
+        final int           DESTINATION_ROW             = destinationPoint.getRow();
+        final int           DESTINATION_COLUMN          = destinationPoint.getColumn();
+        
         //  First blocking moving according to type of object
 		if (gameCharacter instanceof SmallEnemy)
         {
-
-
-            if ((DESTINATION_ROW < 0 || DESTINATION_ROW >= Grid.getTotalGameCellsInYPerColumn())
-                || (DESTINATION_COLUMN < 0 || DESTINATION_COLUMN >= Grid.getTotalGameCellsInXPerRow()))
+            if ((DESTINATION_ROW <= 0 || DESTINATION_ROW >= Grid.getTotalGameCellsInYPerColumn())
+                || (DESTINATION_COLUMN <= 0 || DESTINATION_COLUMN >= Grid.getTotalGameCellsInXPerRow()))
             {   
                 //  The destination is outside the boundaries
                 isTheMovingBlockedByLogic  = true;
             }   
             else
             {
+                final RegionStatus  DESTINATION_CELL_REGION_STATUS  = regions[DESTINATION_ROW][DESTINATION_COLUMN].getRegionStatus();
+
                 //  If the method calling is a small enemy
- 
                 if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the small enemies to navigate on the borders of the grid
+                    isTheMovingBlockedByLogic  = true;
+                }
+                else if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE ==  DESTINATION_CELL_REGION_STATUS)
                 {
                     //  Do NOT let the small enemies to navigate on the borders of the grid
                     isTheMovingBlockedByLogic  = true;
@@ -400,11 +403,27 @@ public class Grid
         }
         else if (gameCharacter instanceof SpacePilot)
         {
-            //  If the method calling is the space pilot 
-            if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  DESTINATION_CELL_REGION_STATUS)
-            {
-                //  Do NOT let the space pilot to navigate over the regions conquered yet
+            if ((DESTINATION_ROW < 0 || DESTINATION_ROW >= Grid.getTotalGameCellsInYPerColumn())
+                || (DESTINATION_COLUMN < 0 || DESTINATION_COLUMN >= Grid.getTotalGameCellsInXPerRow()))
+            {   
+                //  The destination is outside the boundaries
                 isTheMovingBlockedByLogic  = true;
+            }   
+            else
+            {
+                final RegionStatus  DESTINATION_CELL_REGION_STATUS  = regions[DESTINATION_ROW][DESTINATION_COLUMN].getRegionStatus();
+
+                //  If the method calling is the space pilot 
+                if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the space pilot to navigate over the regions conquered yet
+                    isTheMovingBlockedByLogic  = true;
+                }
+                else if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE ==  DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the space pilot to navigate on the borders of the grid
+                    isTheMovingBlockedByLogic  = true;
+                }
             }
         }
         else
@@ -688,6 +707,139 @@ public class Grid
                 {
                     //  Nothing to do
                 }
+            }
+        }
+
+        //  Convert all the border ONLY for pilot cells that are relevant to NOT relevant
+        //  Row 0
+        for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-2; column++)
+        {
+            final int           ROW                             = 0;
+            final RegionStatus  REGION_STATUS_BOTTOM            = regions()[ROW+1][column].getRegionStatus();
+            final RegionStatus  REGION_STATUS_BOTTOM_RIGHT      = regions()[ROW+1][column+1].getRegionStatus();
+            final boolean       BOTTOM_REGION_CONQUERED         = (REGION_STATUS_BOTTOM == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_BOTTOM == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+            final boolean       BOTTOM_RIGHT_REGION_CONQUERED   = (REGION_STATUS_BOTTOM_RIGHT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_BOTTOM_RIGHT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+            
+            if ((false == BOTTOM_REGION_CONQUERED) && (true == BOTTOM_RIGHT_REGION_CONQUERED))
+            {
+                //  Bottom region is NOT conquered but bottom right is, therefore right border region is relevant
+                regions()[ROW][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else if ((true == BOTTOM_REGION_CONQUERED) && (true == BOTTOM_RIGHT_REGION_CONQUERED))
+            {
+                //  Bottom and bottom right regions are conquered, therefore border region is NOT relevant
+                regions()[ROW][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE);
+            }
+            else if ((true == BOTTOM_REGION_CONQUERED) && (false == BOTTOM_RIGHT_REGION_CONQUERED))
+            {
+                //  Bottom region is conquered and bottom right region is NOT conquered, therefore border region is relevant
+                regions()[ROW][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else
+            {
+                //  Bottom and bottom right regions are NOT conquered, therefore border region is relevant
+                regions()[ROW][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+        }
+
+        //  Column 0
+        for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-2; row++)
+        {
+            final int           COLUMN                          = 0;
+            final RegionStatus  REGION_STATUS_RIGHT             = regions()[row][COLUMN+1].getRegionStatus();
+            final RegionStatus  REGION_STATUS_RIGHT_BOTTOM      = regions()[row+1][COLUMN+1].getRegionStatus();
+            final boolean       RIGHT_REGION_CONQUERED  = (REGION_STATUS_RIGHT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_RIGHT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+            final boolean       RIGHT_BOTTOM_REGION_CONQUERED   = (REGION_STATUS_RIGHT_BOTTOM == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                || (REGION_STATUS_RIGHT_BOTTOM == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+
+            if ((false == RIGHT_REGION_CONQUERED) && (true == RIGHT_BOTTOM_REGION_CONQUERED))
+            {
+                //  Right region is NOT conquered but bottom right is, therefore bottom right border region is relevant
+                regions()[row+1][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else if ((true == RIGHT_REGION_CONQUERED) && (true == RIGHT_BOTTOM_REGION_CONQUERED))
+            {
+                //  Right and bottom right regions are conquered, therefore border region is NOT relevant
+                regions()[row+1][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE);
+            }
+            else if ((true == RIGHT_REGION_CONQUERED) && (false == RIGHT_BOTTOM_REGION_CONQUERED))
+            {
+                //  Right region is conquered and bottom right region is NOT conquered, therefore border region is relevant
+                regions()[row][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else
+            {
+                //  Right and bottom right regions are NOT conquered, therefore border region is relevant
+                regions()[row][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+        }
+
+        //  Column TOTAL_GAME_CELLS_IN_X_PER_ROW-1
+        for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-2; row++)
+        {
+            final int           COLUMN                          = TOTAL_GAME_CELLS_IN_X_PER_ROW-1;
+            final RegionStatus  REGION_STATUS_LEFT              = regions()[row][COLUMN-1].getRegionStatus();
+            final RegionStatus  REGION_STATUS_LEFT_BOTTOM       = regions()[row+1][COLUMN-1].getRegionStatus();
+            final boolean       LEFT_REGION_CONQUERED   = (REGION_STATUS_LEFT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_LEFT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+            final boolean       LEFT_BOTTOM_REGION_CONQUERED    = (REGION_STATUS_LEFT_BOTTOM == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                || (REGION_STATUS_LEFT_BOTTOM == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+
+            if ((false == LEFT_REGION_CONQUERED) && (true == LEFT_BOTTOM_REGION_CONQUERED))
+            {
+                //  Left region is NOT conquered but bottom left is, therefore bottom left border region is relevant
+                regions()[row+1][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else if ((true == LEFT_REGION_CONQUERED) && (true == LEFT_BOTTOM_REGION_CONQUERED))
+            {
+                //  Left and bottom left regions are conquered, therefore border region is NOT relevant
+                regions()[row+1][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE);
+            }
+            else if ((true == LEFT_REGION_CONQUERED) && (false == LEFT_BOTTOM_REGION_CONQUERED))
+            {
+                //  Left region is conquered and bottom left region is NOT conquered, therefore border region is relevant
+                regions()[row][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else
+            {
+                //  Left and bottom left regions are NOT conquered, therefore border region is relevant
+                regions()[row][COLUMN].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+        }
+
+        //  Row TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1
+        for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-2; column++)
+        {
+            final int           ROW                         = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1;
+            final RegionStatus  REGION_STATUS_TOP           = regions()[ROW-1][column].getRegionStatus();
+            final RegionStatus  REGION_STATUS_TOP_RIGHT     = regions()[ROW-1][column+1].getRegionStatus();
+            final boolean       TOP_REGION_CONQUERED        = (REGION_STATUS_TOP == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_TOP == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+            final boolean       TOP_RIGHT_REGION_CONQUERED  = (REGION_STATUS_TOP_RIGHT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_TOP_RIGHT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+            
+            if ((false == TOP_REGION_CONQUERED) && (true == TOP_RIGHT_REGION_CONQUERED))
+            {
+                //  Top region is NOT conquered but top right is, therefore right border region is relevant
+                regions()[ROW][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else if ((true == TOP_REGION_CONQUERED) && (true == TOP_RIGHT_REGION_CONQUERED))
+            {
+                //  Top and top right regions are conquered, therefore border region is NOT relevant
+                regions()[ROW][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE);
+            }
+            else if ((true == TOP_REGION_CONQUERED) && (false == TOP_RIGHT_REGION_CONQUERED))
+            {
+                //  Top region is conquered and top right region is NOT conquered, therefore border region is relevant
+                regions()[ROW][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
+            }
+            else
+            {
+                //  Top and top right regions are NOT conquered, therefore border region is relevant
+                regions()[ROW][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
             }
         }
     }

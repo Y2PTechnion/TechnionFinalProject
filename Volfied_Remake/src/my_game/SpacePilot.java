@@ -173,36 +173,8 @@ public class SpacePilot extends GameCharacter
 
 		if (false == grid.blocksMove(current, desired, this)) 
         {
+            //  Only set the desired location if the move is allowed
             setLocation(desired);
-			return;
         }
-		
-	// If reached here, desired policy is not applicable, move in opposite direction
-	//	BoardPoint next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
-	//	if (grid.blocksMove(location, next)) {
-	//		switch (currentDirection) {
-	//			case RIGHT:
-	//				currentDirection = Direction.LEFT;
-	//				break;
-
-	//			case LEFT:
-	//				currentDirection = Direction.RIGHT;
-	//				break;
-
-	//			case UP:
-	//				currentDirection = Direction.DOWN;
-	//				break;
-
-	//			case DOWN:
-	//				currentDirection = Direction.UP;
-	//				break;
-
-	//		}
-			// recalculate next BoardPoint according to new direction
-	//		next = new BoardPoint(location.x + currentDirection.xVec(), location.y + currentDirection.yVec());
-	//	}
-		// move to next BoardPoint
-	//	location.x = next.x;
-	//	location.y = next.y;
 	}
 }	
