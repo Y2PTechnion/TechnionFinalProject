@@ -642,17 +642,23 @@ public class Grid
             }
         }
 
-        //  Convert all the temporal cells that are in the border as 'border conquered' horizontal
-        for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1; row++)
+        //  Convert all the temporal cells that are in the border as 'border conquered
+        for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-2; row++)
         {
             for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-2; column++) 
             {
                 final RegionStatus  REGION_STATUS_CURRENT       = regions()[row][column].getRegionStatus();
                 final RegionStatus  REGION_STATUS_RIGHT         = regions()[row][column+1].getRegionStatus();
+                final RegionStatus  REGION_STATUS_BOTTOM        = regions()[row+1][column].getRegionStatus();
+                final RegionStatus  REGION_STATUS_TOP           = regions()[row-1][column].getRegionStatus();
                 final boolean       CURRENT_REGION_CONQUERED    = (REGION_STATUS_CURRENT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
                                         || (REGION_STATUS_CURRENT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
                 final boolean       RIGHT_REGION_CONQUERED      = (REGION_STATUS_RIGHT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
                                         || (REGION_STATUS_RIGHT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                final boolean       BOTTOM_REGION_CONQUERED     = (REGION_STATUS_BOTTOM == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_BOTTOM == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                final boolean       TOP_REGION_CONQUERED        = (REGION_STATUS_TOP == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                        || (REGION_STATUS_TOP == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
 
                 if ((true == CURRENT_REGION_CONQUERED) && (false == RIGHT_REGION_CONQUERED))
                 {
@@ -667,43 +673,18 @@ public class Grid
                 else if ((true == CURRENT_REGION_CONQUERED) && (true == RIGHT_REGION_CONQUERED))
                 {
                     //  Left and right regions are conquered, therefore right region is not border
-                    regions()[row][column+1].setRegionStatus(RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                    if ((true == BOTTOM_REGION_CONQUERED) && (true == TOP_REGION_CONQUERED))
+                    {
+                        //  ONLY if bottom region is conquered
+                        regions()[row][column+1].setRegionStatus(RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                    }
+                    else
+                    {
+                        //  Otherwise is 'border'
+                        regions()[row][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
+                    }
                 }
                 else if ((false == CURRENT_REGION_CONQUERED) && (false == RIGHT_REGION_CONQUERED))
-                {
-                    //  Nothing to do
-                }
-            }
-        }
-
-        //  Convert all the temporal cells that are in the border as 'border conquered' vertical
-        for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-1; column++)
-        {
-            for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-2; row++)     
-            {
-                final RegionStatus  REGION_STATUS_CURRENT       = regions()[row][column].getRegionStatus();
-                final RegionStatus  REGION_STATUS_NEXT          = regions()[row+1][column].getRegionStatus();
-                final boolean       CURRENT_REGION_CONQUERED    = (REGION_STATUS_CURRENT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
-                                        || (REGION_STATUS_CURRENT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-                final boolean       NEXT_REGION_CONQUERED       = (REGION_STATUS_NEXT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
-                                        || (REGION_STATUS_NEXT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-
-                if ((true == CURRENT_REGION_CONQUERED) && (false == NEXT_REGION_CONQUERED))
-                {
-                    //  Top region is conquered, bottom region is not, therefore top region is border
-                    regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
-                }
-                else if ((false == CURRENT_REGION_CONQUERED) && (true == NEXT_REGION_CONQUERED))
-                {
-                    //  Top region is not conquered, bottom region is conquered, therefore bottom region is border
-                    regions()[row+1][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
-                }
-                else if ((true == CURRENT_REGION_CONQUERED) && (true == NEXT_REGION_CONQUERED))
-                {
-                    //  Top and bottom regions are conquered, therefore bottom region is not border
-                    regions()[row+1][column].setRegionStatus(RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-                }
-                else if ((false == CURRENT_REGION_CONQUERED) && (false == NEXT_REGION_CONQUERED))
                 {
                     //  Nothing to do
                 }
