@@ -119,8 +119,9 @@ public class GameControl
             content.grid().addGridSpacePilotLines(sourceLocation, destinationLocation);
         }
 
-//        if (true == regionsWereConquered)
-//        {
+        if (true == regionsWereConquered)
+        {
+            content.grid().volfiedGameCompletionAlgorithm(regionsAfterFloodFill);
 //            for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
 //            {
 //                for (int column = 0; column < Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
@@ -131,7 +132,7 @@ public class GameControl
 //                   }
 //                }
 //            }
-//        }
+        }
 
         //      Update small enemies in canvas
 		board.updateSmallEnemiesInCanvas();
@@ -221,13 +222,21 @@ public class GameControl
                                         content.grid().regions(), 
                                         firstSpacePilotLocationOutsideSafeZone, 
                                         RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-
-                    //  Update the number of conquered regions
-                    final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
+                    if (null != regionsAfterFloodFill)
+                    {
+                        //  Update the number of conquered regions
+                        final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
+                        regionsWereConquered                    = true;
+                    }
+                    else
+                    {
+                        //  If one of the region status is SMALL_ENEMY_OVER
+                        regionsWereConquered                    = false;
+                        //  Reverse all what should be done
+                    }
+  
                     //  Set to null the location pointer
                     firstSpacePilotLocationOutsideSafeZone  = null;
-
-                    regionsWereConquered    = true;
                 }
 
                 //  The space pilot has reached a region that is already conquered

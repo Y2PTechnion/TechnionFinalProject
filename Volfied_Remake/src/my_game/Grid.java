@@ -113,7 +113,8 @@ public class Grid
 			return this.index;
 		}
 	}
-	
+
+
 //  Private constants for the class
     // Grid size in cells
     // Each cell is 18x18 pixels, so the grid total size in pixels is 936x576 (52x32 cells)
@@ -438,7 +439,7 @@ public class Grid
                 if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions[row][column].getRegionStatus())
                 {
                     getNumberOfConqueredRegions++;
-// TODO:                    board.updateRegion(regions[row][column]);
+  //    TODO:                  board.updateRegion(regions[row][column]); 
                 }
             }
         }
@@ -473,14 +474,15 @@ public class Grid
         if (ORIGINAL_REGION_STATUS != newRegionStatus) 
         { 
             //  Avoid infinite recursion if newRegionStatus is same as original
-            dfs(region, startingBoardPoint, ORIGINAL_REGION_STATUS, newRegionStatus);
-        }
-        else if (RegionStatus.REGION_STATUS_EMPTY != newRegionStatus) 
-        {
-            //  Avoid infinite recursion if newRegionStatus is same as original
-            dfs(region, startingBoardPoint, RegionStatus.REGION_STATUS_EMPTY, newRegionStatus);
+            if (false == dfs(region, startingBoardPoint, ORIGINAL_REGION_STATUS, newRegionStatus))
+            {
+                //  If one of the region status is SMALL_ENEMY_OVER
+                region  = null;
+            }
         }
 
+        //  After the DFS is done, return the modified region
+        //  This will have all connected regions with the newRegionStatus
         return region;
     }
 
@@ -500,34 +502,80 @@ public class Grid
         * @param (BoardPoint boardPoint) (the node to start the DFS from)
         * @param (int originalRegionStatus) (the original region status to be replaced)
         * @param (int newRegionStatus) (the new region status to set the connected region)
+        * @return (boolean) (returns true if the DFS was successful, false otherwise)
+        */
+    private boolean dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
+    {
+        final int           ROW             = boardPoint.getRow();
+        final int           COLUMN          = boardPoint.getColumn();
+        final RegionStatus  REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
+        final boolean       IS_REGION_STATUS_SMALL_ENEMY_OVER 
+                                            = (RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER == REGION_STATUS);  
+
+        if (false == IS_REGION_STATUS_SMALL_ENEMY_OVER) 
+        {
+            //  If the region status is not SMALL_ENEMY_OVER, proceed with DFS
+            //  Check if the current region is within bounds and has the original region status
+            if (ROW >= 0 && ROW < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
+                && COLUMN >= 0 && COLUMN < TOTAL_GAME_CELLS_IN_X_PER_ROW 
+                && REGION_STATUS == originalRegionStatus) 
+            {
+                //  Change the region status of the current region
+                region[ROW][COLUMN].setRegionStatus(newRegionStatus);
+
+                //  Explore 4-directional neighbors
+                final BoardPoint BOARD_POINT_DOWN   = new BoardPoint(ROW + 1, COLUMN);
+                final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);        
+                final BoardPoint BOARD_POINT_RIGHT  = new BoardPoint(ROW, COLUMN + 1);
+                final BoardPoint BOARD_POINT_LEFT   = new BoardPoint(ROW, COLUMN - 1);
+                if (false == dfs(region, BOARD_POINT_DOWN, originalRegionStatus, newRegionStatus))  //  Down
+                {
+                    //  If the DFS down was not successful, return false
+                    return false;
+                }
+                if (false == dfs(region, BOARD_POINT_UP, originalRegionStatus, newRegionStatus))    //  Up
+                {
+                    //  If the DFS down was not successful, return false
+                    return false;
+                }
+                if (false == dfs(region, BOARD_POINT_RIGHT, originalRegionStatus, newRegionStatus)) //  Right
+                {
+                    //  If the DFS down was not successful, return false
+                    return false;
+                }
+                if (false == dfs(region, BOARD_POINT_LEFT, originalRegionStatus, newRegionStatus))  //  Left
+                {
+                    //  If the DFS down was not successful, return false
+                    return false;
+                }
+            }
+            else
+            {
+                //  Base case: out of bounds or not the target region status
+            }            
+
+            return true;
+        }
+    
+        return false;   //  If the region status is SMALL_ENEMY_OVER
+    }
+
+    /**
+        * volfiedGameCompletionAlgorithm algorithm method
+        * 
+        * @implNote volfiedGameCompletionAlgorithm is a completion algorithm needed to set the empty
+        *           cells between conquered cells as conquered cells
+        *
+        * @param (Region[][] region) (The image represented as a 2D array of Region, where each integer represents a region status)
         * @return (none)
         */
-    private void dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
+    public void volfiedGameCompletionAlgorithm(Region[][] region) 
     {
-        final int           ROW                 = boardPoint.getRow();
-        final int           COLUMN              = boardPoint.getColumn();
-        final RegionStatus  NEW_REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
-
-        if (ROW >= 0 && ROW < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
-            && COLUMN >= 0 && COLUMN < TOTAL_GAME_CELLS_IN_X_PER_ROW 
-            && NEW_REGION_STATUS == originalRegionStatus) 
+        for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
         {
-            //  Change the region status of the current region
-            region[ROW][COLUMN].setRegionStatus(newRegionStatus);
-
-            //  Explore 4-directional neighbors
-            final BoardPoint BOARD_POINT_DOWN   = new BoardPoint(ROW + 1, COLUMN);
-            final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);        
-            final BoardPoint BOARD_POINT_RIGHT  = new BoardPoint(ROW, COLUMN + 1);
-            final BoardPoint BOARD_POINT_LEFT   = new BoardPoint(ROW, COLUMN - 1);
-            dfs(region, BOARD_POINT_DOWN, originalRegionStatus, newRegionStatus);   //  Down
-            dfs(region, BOARD_POINT_UP, originalRegionStatus, newRegionStatus);     //  Up
-            dfs(region, BOARD_POINT_RIGHT, originalRegionStatus, newRegionStatus);  //  Right
-            dfs(region, BOARD_POINT_LEFT, originalRegionStatus, newRegionStatus);   //  Left
-        }
-        else
-        {
-            //  Base case: out of bounds or not the target region status
+            for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+            }
         }
     }
 }
