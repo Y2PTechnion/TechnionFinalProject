@@ -88,8 +88,8 @@ public class GameControl
     static  private BoardPoint  boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
     static  private int         spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
     static  private int         spacePilotRightestColumnWhenOutsideSafeZone = 0;
-    static  private int         spacePilotSouthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
-    static  private int         spacePilotNorthestRowWhenOutsideSafeZone    = 0;
+    static  private int         spacePilotSouthestRowWhenOutsideSafeZone    = 0;
+    static  private int         spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
 
     public GameControl(MyContent content) 
     {
@@ -100,12 +100,12 @@ public class GameControl
 	public void gameStep() 
     {
         Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
-        final BoardPoint        sourceLocation          = content.spacePilot().getLocation();
+        final BoardPoint        SOURCE_LOCATION         = content.spacePilot().getLocation();
         Region[][]              regionsAfterFloodFill   = null;
 
         //  Logic section of gameStep()         
             //  Space pilot moving method
-            final boolean       regionsWereConquered    = spacePilotMoving(sourceLocation, regionsAfterFloodFill);
+            final boolean       regionsWereConquered    = spacePilotMoving(SOURCE_LOCATION, regionsAfterFloodFill);
             final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
@@ -116,11 +116,11 @@ public class GameControl
         //      Update space pilot in canvas
 		board.updateSpacePilotInCanvas();
 
-        if ((sourceLocation.getColumn() != destinationLocation.getColumn())
-            || (sourceLocation.getRow() != destinationLocation.getRow()))
+        if ((SOURCE_LOCATION.getColumn() != destinationLocation.getColumn())
+            || (SOURCE_LOCATION.getRow() != destinationLocation.getRow()))
         {
             //  Update grid space pilot lines in canvas
-            content.grid().addGridSpacePilotLines(sourceLocation, destinationLocation);
+            content.grid().addGridSpacePilotLines(SOURCE_LOCATION, destinationLocation);
         }
 
         if (true == regionsWereConquered)
@@ -129,8 +129,6 @@ public class GameControl
             //  Update the number of conquered regions
             final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
             content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
-
-            
 
 //            for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
 //            {
@@ -224,6 +222,7 @@ public class GameControl
             case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
             case REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT:
             case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
+            case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE:
             {
                 //  The space pilot has reached a region that is already conquered (safe zone)
 
@@ -257,6 +256,8 @@ public class GameControl
                 }
                 else
                 {
+                    //  Reset the limits of space pilot when outside safe zone
+                    resetLimitsOfSpacePilotWhenOutsideSafeZone();
                     //  Update the limits of space pilot when even when inside safe zone
                     updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
                     updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
@@ -313,11 +314,11 @@ public class GameControl
         {
             spacePilotRightestColumnWhenOutsideSafeZone = boardPoint.getColumn();
         }       
-        if (boardPoint.getRow() < spacePilotSouthestRowWhenOutsideSafeZone)
+        if (boardPoint.getRow() > spacePilotSouthestRowWhenOutsideSafeZone)
         {
             spacePilotSouthestRowWhenOutsideSafeZone    = boardPoint.getRow();
         }   
-        if (boardPoint.getRow() > spacePilotNorthestRowWhenOutsideSafeZone)
+        if (boardPoint.getRow() < spacePilotNorthestRowWhenOutsideSafeZone)
         {
             spacePilotNorthestRowWhenOutsideSafeZone    = boardPoint.getRow();
         }  
@@ -327,8 +328,8 @@ public class GameControl
     {
         spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
         spacePilotRightestColumnWhenOutsideSafeZone = 0;
-        spacePilotSouthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
-        spacePilotNorthestRowWhenOutsideSafeZone    = 0;
+        spacePilotSouthestRowWhenOutsideSafeZone    = 0;
+        spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
     }
 
     private void getBoardPointInsideThePotentialConqueredZone()

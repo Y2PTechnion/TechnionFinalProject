@@ -290,8 +290,8 @@ public class Board
 
 	private void addStatusLine() 
     {
-		StatusLine status = content.statusLine();
-		Text t2 = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
+		StatusLine  status  = content.statusLine();
+		Text        t2      = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
 		t2.setColor(status.getColor());
 		t2.setFontSize(30);
 		canvas.addShape(t2);
@@ -324,17 +324,17 @@ public class Board
 	
 	public void updateScore() 
     {
-		Text t1 = (Text) canvas.getShape(content.score().guid());
+		Text        t1          = (Text) canvas.getShape(content.score().guid());
 		t1.setText(content.score().getText());
-		Text t2 = (Text) canvas.getShape(content.score().guidPercentage());
+		Text        t2          = (Text) canvas.getShape(content.score().guidPercentage());
 		t2.setText(content.score().getPercentage());
-        GameText    gameText = (GameText) Game.UI().dashboard().getUIElement("percentage");
+        GameText    gameText    = (GameText) Game.UI().dashboard().getUIElement("percentage");
   //      gameText.setText(content.score().getPercentage());
 	}
 
 	public void updateStatusLine() 
     {
-		Text t1 = (Text) canvas.getShape(content.statusLine().guid());
+		Text    t1  = (Text) canvas.getShape(content.statusLine().guid());
 		t1.setText(content.statusLine().getText());
 		t1.setColor(content.statusLine().getColor());
 	}
@@ -362,7 +362,7 @@ public class Board
     private void addSpacePilotToCanvas(SpacePilot spacePilot) 
     {
         //  Create the graphic image for the space pilot
-        Image image = new Image(spacePilot.name(), 
+        Image   image   = new Image(spacePilot.name(), 
             "resources/" + spacePilot.getImageName() + ".jpg", 
             spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
             transX(spacePilot.getLocation().getColumn()), 
@@ -451,7 +451,6 @@ public class Board
         //  'Navigate' into the array of small enemies
 		for (SmallEnemy s : content.smallEnemies().getSmallEnemies()) 
         {
-            
             String      smallEnemyGraphicsName          = s.name();
             if (smallEnemyCounter < QUANTITY_OF_DIFFERENT_SMALL_ENEMIES_GRAPHICS)
             {
