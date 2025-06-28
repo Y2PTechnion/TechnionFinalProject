@@ -106,10 +106,54 @@ public class SmallEnemy extends GameCharacter
         //  Calls the base class (GameCharacter) constructor method
         super(smallEnemyId, grid);
 
-        //  Sets the initial direction policy to down
-        directionPolicy     = Direction.SOUTH;
+        //  Sets the initial direction policy randomally
+        //  Generate a random number between 0 and 1
+        double randomValue  = Math.random();
+
+        if (randomValue <= 0.125)
+        {
+            directionPolicy = Direction.SOUTH;
+        }
+        else if (randomValue <= 0.25)
+        {
+            directionPolicy = Direction.NORTH;
+        }
+        else if (randomValue <= 0.375)
+        {
+            directionPolicy = Direction.WEST;
+        }
+        else if (randomValue <= 0.50)
+        {
+            directionPolicy = Direction.EAST;
+        }
+        else if (randomValue <= 0.625)
+        {
+            directionPolicy = Direction.NORTH_EAST;
+        }
+        else if (randomValue <= 0.75)
+        {
+            directionPolicy = Direction.NORTH_WEST;
+        }
+        else if (randomValue <= 0.875)
+        {
+            directionPolicy = Direction.SOUTH_EAST;
+        }
+        else
+        {
+            directionPolicy = Direction.SOUTH_WEST;
+        }
 	}	
 
+    /**
+        * move updateNormalDirectionPolicy
+        * 
+        * @implNote updateNormalDirectionPolicy method that updates the direction policy
+        *               according to the current direction policy, the idea is to have 1/3
+        *               probability to change to different directions
+        *
+        * @param (none)
+        * @return (none)
+        */
 	private void updateNormalDirectionPolicy() 
     {
         //  Generate a random number between 0 and 1
@@ -235,6 +279,17 @@ public class SmallEnemy extends GameCharacter
 		}
 	}
 
+    /**
+        * move updateCornerDirectionPolicy
+        * 
+        * @implNote updateCornerDirectionPolicy method that updates the direction policy
+        *               according to the corner direction when it is reached
+        *               Note: this method is called only when the enemy reaches a corner
+        *               and in the current implementation, it will go only in diagonal of the corner
+        *
+        * @param (Direction corner) (corner direction)
+        * @return (none)
+        */
 	private void updateCornerDirectionPolicy(Direction corner) 
     {
         //  Generate a random number between 0 and 1

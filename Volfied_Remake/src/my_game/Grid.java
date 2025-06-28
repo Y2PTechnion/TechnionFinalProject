@@ -220,43 +220,21 @@ public class Grid
     {
 
 		// Frame (Grid border lines, ONLY space pilot could navigate on them)
-            //  First row (0)
-            gridBorderOnlyForSpacePilotLines.add(new GridLine(0, 0, 
-                    TOTAL_GAME_CELLS_IN_X_PER_ROW, 0));
+        //  First row (0)
+        gridBorderOnlyForSpacePilotLines.add(new GridLine(0, 0, 
+                TOTAL_GAME_CELLS_IN_X_PER_ROW, 0));
 
-            //  First column (0)
-            gridBorderOnlyForSpacePilotLines.add(new GridLine(0, 0, 
-                    0, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
+        //  First column (0)
+        gridBorderOnlyForSpacePilotLines.add(new GridLine(0, 0, 
+                0, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
 
-            //  Last row
-            gridBorderOnlyForSpacePilotLines.add(new GridLine(0, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN, 
-                    TOTAL_GAME_CELLS_IN_X_PER_ROW, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
-
-            //  Last column
-		    gridBorderOnlyForSpacePilotLines.add(new GridLine(TOTAL_GAME_CELLS_IN_X_PER_ROW, 0, 
+        //  Last row
+        gridBorderOnlyForSpacePilotLines.add(new GridLine(0, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN, 
                 TOTAL_GAME_CELLS_IN_X_PER_ROW, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
-            
-		// Inner lines
-		
-		//2 lines on 2nd row and 2 symmetric from bottom
-//		lines.add(new MazeLine(2,2,10,2));
-//		lines.add(new MazeLine(12,2,19,2));
-//		lines.add(new MazeLine(2,MAZE_Y_SIZE - 2,10, MAZE_Y_SIZE- 2));
-//		lines.add(new MazeLine(12,MAZE_Y_SIZE- 2,19,MAZE_Y_SIZE - 2));
-		
-		// 1 line on 4th row and one symmetric from bottom
-//		lines.add(new MazeLine(2,4,19,4));
-//		lines.add(new MazeLine(2,MAZE_Y_SIZE - 4,19, MAZE_Y_SIZE- 4));
 
-		// 2 lines in the middle to create a 1 unit wide passage
-//		lines.add(new MazeLine(11,5,11,6));
-//		lines.add(new MazeLine(11,MAZE_Y_SIZE - 5,11, MAZE_Y_SIZE- 6));
-
-		//2 lines on 6th row and 2 symmetric from bottom
-//		lines.add(new MazeLine(2,6,9,6));
-//		lines.add(new MazeLine(13,6,19,6));
-//		lines.add(new MazeLine(2,MAZE_Y_SIZE - 6,9, MAZE_Y_SIZE- 6));
-//		lines.add(new MazeLine(13,MAZE_Y_SIZE- 6,19,MAZE_Y_SIZE - 6));
+        //  Last column
+        gridBorderOnlyForSpacePilotLines.add(new GridLine(TOTAL_GAME_CELLS_IN_X_PER_ROW, 0, 
+            TOTAL_GAME_CELLS_IN_X_PER_ROW, TOTAL_GAME_CELLS_IN_Y_PER_COLUMN));
 	}
 	
 	public void initRegions() 
@@ -513,7 +491,7 @@ public class Grid
                 if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions[row][column].getRegionStatus())
                 {
                     getNumberOfConqueredRegions++;
-  //    TODO:                  board.updateRegion(regions[row][column]); 
+                    board.updateRegion(regions[row][column]); 
                 }
             }
         }
