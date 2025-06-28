@@ -118,7 +118,6 @@ public class Grid
 		}
 	}
 
-
 //  Private constants for the class
     // Grid size in cells
     // Each cell is 18x18 pixels, so the grid total size in pixels is 936x576 (52x32 cells)
@@ -362,16 +361,18 @@ public class Grid
         */
 	public boolean blocksMove(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
     {
-        boolean isTheMovingBlockedByLogic   = false;
+        boolean             isTheMovingBlockedByLogic       = false;
+        final int           DESTINATION_ROW                 = destinationPoint.getRow();
+        final int           DESTINATION_COLUMN              = destinationPoint.getColumn();
+        final RegionStatus  DESTINATION_CELL_REGION_STATUS  = regions[DESTINATION_ROW][DESTINATION_COLUMN].getRegionStatus();
 
         //  First blocking moving according to type of object
 		if (gameCharacter instanceof SmallEnemy)
         {
-            final int   destinationRow      = destinationPoint.getRow();
-            final int   destinationColumn   = destinationPoint.getColumn();
 
-            if ((destinationRow < 0 || destinationRow >= Grid.getTotalGameCellsInYPerColumn())
-                || (destinationColumn < 0 || destinationColumn >= Grid.getTotalGameCellsInXPerRow()))
+
+            if ((DESTINATION_ROW < 0 || DESTINATION_ROW >= Grid.getTotalGameCellsInYPerColumn())
+                || (DESTINATION_COLUMN < 0 || DESTINATION_COLUMN >= Grid.getTotalGameCellsInXPerRow()))
             {   
                 //  The destination is outside the boundaries
                 isTheMovingBlockedByLogic  = true;
@@ -379,16 +380,20 @@ public class Grid
             else
             {
                 //  If the method calling is a small enemy
-                final RegionStatus  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS  = regions[destinationRow][destinationColumn].getRegionStatus();
-
-                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+ 
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  DESTINATION_CELL_REGION_STATUS)
                 {
                     //  Do NOT let the small enemies to navigate on the borders of the grid
                     isTheMovingBlockedByLogic  = true;
                 }
-                else if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+                else if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  DESTINATION_CELL_REGION_STATUS)
                 {
                     //  Do NOT let the small enemies to navigate over the regions conquered by the space pilot
+                    isTheMovingBlockedByLogic  = true;
+                }
+                else if (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT == DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the small enemies to navigate over the border regions conquered by the space pilot
                     isTheMovingBlockedByLogic  = true;
                 }
             }
@@ -396,6 +401,11 @@ public class Grid
         else if (gameCharacter instanceof SpacePilot)
         {
             //  If the method calling is the space pilot 
+            if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  DESTINATION_CELL_REGION_STATUS)
+            {
+                //  Do NOT let the space pilot to navigate over the regions conquered yet
+                isTheMovingBlockedByLogic  = true;
+            }
         }
         else
         { 
@@ -460,11 +470,6 @@ public class Grid
 		return (Region.getNumberOfConqueredRegions() * 100.0 / Region.getMaximumNumberOfRelevantRegionsForGameInGrid());
 	}
 
-	public void setRegionAsConquered(Region region) 
-    {
-		region.setConqueredRegion();
-	}
-	
 	public ArrayList<GridLine> gridBorderOnlyForSpacePilotLines() 
     {
 		return this.gridBorderOnlyForSpacePilotLines;
@@ -480,7 +485,7 @@ public class Grid
 		return this.regions;
 	}
 
-    public int updateNumberOfConqueredRegions(Region[][] region)
+    public int updateNumberOfConqueredRegions()
     {
         int getNumberOfConqueredRegions = 0;
 
@@ -488,10 +493,11 @@ public class Grid
         {
             for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
-                if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions[row][column].getRegionStatus())
+                if ((RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions()[row][column].getRegionStatus())
+                    || (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT == regions()[row][column].getRegionStatus()))
                 {
                     getNumberOfConqueredRegions++;
-                    board.updateRegion(regions[row][column]); 
+                    board.updateRegion(regions()[row][column]); 
                 }
             }
         }
@@ -618,15 +624,20 @@ public class Grid
         * @implNote volfiedGameCompletionAlgorithm is a completion algorithm needed to set the empty
         *           cells between conquered cells as conquered cells
         *
-        * @param (Region[][] region) (The image represented as a 2D array of Region, where each integer represents a region status)
+        * @param (none) 
         * @return (none)
         */
-    public void volfiedGameCompletionAlgorithm(Region[][] region) 
+    public void volfiedGameCompletionAlgorithm() 
     {
         for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
         {
             for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
             {
+                final RegionStatus  REGION_STATUS   = regions()[row][column].getRegionStatus();
+                if (REGION_STATUS == RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING)
+                {
+                    regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
+                }
             }
         }
     }

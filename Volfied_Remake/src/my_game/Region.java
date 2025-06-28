@@ -83,9 +83,10 @@ public class Region
 		REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT(0),
 		REGION_STATUS_EMPTY (1),
 		REGION_STATUS_CONQUERED_BY_SPACE_PILOT(2),
-        REGION_STATUS_SPACE_PILOT_OVER(3),
-        REGION_STATUS_SMALL_ENEMY_OVER(4),
-        REGION_STATUS_SPACE_PILOT_CONQUERING(5);
+        REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT(3),
+        REGION_STATUS_SPACE_PILOT_OVER(4),
+        REGION_STATUS_SMALL_ENEMY_OVER(5),
+        REGION_STATUS_SPACE_PILOT_CONQUERING(6);
 		
 		private final int status;
 		private RegionStatus(int status) 
@@ -132,28 +133,6 @@ public class Region
         currentNumberOfConqueredRegionsInGrid   = 0;
     }
 
-    public void setConqueredRegion() 
-    {
-        switch (this.regionStatus)
-        {
-            case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
-            case REGION_STATUS_SMALL_ENEMY_OVER:
-            case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
-            case REGION_STATUS_SPACE_PILOT_OVER:
-            {
-                break;
-            }
-
-            case REGION_STATUS_EMPTY:
-            case REGION_STATUS_SPACE_PILOT_CONQUERING:
-            default:
-            {
-                currentNumberOfConqueredRegionsInGrid++;
-                break;
-            }
-        }
-    }
-
     public void setRegionStatus(RegionStatus regionStatus) 
     {
         this.regionStatus   = regionStatus;
@@ -167,6 +146,11 @@ public class Region
     public static int getNumberOfConqueredRegions() 
     {
         return (currentNumberOfConqueredRegionsInGrid);
+    }
+
+    public void setNumberOfConqueredRegions(int numberOfConqueredRegions) 
+    {
+        currentNumberOfConqueredRegionsInGrid   = numberOfConqueredRegions;
     }
 
     public static int getNumberOfUnconqueredRegions() 

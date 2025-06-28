@@ -101,7 +101,7 @@ public class GameControl
     {
         Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
         final BoardPoint        sourceLocation          = content.spacePilot().getLocation();
-        Region[][]              regionsAfterFloodFill   = new Region[Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW];
+        Region[][]              regionsAfterFloodFill   = null;
 
         //  Logic section of gameStep()         
             //  Space pilot moving method
@@ -125,10 +125,13 @@ public class GameControl
 
         if (true == regionsWereConquered)
         {
+            content.grid().volfiedGameCompletionAlgorithm();
             //  Update the number of conquered regions
-            final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions(regionsAfterFloodFill);
+            final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
+            content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
 
-            content.grid().volfiedGameCompletionAlgorithm(regionsAfterFloodFill);
+            
+
 //            for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
 //            {
 //                for (int column = 0; column < Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
@@ -152,6 +155,8 @@ public class GameControl
             System.out.println("Space pilot at: " + region.getLocation().getRow() + ", " 
                 + region.getLocation().getColumn() + ", " + region.getGuid() + ", " + region.getRegionStatus());
 		}
+
+        content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
 		board.updateScore();
 		content.statusLine().refresh();
 		board.updateStatusLine();
@@ -187,14 +192,13 @@ public class GameControl
 		if (true == region.isShown()) 
         {
 			region.hide();
-			content.score().add(1);
-			content.grid().setRegionAsConquered(region);
-            content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
+//			content.score().add(1);
+//			content.grid().setRegionAsConquered(region);
 
             //  Next lines won't be relevant later, only for fun by now
 			if (0 == content.grid().getCurrentNumberOfUnconqueredRegions()) 
             {
-				content.statusLine().showText("Great JOB !!!", Color.YELLOW, 5000);
+//				content.statusLine().showText("Great JOB !!!", Color.YELLOW, 5000);
 			}
 
 			return region; 
@@ -203,7 +207,7 @@ public class GameControl
 		return null;
 	}
 
-    private boolean  spacePilotMoving(BoardPoint sourceLocation, Region[][] regionsAfterFloodFill)
+    private boolean spacePilotMoving(BoardPoint sourceLocation, Region[][] regionsAfterFloodFill)
     {
         boolean     regionsWereConquered                        = false;
 
@@ -212,12 +216,13 @@ public class GameControl
 
         //  Get space pilot destination location
         final BoardPoint    DESTINATION_LOCATION        = content.spacePilot().getLocation();
-        final Region        DESTINATION_REGION          = content.grid().regions()[DESTINATION_LOCATION.getRow()][DESTINATION_LOCATION.getColumn()]; 
-        final RegionStatus  DESTINATION_REGION_STATUS   = DESTINATION_REGION.getRegionStatus(); 
+        Region              destinationRegion           = content.grid().regions()[DESTINATION_LOCATION.getRow()][DESTINATION_LOCATION.getColumn()]; 
+        final RegionStatus  DESTINATION_REGION_STATUS   = destinationRegion.getRegionStatus(); 
 
         switch (DESTINATION_REGION_STATUS)
         {
             case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
+            case REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT:
             case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
             {
                 //  The space pilot has reached a region that is already conquered (safe zone)
@@ -279,7 +284,7 @@ public class GameControl
                 }
 
                 //  Set the region as a region being conquered
-                DESTINATION_REGION.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
+                destinationRegion.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
 
                 //  Update the limits of space pilot when outside safe zone
                 updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
