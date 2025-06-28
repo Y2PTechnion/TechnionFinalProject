@@ -165,8 +165,8 @@ public class SpacePilot extends GameCharacter
 		directionPolicy = currentDirection;
 				
 		// First try to move according to policy
-		BoardPoint desired = new BoardPoint(getLocation().getRow() + currentDirection.yVec(),
-                                            getLocation().getColumn() + currentDirection.xVec());
+		BoardPoint desired = new BoardPoint(getLocation().getRow() + currentDirection.yVector(),
+                                            getLocation().getColumn() + currentDirection.xVector());
 
 		//  if move is possible, i.e., grid does not block
         BoardPoint current = getLocation();

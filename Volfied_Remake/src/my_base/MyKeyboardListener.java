@@ -96,26 +96,37 @@ public class MyKeyboardListener extends KeyboardListener
         {
             case RIGHT: 
             {
-			    myContent.spacePilot().directionalKeyPressed(Grid.Direction.RIGHT);
+                //  If the direction is right, then move west
+			    myContent.spacePilot().directionalKeyPressed(Grid.Direction.WEST);
 			    break;
 			}
 
 		    case LEFT: 
             {
-		  	    myContent.spacePilot().directionalKeyPressed(Grid.Direction.LEFT);
+                //  If the direction is left, then move east
+		  	    myContent.spacePilot().directionalKeyPressed(Grid.Direction.EAST);
 			    break;
 			}
 
 		    case UP: 
             {
-		        myContent.spacePilot().directionalKeyPressed(Grid.Direction.UP);
+                //  If the direction is up, then move north
+		        myContent.spacePilot().directionalKeyPressed(Grid.Direction.NORTH);
 			    break;
 			}
 
 		    case DOWN: 
             {
-		        myContent.spacePilot().directionalKeyPressed(Grid.Direction.DOWN);
+                //  If the direction is down, then move south
+		        myContent.spacePilot().directionalKeyPressed(Grid.Direction.SOUTH);
 			    break;
+            }
+
+            default: 
+            {
+                //  If the direction is not recognized or allowed, do nothing
+                System.out.println("Unrecognized direction: " + direction);
+                break;
             }
 		}
 	}

@@ -84,28 +84,32 @@ public class Grid
 {
 	public enum Direction 
     {
-		RIGHT (1,0, 0),
-		LEFT(-1,0, 1),
-		UP (0,-1, 2),
-		DOWN(0,1, 3),
-        STOPPED(0,0, 4);
+		WEST (1,0, 0),
+		EAST (-1,0, 1),
+		NORTH (0,-1, 2),
+		SOUTH (0,1, 3),
+        STOPPED(0,0, 4),
+        NORTH_WEST (1,-1, 5),
+        NORTH_EAST (-1,-1, 6),
+        SOUTH_WEST (1,1, 7),
+        SOUTH_EAST (-1,1, 8);
 		
-		private final int xVec, yVec, index;
-		private Direction(int xVec, int yVec, int index) 
+		private final int xVector, yVector, index;
+		private Direction(int xVector, int yVector, int index) 
         {
-			this.xVec   = xVec;
-			this.yVec   = yVec;
+			this.xVector    = xVector;
+			this.yVector    = yVector;
             this.index  = index;
 		}
 
-		public int xVec() 
+		public int xVector() 
         {
-			return this.xVec;
+			return this.xVector;
 		}
 
-		public int yVec() 
+		public int yVector() 
         {
-			return this.yVec;
+			return this.yVector;
 		}
 
 		public int index() 
@@ -141,6 +145,66 @@ public class Grid
 		initGridLines();
 		initRegions();
 	}
+
+    public boolean getIsBoardPointACornerForEnemies(BoardPoint boardPoint)
+    {
+        final int       NORTH_CORNER    = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_Y_PER_COLUMN/2;
+        final int       SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-NORTH_CORNER;
+        final int       WEST_CORNER     = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW/2;
+        final int       EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-WEST_CORNER;
+        final boolean   IS_BOARD_POINT_A_CORNER_FOR_ENEMIES   =
+            /* North-West */
+            (((NORTH_CORNER == boardPoint.getRow()) 
+                && (WEST_CORNER == boardPoint.getColumn()))
+            /* North-East */
+            || ((NORTH_CORNER == boardPoint.getRow()) 
+                && (EAST_CORNER == boardPoint.getColumn()))
+            /* South-West */
+            || ((SOUTH_CORNER == boardPoint.getRow()) 
+                && (WEST_CORNER == boardPoint.getColumn()))
+            /* South-East */
+            || ((SOUTH_CORNER == boardPoint.getRow()) 
+                && (EAST_CORNER == boardPoint.getColumn())));
+
+        return IS_BOARD_POINT_A_CORNER_FOR_ENEMIES;
+    }
+
+    public Direction getCornerForEnemies(BoardPoint boardPoint)
+    {
+        Direction   corner          = Direction.STOPPED;
+        final int   NORTH_CORNER    = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_Y_PER_COLUMN/2;
+        final int   SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-NORTH_CORNER;
+        final int   WEST_CORNER     = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW/2;
+        final int   EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-WEST_CORNER;
+  
+
+        if ((NORTH_CORNER == boardPoint.getRow()) 
+                && (WEST_CORNER == boardPoint.getColumn()))
+        {
+            /* North-West */
+            corner  = Direction.NORTH_WEST;
+        }
+        else if ((NORTH_CORNER == boardPoint.getRow()) 
+                && (EAST_CORNER == boardPoint.getColumn()))
+        {
+            /* North-East */
+            corner  = Direction.NORTH_EAST;
+        }
+        else if ((SOUTH_CORNER == boardPoint.getRow()) 
+                && (WEST_CORNER == boardPoint.getColumn()))
+        {
+            /* South-West */
+            corner  = Direction.SOUTH_WEST;
+        }
+        else if ((SOUTH_CORNER == boardPoint.getRow()) 
+                && (EAST_CORNER == boardPoint.getColumn()))
+        {
+            /* South-East */
+            corner  = Direction.SOUTH_EAST;
+        }
+
+        return corner;
+    }
 
     public static int getTotalGameCellsInXPerRow() 
     {
@@ -327,18 +391,28 @@ public class Grid
         {
             final int   destinationRow      = destinationPoint.getRow();
             final int   destinationColumn   = destinationPoint.getColumn();
-            //  If the method calling is a small enemy
-            final RegionStatus  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS  = regions[destinationRow][destinationColumn].getRegionStatus();
 
-            if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
-            {
-                //  Do NOT let the small enemies to navigate on the borders of the grid
+            if ((destinationRow < 0 || destinationRow >= Grid.getTotalGameCellsInYPerColumn())
+                || (destinationColumn < 0 || destinationColumn >= Grid.getTotalGameCellsInXPerRow()))
+            {   
+                //  The destination is outside the boundaries
                 isTheMovingBlockedByLogic  = true;
-            }
-            else if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+            }   
+            else
             {
-                //  Do NOT let the small enemies to navigate over the regions conquered by the space pilot
-                isTheMovingBlockedByLogic  = true;
+                //  If the method calling is a small enemy
+                final RegionStatus  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS  = regions[destinationRow][destinationColumn].getRegionStatus();
+
+                if (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the small enemies to navigate on the borders of the grid
+                    isTheMovingBlockedByLogic  = true;
+                }
+                else if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT ==  SMALL_ENEMY_DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the small enemies to navigate over the regions conquered by the space pilot
+                    isTheMovingBlockedByLogic  = true;
+                }
             }
         }
         else if (gameCharacter instanceof SpacePilot)
@@ -385,7 +459,7 @@ public class Grid
 
 	public boolean isOnGridLine(int x, int y) 
     {
-		//Check if the point is on any of the lines and if so, return true
+		//  Check if the point is on any of the lines and if so, return true
 		for (GridLine gridSpacePilotLine: gridSpacePilotLines) 
         {
 			if (true == gridSpacePilotLine.isOnLine(x, y)) 
@@ -394,7 +468,7 @@ public class Grid
 			}
 		}
 
-		//If reached here, it is not on any line
+		//  If reached here, it is not on any line
 		return false;
 	}
 

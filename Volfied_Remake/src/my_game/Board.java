@@ -387,28 +387,28 @@ public class Board
 
         switch (spacePilot.getCurrentDirection()) 
         {
-            case RIGHT: 
+            case WEST: 
             {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
-            case LEFT: 
+            case EAST: 
             {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
-            case UP: 
+            case NORTH: 
             {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());
                 break;
             }
 
-            case DOWN: 
+            case SOUTH: 
             {
                 canvas.changeImage(spacePilot.name(), "resources/" + spacePilot.getImageName()  + ".jpg", 
                     spacePilot.getImageWidth(), spacePilot.getImageHeight());

@@ -106,28 +106,124 @@ public class SmallEnemy extends GameCharacter
         //  Calls the base class (GameCharacter) constructor method
         super(smallEnemyId, grid);
 
-        //  Sets the initial direction policy to down and current direction to right
-        directionPolicy     = Direction.DOWN;
-	    currentDirection    = Direction.RIGHT;
+        //  Sets the initial direction policy to down
+        directionPolicy     = Direction.SOUTH;
 	}	
 
-	private void updateDirectionPolicy() 
+	private void updateNormalDirectionPolicy() 
     {
-		switch (currentDirection) 
+        //  Generate a random number between 0 and 1
+        double randomValue  = Math.random();
+
+		switch (directionPolicy) 
         {
-            case RIGHT: 
-            case LEFT: 
+            case WEST:
             {
-                //  If the number falls between 0 and 0.5 and the policy is right or left, then move down, otherwise up
-                directionPolicy = (Math.random() <= 0.5 ? Direction.DOWN : Direction.UP);
+                //  If the number falls between 0 and 0.33, move east, 0.33 and 0.67 move north-east, otherwise south-east
+                if (randomValue <= 0.33) 
+                {
+                    directionPolicy = Direction.EAST;
+                } 
+                else if (randomValue <= 0.67) 
+                {
+                    directionPolicy = Direction.NORTH_EAST;
+                } 
+                else 
+                {
+                    directionPolicy = Direction.SOUTH_EAST;
+                }   
                 break;
             }
 
-            case UP:
-            case DOWN: 
+            case EAST: 
             {
-                //  If the number falls between 0 and 0.5 and the policy is up or down, then move right, otherwise left
-                directionPolicy = (Math.random() <= 0.5 ? Direction.RIGHT : Direction.LEFT);
+                //  If the number falls between 0 and 0.33, move west, 0.33 and 0.67 move north-west, otherwise south-west
+                if (randomValue <= 0.33) 
+                {
+                    directionPolicy = Direction.WEST;
+                } 
+                else if (randomValue <= 0.67) 
+                {
+                    directionPolicy = Direction.NORTH_WEST;
+                } 
+                else 
+                {
+                    directionPolicy = Direction.SOUTH_WEST;
+                }   
+                break;
+            }
+
+            case NORTH:
+            {
+                //  If the number falls between 0 and 0.33, move south, 0.33 and 0.67 move south-west, otherwise south-east
+                if (randomValue <= 0.33) 
+                {
+                    directionPolicy = Direction.SOUTH;
+                } 
+                else if (randomValue <= 0.67) 
+                {
+                    directionPolicy = Direction.SOUTH_WEST;
+                } 
+                else 
+                {
+                    directionPolicy = Direction.SOUTH_EAST;
+                }   
+                break;
+            }
+
+            case SOUTH: 
+            {
+                //  If the number falls between 0 and 0.33, move north, 0.33 and 0.67 move north-west, otherwise north-east
+                if (randomValue <= 0.33) 
+                {
+                    directionPolicy = Direction.NORTH;
+                } 
+                else if (randomValue <= 0.67) 
+                {
+                    directionPolicy = Direction.NORTH_WEST;
+                } 
+                else 
+                {
+                    directionPolicy = Direction.NORTH_EAST;
+                }   
+                break;
+            }
+
+            case NORTH_WEST:
+            case NORTH_EAST:
+            {
+                //  If the number falls between 0 and 0.33, move south-west, 0.33 and 0.67 move south, otherwise south-east
+                if (randomValue <= 0.33) 
+                {
+                    directionPolicy = Direction.SOUTH_WEST;
+                } 
+                else if (randomValue <= 0.67) 
+                {
+                    directionPolicy = Direction.SOUTH;
+                } 
+                else 
+                {
+                    directionPolicy = Direction.SOUTH_EAST;
+                }   
+                break;
+            }
+
+            case SOUTH_WEST:
+            case SOUTH_EAST:
+            {
+                //  If the number falls between 0 and 0.33, move north-west, 0.33 and 0.67 move north, otherwise north-east
+                if (randomValue <= 0.33) 
+                {
+                    directionPolicy = Direction.NORTH_WEST;
+                } 
+                else if (randomValue <= 0.67) 
+                {
+                    directionPolicy = Direction.NORTH;
+                } 
+                else 
+                {
+                    directionPolicy = Direction.NORTH_EAST;
+                }   
                 break;
             }
 
@@ -137,6 +233,55 @@ public class SmallEnemy extends GameCharacter
                 break;
             }
 		}
+	}
+
+	private void updateCornerDirectionPolicy(Direction corner) 
+    {
+        //  Generate a random number between 0 and 1
+        //  double randomValue  = Math.random();
+
+        switch (corner)
+        {
+            case NORTH_WEST:
+            {
+                //  Right direction for corner
+                directionPolicy = Direction.SOUTH_EAST;
+                break;
+            }
+
+            case NORTH_EAST:
+            {
+                //  Right direction for corner
+                directionPolicy = Direction.SOUTH_WEST;
+                break;
+            }
+
+
+            case SOUTH_WEST:
+            {
+                //  Right direction for corner
+                directionPolicy = Direction.NORTH_EAST;
+                break;
+            }
+
+            case SOUTH_EAST:
+            {
+                //  Right direction for corner
+                directionPolicy = Direction.NORTH_WEST;
+                break;
+            }
+
+        	case WEST:
+            case EAST:
+            case NORTH:
+            case SOUTH:
+            case STOPPED:
+            default:
+            {
+                System.out.println("Error in corner in updateCornerDirectionPolicy()");
+                break;
+            }
+        }
 	}
 
     /**
@@ -152,72 +297,76 @@ public class SmallEnemy extends GameCharacter
 	public void move() 
     {
 		//  First try to move according to policy
-		BoardPoint desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVec(),
-            getLocation().getColumn() + directionPolicy.xVec());
-		
-//  if move is possible, i.e., grid does not block
+		BoardPoint desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+            getLocation().getColumn() + directionPolicy.xVector());
+        if (true == grid.getIsBoardPointACornerForEnemies(desired))
+        {
+            //  If it is a corner, then update policy
+            final Direction CORNER = grid.getCornerForEnemies(desired);
+            //  Update direction policy for corner points
+            updateCornerDirectionPolicy(CORNER);
+            desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+                getLocation().getColumn() + directionPolicy.xVector());
+        }
+
 		if (false == grid.blocksMove(getLocation(), desired, this)) 
         {
-			currentDirection = directionPolicy;
+            //  If move is possible, i.e., grid does not block,
+            //  continue the current direction in the same direction polity as now
             setLocation(desired);
-
-			//  After moving to next location, update movement direction randomly for next movement
-			updateDirectionPolicy();
 		}
         else
         {
-            //  If reached here, desired policy is not applicable, move in current direction
-            BoardPoint next = new BoardPoint(getLocation().getRow() + currentDirection.yVec(),
-                    getLocation().getColumn() + currentDirection.xVec());
+            //  If reached here, desired policy is not applicable, update policy
+            if (false == grid.getIsBoardPointACornerForEnemies(desired))
+            {
+                //  Update direction policy for 'normal' points (no corners)
+                updateNormalDirectionPolicy();
+            }
+            else
+            {
+                final Direction CORNER = grid.getCornerForEnemies(desired);
+                //  Update direction policy for corner points
+                updateCornerDirectionPolicy(CORNER);
+            }
+
+            BoardPoint next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+                    getLocation().getColumn() + directionPolicy.xVector());
             
             if (true == grid.blocksMove(getLocation(), next, this)) 
             {
-                switch (currentDirection) 
+                //  If reached here, desired policy is not applicable, update policy
+                if (false == grid.getIsBoardPointACornerForEnemies(next))
                 {
-                    case RIGHT: 
-                    {
-                        //  If the current direction is right and reached the limits, then move left
-                        currentDirection = Direction.LEFT;
-                        break;
-                    }
-
-                    case LEFT: 
-                    {
-                        //  If the current direction is left and reached the limits, then move right
-                        currentDirection = Direction.RIGHT;
-                        break;
-                    }
-
-                    case UP: 
-                    {
-                        //  If the current direction is up and reached the limits, then move down
-                        currentDirection = Direction.DOWN;
-                        break;
-                    }
-
-                    case DOWN: 
-                    {
-                        //  If the current direction is down and reached the limits, then move up
-                        currentDirection = Direction.UP;
-                        break;
-                    }
-
-                    case STOPPED: 
-                    {
-                        //  Do nothing
-                        break;
-                    }
+                    //  Update direction policy for 'normal' points (no corners)
+                    updateNormalDirectionPolicy();
+                }
+                else
+                {
+                    final Direction CORNER = grid.getCornerForEnemies(next);
+                    //  Update direction policy for corner points
+                    updateCornerDirectionPolicy(CORNER);
                 }
 
-                updateDirectionPolicy();
+                //  recalculate next point according to new policy
+                next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+                                        getLocation().getColumn() + directionPolicy.xVector());
 
-                //  recalculate next point according to new direction
-                next = new BoardPoint(getLocation().getRow() + currentDirection.yVec(),
-                                        getLocation().getColumn() + currentDirection.xVec());
+                if (false == grid.blocksMove(getLocation(), next, this))
+                {
+                    //  move to next point
+                    setLocation(next);
+                }
+                else
+                {
+                    //  Do NOT move, let's try next cycle
+                }
             }
-
-            //  move to next point
-            setLocation(next);
+            else
+            {
+                //  move to next point
+                setLocation(next);
+            }
         }
 	}
 }		
