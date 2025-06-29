@@ -333,7 +333,7 @@ public class Board
 		t1.setFontSize(60);
 		canvas.addShape(t1);
 
-		Text t2     = new Text(score.guid(), score.getText() , 70,120);
+		Text t2     = new Text(score.guid(), score.getText() , 30,120);
 		t2.setColor(Color.WHITE);
 		t2.setFontSize(40);
 		canvas.addShape(t2);
@@ -341,6 +341,11 @@ public class Board
 		t3.setColor(Color.GREEN);
 		t3.setFontSize(40);
 		canvas.addShape(t3);
+
+        Text t4     = new Text(score.guidTime(), score.getTime(), 700, 120);
+		t4.setColor(Color.WHITE);
+		t4.setFontSize(30);
+		canvas.addShape(t4);
 	}
 
 	private void addStatusLine() 
@@ -391,6 +396,8 @@ public class Board
 		t1.setText(content.score().getText());
 		Text        t2          = (Text) canvas.getShape(content.score().guidPercentage());
 		t2.setText(content.score().getPercentage());
+	    Text        t4          = (Text) canvas.getShape(content.score().guidTime());
+		t4.setText(content.score().getTime());
 
         String  playerName      = GetNameButton.getPlayerName();
         if (null != playerName && !playerName.isEmpty()) 

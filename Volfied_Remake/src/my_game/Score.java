@@ -75,6 +75,8 @@
 //////////////////////////// 80 columns wide //////////////////////////////////
 package my_game;
 
+import base.PeriodicLoop;
+
 /**
  * This is a simple class that manages the score.
  * It is responsible for resetting and increasing the score, as well managing its text.
@@ -91,20 +93,15 @@ public class Score
         conqueredRegionsPercentage  = 0.0;
 	}
 	
-	public void add(int points) 
+	public void setNumberOfConqueredRegions(int numberOfConqueredRegions) 
     {
-		this.score  += points;
+		this.score  = numberOfConqueredRegions;
 	}
 
     public void setConqueredRegionsPercentage(double conqueredRegionsPercentage) 
     {
         this.conqueredRegionsPercentage = conqueredRegionsPercentage;
     }
-	
-	public void subtract(int points ) 
-    {
-		score -= points;
-	}
 	
 	public int points() 
     {
@@ -120,6 +117,11 @@ public class Score
     {
 		return "percentage";
 	}
+
+	public String guidTime() 
+    {
+		return "time";
+	}
 	
 	public String getText() 
     {
@@ -131,4 +133,16 @@ public class Score
         String  stringConquredRegionsPercentage = String.format("%.2f", conqueredRegionsPercentage);
 		return (stringConquredRegionsPercentage + "  %") ;
 	}
+
+    public String getTime()
+    {
+        final int   SECONDS_PER_MINUTE  = 60;
+        final int   MINUTES_PER_HOUR    = 60;
+        final long  SECONDS             = (long) (PeriodicLoop.elapsedTime() / 1000.0);
+        int     seconds                 = (int) SECONDS % SECONDS_PER_MINUTE;
+        int     minutes                 = ((int) SECONDS / SECONDS_PER_MINUTE);
+        int     hours                   = ((int) SECONDS / (SECONDS_PER_MINUTE * MINUTES_PER_HOUR));
+        String  stringTime  = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+		return ("Elapsed: " + stringTime);
+    }
 }

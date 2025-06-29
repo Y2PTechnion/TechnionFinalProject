@@ -474,7 +474,7 @@ public class Grid
             {
                 //  Only in case of small enemies
                 //  Sets the previous region as empty
-                this.regions()[sourcePoint.getRow()][sourcePoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_EMPTY);
+//                this.regions()[sourcePoint.getRow()][sourcePoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_EMPTY);
                 //  Sets the current region as 'small enemy over'
 // TODO:                this.regions()[destinationPoint.getRow()][destinationPoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER);
             }
@@ -603,7 +603,7 @@ public class Grid
         */
     private boolean dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
     {
-        final int           ROW             = boardPoint.getRow();
+            final int           ROW             = boardPoint.getRow();
         final int           COLUMN          = boardPoint.getColumn();
         final RegionStatus  REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
 //       final boolean       IS_REGION_STATUS_SMALL_ENEMY_OVER 

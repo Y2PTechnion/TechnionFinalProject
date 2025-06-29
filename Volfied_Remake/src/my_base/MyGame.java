@@ -116,7 +116,7 @@ public class MyGame extends Game
         textPlayerName.setStatus(STATUS.SHOW);
         canvas.addShape(textPlayerName);
 
-        Text    textSpeed       = new Text("Speed", "Speed: 1 pixels per cycle", 700, 50 + textDeltaInY);     
+        Text    textSpeed       = new Text("Speed", "Speed: 1 regions per cycle", 700, 50 + textDeltaInY);     
         textSpeed.setColor(textColor);
         textSpeed.setFontName(textFont);
         textSpeed.setFontSize(textSize);
