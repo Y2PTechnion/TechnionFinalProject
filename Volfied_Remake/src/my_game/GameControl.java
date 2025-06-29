@@ -336,54 +336,235 @@ public class GameControl
     {
         //  Find a board point inside the potential conquered zone 
         //  to start the flood fill algorithm
-        final int   AVERAGE_COLUMN  = (int) (spacePilotLeftistColumnWhenOutsideSafeZone 
-                                        + spacePilotRightestColumnWhenOutsideSafeZone) / 2;
-        final int   AVERAGE_ROW     = (int) (spacePilotSouthestRowWhenOutsideSafeZone 
-                                        + spacePilotNorthestRowWhenOutsideSafeZone) / 2;
+        int centerRow       = -1;
+        int centerColumn    = -1;
+        int AVERAGE_ROW     = (int) ((spacePilotNorthestRowWhenOutsideSafeZone + spacePilotSouthestRowWhenOutsideSafeZone) / 2.0);
+        int AVERAGE_COLUMN  = (int) ((spacePilotLeftistColumnWhenOutsideSafeZone + spacePilotRightestColumnWhenOutsideSafeZone) / 2.0);
 
-        if (spacePilotLeftistColumnWhenOutsideSafeZone != spacePilotRightestColumnWhenOutsideSafeZone)
+        //  Verify first rows, later columns
+        for (int row = spacePilotNorthestRowWhenOutsideSafeZone; row <= spacePilotSouthestRowWhenOutsideSafeZone; row++)
         {
-            //  If the space pilot has NOT made a vertical line
-            boardPointInsideThePotentialConqueredZone.setColumn(AVERAGE_COLUMN);
-        }
-        else
-        {
-            //  If the space pilot has made a vertical line
-            if (spacePilotLeftistColumnWhenOutsideSafeZone < (Grid.getTotalGameCellsInXPerRow() / 2))
-            {
-                //  If the vertical line is at the left of the middle line
-                spacePilotLeftistColumnWhenOutsideSafeZone  -= 1;
-            }
-            else
-            {
-                //  If the vertical line is at the right of the middle line
-                spacePilotLeftistColumnWhenOutsideSafeZone  += 1;
-            }
-            boardPointInsideThePotentialConqueredZone.setColumn(spacePilotLeftistColumnWhenOutsideSafeZone);
-        }
+            int leftConqueringColumn    = -1;
+            int emptyColumn             = -1;
+            int rightConqueringColumn   = -1;
 
-        if (spacePilotSouthestRowWhenOutsideSafeZone != spacePilotNorthestRowWhenOutsideSafeZone)
-        {
-            //  If the space pilot has NOT made a horizontal line
-            boardPointInsideThePotentialConqueredZone.setRow(AVERAGE_ROW);
-        }
-        else
-        {
-            //  If the space pilot has made a vertical line
-            if (spacePilotSouthestRowWhenOutsideSafeZone < (Grid.getTotalGameCellsInYPerColumn() / 2))
+            for (int column = spacePilotLeftistColumnWhenOutsideSafeZone; column <= spacePilotRightestColumnWhenOutsideSafeZone; column++)
             {
-                //  If the horizontal line is at the top of the middle line
-                spacePilotSouthestRowWhenOutsideSafeZone    -= 1;
+                Region  currentRegion   = this.content.grid().regions()[row][column];
+                if (RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING == currentRegion.getRegionStatus())
+                {
+                    //  We found a conquering region
+                    if (-1 == leftConqueringColumn)
+                    {
+                        leftConqueringColumn    = column;
+                    }
+                    else if ((-1 == rightConqueringColumn) && (-1 != emptyColumn))  
+                    {
+                        rightConqueringColumn   = column;
+                        centerRow               = row;
+                        centerColumn            = emptyColumn;
+                    }
+                } 
+                else if (RegionStatus.REGION_STATUS_EMPTY == currentRegion.getRegionStatus())
+                {
+                    if (-1 != leftConqueringColumn)
+                    {
+                        emptyColumn    = column;
+                    } 
+                }
             }
-            else
-            {
-                //  If the horizontal line is at the bottom of the middle line
-                spacePilotSouthestRowWhenOutsideSafeZone  += 1;
-            }
-            boardPointInsideThePotentialConqueredZone.setRow(spacePilotSouthestRowWhenOutsideSafeZone);
         }  
-    } 
 
+        if ((-1 == centerRow) || (-1 == centerColumn))
+        {
+            //  Verify first columns, later rows
+            for (int column = spacePilotLeftistColumnWhenOutsideSafeZone; column <= spacePilotRightestColumnWhenOutsideSafeZone; column++)
+            {
+                int leftConqueringRow       = -1;
+                int emptyRow                = -1;
+                int rightConqueringRow      = -1;
+
+                for (int row = spacePilotNorthestRowWhenOutsideSafeZone; row <= spacePilotSouthestRowWhenOutsideSafeZone; row++)
+                {
+                    Region  currentRegion   = this.content.grid().regions()[row][column];
+                    if (RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING == currentRegion.getRegionStatus())
+                    {
+                        //  We found a conquering region
+                        if (-1 == leftConqueringRow)
+                        {
+                            leftConqueringRow       = row;
+                        }
+                        else if ((-1 == rightConqueringRow) && (-1 != emptyRow))  
+                        {
+                            rightConqueringRow      = row;
+                            centerRow               = emptyRow;
+                            centerColumn            = column;
+                        }
+                    } 
+                    else if (RegionStatus.REGION_STATUS_EMPTY == currentRegion.getRegionStatus())
+                    {
+                        if (-1 != leftConqueringRow)
+                        {
+                            emptyRow    = row;
+                        } 
+                    }
+                }
+            } 
+        }
+
+        if ((-1 == centerRow) || (-1 == centerColumn))
+        {
+            //  Verify first rows, later columns (more flexible)
+            for (int row = spacePilotNorthestRowWhenOutsideSafeZone; row <= spacePilotSouthestRowWhenOutsideSafeZone; row++)
+            {
+                int leftConqueringColumn    = -1;
+                int emptyColumn             = -1;
+                int rightConqueringColumn   = -1;
+
+                for (int column = spacePilotLeftistColumnWhenOutsideSafeZone; column <= spacePilotRightestColumnWhenOutsideSafeZone; column++)
+                {
+                    Region  currentRegion   = this.content.grid().regions()[row][column];
+                    if ((RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING == currentRegion.getRegionStatus())
+                        || (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT == currentRegion.getRegionStatus())
+                        || (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT == currentRegion.getRegionStatus())
+                        || (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE == currentRegion.getRegionStatus()))
+                    {
+                        //  We found a conquering region
+                        if (-1 == leftConqueringColumn)
+                        {
+                            leftConqueringColumn    = column;
+                        }
+                        else if ((-1 == rightConqueringColumn) && (-1 != emptyColumn))  
+                        {
+                            rightConqueringColumn   = column;
+                            centerRow               = row;
+                            centerColumn            = emptyColumn;
+                        }
+                    } 
+                    else if (RegionStatus.REGION_STATUS_EMPTY == currentRegion.getRegionStatus())
+                    {
+                        if (-1 != leftConqueringColumn)
+                        {
+                            emptyColumn    = column;
+                        } 
+                    }
+                }
+            }  
+        }
+
+        if ((-1 == centerRow) || (-1 == centerColumn))
+        {
+            //  Verify first columns, later rows (more flexible)
+            for (int column = spacePilotLeftistColumnWhenOutsideSafeZone; column <= spacePilotRightestColumnWhenOutsideSafeZone; column++)
+            {
+                int leftConqueringRow       = -1;
+                int emptyRow                = -1;
+                int rightConqueringRow      = -1;
+
+                for (int row = spacePilotNorthestRowWhenOutsideSafeZone; row <= spacePilotSouthestRowWhenOutsideSafeZone; row++)
+                {
+                    Region  currentRegion   = this.content.grid().regions()[row][column];
+                    if ((RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING == currentRegion.getRegionStatus())
+                        || (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT == currentRegion.getRegionStatus())
+                        || (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT == currentRegion.getRegionStatus())
+                        || (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE == currentRegion.getRegionStatus()))
+                    {
+                        //  We found a conquering region
+                        if (-1 == leftConqueringRow)
+                        {
+                            leftConqueringRow       = row;
+                        }
+                        else if ((-1 == rightConqueringRow) && (-1 != emptyRow))  
+                        {
+                            rightConqueringRow      = row;
+                            centerRow               = emptyRow;
+                            centerColumn            = column;
+                        }
+                    } 
+                    else if (RegionStatus.REGION_STATUS_EMPTY == currentRegion.getRegionStatus())
+                    {
+                        if (-1 != leftConqueringRow)
+                        {
+                            emptyRow    = row;
+                        } 
+                    }
+                }
+            } 
+        }
+
+        if ((-1 == centerRow) || (-1 == centerColumn))
+        {
+            if (spacePilotRightestColumnWhenOutsideSafeZone == Grid.getTotalGameCellsInXPerRow()-2)
+            {
+                //  We reached the rightest column
+                int row     = AVERAGE_ROW < (int)((Grid.getTotalGameCellsInYPerColumn()) / 2.0) 
+                    ? AVERAGE_ROW-1 : AVERAGE_ROW+1;
+                int column  = AVERAGE_COLUMN;
+                if (RegionStatus.REGION_STATUS_EMPTY == this.content.grid().regions()[row][column].getRegionStatus())
+                {
+                    centerRow       = row;
+                    centerColumn    = column;
+                }
+            } 
+            else if (spacePilotLeftistColumnWhenOutsideSafeZone == 1)
+            {
+                //  We reached the leftist columnV
+                int row     = AVERAGE_ROW < (int)((Grid.getTotalGameCellsInYPerColumn()) / 2.0) 
+                    ? AVERAGE_ROW-1 : AVERAGE_ROW+1;
+                int column  = AVERAGE_COLUMN;
+                if (RegionStatus.REGION_STATUS_EMPTY == this.content.grid().regions()[row][column].getRegionStatus())
+                {
+                    centerRow       = row;
+                    centerColumn    = column;
+                }
+            }
+            else if (spacePilotSouthestRowWhenOutsideSafeZone == Grid.getTotalGameCellsInXPerRow()-2)
+            {
+                //  We reached the southest row
+                int row     = AVERAGE_ROW;
+                int column  = AVERAGE_COLUMN < (int)((Grid.getTotalGameCellsInXPerRow()) / 2.0) 
+                    ? AVERAGE_COLUMN-1 : AVERAGE_COLUMN+1;
+                if (RegionStatus.REGION_STATUS_EMPTY == this.content.grid().regions()[row][column].getRegionStatus())
+                {
+                    centerRow       = row;
+                    centerColumn    = column;
+                }
+            }
+            else if (spacePilotNorthestRowWhenOutsideSafeZone == 1)
+            {
+                //  We reached the northest row
+                int row     = AVERAGE_ROW;
+                int column  = AVERAGE_COLUMN < (int)((Grid.getTotalGameCellsInXPerRow()) / 2.0) 
+                    ? AVERAGE_COLUMN-1 : AVERAGE_COLUMN+1;
+                if (RegionStatus.REGION_STATUS_EMPTY == this.content.grid().regions()[row][column].getRegionStatus())
+                {
+                    centerRow       = row;
+                    centerColumn    = column;
+                }
+            }
+            else if (spacePilotNorthestRowWhenOutsideSafeZone == spacePilotSouthestRowWhenOutsideSafeZone)
+            {
+                //  We reached a vertical line
+                centerRow       = AVERAGE_ROW;
+                centerColumn    = AVERAGE_COLUMN;
+            }
+            else if (spacePilotLeftistColumnWhenOutsideSafeZone == spacePilotRightestColumnWhenOutsideSafeZone)
+            {
+                //  We reached a horizontal line
+                centerRow       = AVERAGE_ROW;
+                centerColumn    = AVERAGE_COLUMN;
+            }
+            else
+            {
+                //  We tried everything....
+                centerRow       = AVERAGE_ROW;
+                centerColumn    = AVERAGE_COLUMN;
+            }
+        }
+
+        boardPointInsideThePotentialConqueredZone.setRow(centerRow);
+        boardPointInsideThePotentialConqueredZone.setColumn(centerColumn);
+    } 
 
     private void conquerRegion(BoardPoint startPoint, int currentLine) 
     {

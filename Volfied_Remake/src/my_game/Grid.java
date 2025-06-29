@@ -661,7 +661,7 @@ public class Grid
             }
         }
 
-        //  Convert all the temporal cells that are in the border as 'border conquered
+        //  Convert all the temporal cells that are in the border as 'border' conquered
         for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-2; row++)
         {
             for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-2; column++) 
@@ -725,6 +725,10 @@ public class Grid
                         //  then it is a border region conquered by space pilot
                         regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
                     }
+                }
+                else
+                {
+
                 }
             }
         }
