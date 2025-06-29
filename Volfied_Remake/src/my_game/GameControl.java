@@ -80,6 +80,7 @@ import java.awt.Color;
 import base.Game;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
+import shapes.Image;
 
 public class GameControl 
 {
@@ -95,8 +96,8 @@ public class GameControl
 
     public GameControl(MyContent content) 
     {
-        this.content    = content;
-        this.board      = content.getBoard();
+        this.content        = content;
+        this.board          = content.getBoard();
     }
 
 	public void gameStep() 
@@ -135,20 +136,11 @@ public class GameControl
             final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
             content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
 
+            content.score().add(NUMBER_OF_CONQUERED_REGIONS);
+            content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
+
             //  It will hide the space pilot grid lines when one of the areas is conquered
             content.grid().hideUnusedGridLines();
-
-
-//            for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
-//            {
-//                for (int column = 0; column < Grid.TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
-//                {
-//                    if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regionsAfterFloodFill[row][column].getRegionStatus())
-//                    {
-//                        content.getBoard().updateRegion(regionsAfterFloodFill[row][column]);   
-//                   }
-//                }
-//            }
         }
 
         //      Update small enemies in canvas
@@ -157,15 +149,14 @@ public class GameControl
         //  Update section of gameStep()
 		if (null != region) 
         {
-//  TODO: Update region to new color			board.updateRegion(region);
-   //         board.updateSpacePilotGridLine(rg);
             System.out.println("Space pilot at: " + region.getLocation().getRow() + ", " 
                 + region.getLocation().getColumn() + ", " + region.getGuid() + ", " + region.getRegionStatus());
 		}
 
-        content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
 		content.statusLine().refresh();
 		board.updateStatusLine();
+        board.updateScore();
+
 //		content.historyRecorder().recordState();
 //      checkGameOver();
 	}

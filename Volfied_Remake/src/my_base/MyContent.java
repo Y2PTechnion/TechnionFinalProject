@@ -87,6 +87,8 @@ import my_game.GameControl;
 import my_game.SmallEnemies;
 import my_game.Score;
 import my_game.StatusLine;
+import shapes.Image;
+import shapes.Shape;
 
 public class MyContent extends GameContent 
 {
@@ -102,7 +104,10 @@ public class MyContent extends GameContent
 	private StatusLine 		statusLine;
 	private Board           board;
 	private GameControl     gameControl;
-	
+    private Image           gameOverImage                               = null;
+    private Image           youWinImage                                 = null;
+    private Image           youFinishedImage                            = null;
+
 	@Override
 	public void initContent() 
     {
@@ -119,13 +124,22 @@ public class MyContent extends GameContent
 
         //  Creates the small enemies and sets their initial locations
         //  The small enemies are the enemies of the game
-		smallEnemies	= new SmallEnemies(QUANTITY_OF_SMALL_ENEMIES);
+		smallEnemies	    = new SmallEnemies(QUANTITY_OF_SMALL_ENEMIES);
 		smallEnemies.initSmallEnemies(grid);
 
-		score 			= new Score();
-		statusLine 		= new StatusLine();
+        gameOverImage       = new Image("gameOverImage", "resources/gameOver.png", 225, 225, 200,200);
+        gameOverImage.setzOrder(15);
+        youWinImage         = new Image("youWinImage", "resources/youWin.jpg", 770, 400, 200,200);
+        youWinImage.setzOrder(15);
+        youFinishedImage    = new Image("youFinishedImage", "resources/youFinishedImage.png", 1718, 2048, 200,200);
+        youFinishedImage.setzOrder(15);
+
+		score 			    = new Score();
+		statusLine 		    = new StatusLine();
 		statusLine.showText("Good Luck!", Color.GREEN, 3000);
-		gameControl     = new GameControl(this);
+		gameControl         = new GameControl(this);
+
+
 	}	
 	
 	public Grid grid() 
@@ -162,4 +176,119 @@ public class MyContent extends GameContent
     {
 		return this.gameControl;
 	}
+
+/**
+        * gameOver method
+        * 
+        * @implNote This method returns the gameOver sign to be shown
+        *
+        * @param () (No parameters)
+        * @return (Image)
+        */
+	public Image gameOver() {
+		return this.gameOverImage;
+	}
+
+    /**
+        * youWinHide method
+        * 
+        * @implNote This method hides the gameOver sign
+        *
+        * @param () (No parameters)
+        * @return (No return value)
+        */
+	public void gameOverHide() {
+		gameOverImage.setStatus(Shape.STATUS.HIDE);
+	}
+
+    /**
+        * gameOverShow method
+        * 
+        * @implNote This method shows the gameOver sign
+        *
+        * @param (int x) (No parameters)
+        * @return (No return value)
+        */
+	public void gameOverShow(int x, int y) {
+        gameOverImage.moveToLocation(x, y);
+        gameOverImage.setzOrder(15);
+		gameOverImage.setStatus(Shape.STATUS.SHOW);
+	}	
+
+
+/**
+        * youWin method
+        * 
+        * @implNote This method returns the youWin sign to be shown
+        *
+        * @param () (No parameters)
+        * @return (Image)
+        */
+	public Image youWin() {
+		return this.youFinishedImage;
+	}
+
+    /**
+        * youWinHide method
+        * 
+        * @implNote This method hides the youWinImage sign
+        *
+        * @param () (No parameters)
+        * @return (No return value)
+        */
+	public void youWinHide() {
+		youWinImage.setStatus(Shape.STATUS.HIDE);
+	}
+
+    /**
+        * youWinShow method
+        * 
+        * @implNote This method shows the youWinImage sign
+        *
+        * @param (int x) (No parameters)
+        * @return (No return value)
+        */
+	public void youWinShow(int x, int y) {
+        youWinImage.moveToLocation(x, y);
+        youWinImage.setzOrder(15);
+		youWinImage.setStatus(Shape.STATUS.SHOW);
+	}	
+
+/**
+        * youFinished method
+        * 
+        * @implNote This method returns the youFinished sign to be shown
+        *
+        * @param () (No parameters)
+        * @return (Image)
+        */
+	public Image youFinished() {
+		return this.youFinishedImage;
+	}
+
+    /**
+        * youFinishedHide method
+        * 
+        * @implNote This method hides the youFinished sign
+        *
+        * @param () (No parameters)
+        * @return (No return value)
+        */
+	public void youFinishedHide() {
+		youFinishedImage.setStatus(Shape.STATUS.HIDE);
+	}
+
+    /**
+        * youFinishedShow method
+        * 
+        * @implNote This method shows the youFinished sign
+        *
+        * @param (int x) (No parameters)
+        * @return (No return value)
+        */
+	public void youFinishedShow(int x, int y) {
+        youFinishedImage.moveToLocation(x, y);
+        youFinishedImage.setzOrder(15);
+		youFinishedImage.setStatus(Shape.STATUS.SHOW);
+	}	
 }

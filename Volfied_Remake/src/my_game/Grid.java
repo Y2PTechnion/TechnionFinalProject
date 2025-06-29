@@ -476,7 +476,7 @@ public class Grid
                 //  Sets the previous region as empty
                 this.regions()[sourcePoint.getRow()][sourcePoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_EMPTY);
                 //  Sets the current region as 'small enemy over'
-                this.regions()[destinationPoint.getRow()][destinationPoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER);
+// TODO:                this.regions()[destinationPoint.getRow()][destinationPoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER);
             }
         }
 

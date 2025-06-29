@@ -108,7 +108,6 @@ public class GameCharacter implements Intersectable
 	protected   Direction 		currentDirection    = Direction.STOPPED;
 	protected   int             speedCellsPerCycle  = 1;
 
-
     /**
         * GameCharacter constructor method
         * 

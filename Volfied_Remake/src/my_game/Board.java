@@ -77,11 +77,13 @@
 package my_game;
 
 import java.awt.Color;
+
 import base.Game;
 import base.GameCanvas;
 import my_base.MyContent;
 import my_game.Grid.Direction;
 import my_game.Region.RegionStatus;
+import my_ui_elements.GetNameButton;
 import shapes.Image;
 import shapes.Line;
 import shapes.Rectangle;
@@ -362,6 +364,21 @@ public class Board
 	    Grid grid	= content.grid();
         grid.addGridSpacePilotLines(rg.getLocation(), content.spacePilot().getLocation());
     }
+
+	public void updateScore() 
+    {
+		Text        t1          = (Text) canvas.getShape(content.score().guid());
+		t1.setText(content.score().getText());
+		Text        t2          = (Text) canvas.getShape(content.score().guidPercentage());
+		t2.setText(content.score().getPercentage());
+
+        String  playerName      = GetNameButton.getPlayerName();
+        if (null != playerName && !playerName.isEmpty()) 
+        {
+            Text textPlayerName   = (Text) (Game.UI().canvas().getShape("PlayerName"));
+            textPlayerName.setText("Player: " + playerName);
+        }
+	}
 
 	public void updateStatusLine() 
     {

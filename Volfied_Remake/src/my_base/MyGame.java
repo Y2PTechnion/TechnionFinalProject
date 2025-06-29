@@ -82,6 +82,9 @@ import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
 import my_ui_elements.GetNameButton;
+import shapes.Shape.STATUS;
+import shapes.Image;
+import shapes.Text;
 import my_ui_elements.EndButton;
 public class MyGame extends Game 
 {	
@@ -99,19 +102,54 @@ public class MyGame extends Game
 		content.getBoard().setCanvas(canvas);
 		content.getBoard().initBoard();
 
-//		canvas.setBackground(Color.WHITE);
-//		canvas.setBackgroundImage("resources/background1.jpg");
-//		canvas.addShape(content.polygon().getVisualPolygon());
-//		Circle c = new Circle("circle", 300, 300, 50);
-//		c.setDraggable(false);
-//		canvas.addShape(c);
-		/**
-		 * This is a use of a shape button.
-		 * Note that it uses the addToCanvas method of the button and is not added in the regular way,
-		 * since it includes multiple ui elements.
-		 */
-//		SlowDownButton slow = new SlowDownButton("SlowDown", 800, 600);
-//		slow.addToCanvas();
+        final int       textDeltaInY        = 25;
+        final int       textSize            = 20;
+        final Color     textColor           = Color.WHITE;
+        final String    textFont            = new String("Helvetica");
+
+        //  Add the text to the canvas
+        Text    textPlayerName      = new Text("PlayerName", "Player: Not login yet", 700, 50);     
+        textPlayerName.setColor(textColor);
+        textPlayerName.setFontName(textFont);
+        textPlayerName.setFontSize(textSize);
+        textPlayerName.setStatus(STATUS.SHOW);
+        canvas.addShape(textPlayerName);
+
+        Text    textSpeed       = new Text("Speed", "Speed: 1 pixels per cycle", 700, 50 + textDeltaInY);     
+        textSpeed.setColor(textColor);
+        textSpeed.setFontName(textFont);
+        textSpeed.setFontSize(textSize);
+        textSpeed.setStatus(STATUS.SHOW);
+        canvas.addShape(textSpeed);
+
+        Text    textYossi    = new Text("Yossi", "Yossi Huttner             ID: 0-1183208-6", 20, 720 );
+        textYossi.setColor(textColor);
+        textYossi.setFontName(textFont);
+        textYossi.setFontSize(textSize);
+        canvas.addShape(textYossi);
+
+        Text    textYuval    = new Text("Yuval", "Yuval Shechter          ID: 0-3170874-6", 20, 720 + 1 * textDeltaInY);
+        textYuval.setColor(textColor);
+        textYuval.setFontName(textFont);
+        textYuval.setFontSize(textSize);
+        canvas.addShape(textYuval);
+
+        Text    textPablo    = new Text("Pablo", "Pablo Daniel Jelsky ID: 3-2093823-6", 20, 720 + 2 * textDeltaInY);
+        textPablo.setColor(textColor);
+        textPablo.setFontName(textFont);
+        textPablo.setFontSize(textSize);
+        canvas.addShape(textPablo);
+
+        //  Add the you signs to the canvas, invisibles
+        Image youFinished   = content.youFinished();
+        canvas.addShape(youFinished);
+        content.youFinishedHide();
+        Image youWin        = content.youWin();
+        canvas.addShape(youWin);
+        content.youWinHide();
+        Image gameOver      = content.gameOver();
+        canvas.addShape(gameOver);
+        content.gameOverHide();
 	}
 	
 	@Override

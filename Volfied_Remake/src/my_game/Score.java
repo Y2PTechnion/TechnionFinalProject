@@ -93,7 +93,7 @@ public class Score
 	
 	public void add(int points) 
     {
-		score += points;
+		this.score  += points;
 	}
 
     public void setConqueredRegionsPercentage(double conqueredRegionsPercentage) 
