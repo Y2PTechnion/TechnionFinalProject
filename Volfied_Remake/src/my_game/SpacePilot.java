@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                   ALL STUDENTS COMPLETE THESE SECTIONS
 // Title:            Final Project
-// Files:            MyGame.java
+// Files:            SpacePilot.java
 // Semester:         Spring 2025
 //
 // Author:           YuvalYossiPablo

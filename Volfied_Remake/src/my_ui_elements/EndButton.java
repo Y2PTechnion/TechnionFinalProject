@@ -24,9 +24,6 @@ public class EndButton extends GameButton {
         content.gameOverShow(10, 10);
         content.youWinShow(10,10);
 
-//        ((MyContent)(Game.Content())).gameControl().gameOverImage.setzOrder(50);
- //       ((MyContent)(Game.Content())).gameControl().gameOverImage.setStatus(shapes.Shape.STATUS.SHOW);
-
 		Game.endGame();
 //		Game.excelDB().commit();
 //		((MyContent)(Game.Content())).pokimon().showLastMoves();

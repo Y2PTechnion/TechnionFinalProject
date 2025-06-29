@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                   ALL STUDENTS COMPLETE THESE SECTIONS
 // Title:            Final Project
-// Files:            MyGame.java
+// Files:            Grid.java
 // Semester:         Spring 2025
 //
 // Author:           YuvalYossiPablo

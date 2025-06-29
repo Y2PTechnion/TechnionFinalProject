@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                   ALL STUDENTS COMPLETE THESE SECTIONS
 // Title:            Final Project
-// Files:            MyGame.java
+// Files:            MyPeriodicLoop.java
 // Semester:         Spring 2025
 //
 // Author:           YuvalYossiPablo
