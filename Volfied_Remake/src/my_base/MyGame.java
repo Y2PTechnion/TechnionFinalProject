@@ -159,9 +159,8 @@ public class MyGame extends Game
 		GameDashboard dashboard = gameUI.dashboard();
 		
 		dashboard.setBackground(Color.BLACK);
- //     dashboard.addUIElement(new Text("score", "Score: 0", 20, 20, 200, 40, Color.GREEN));
         dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
-        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));
+        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));  
 	}
 	
 	@Override
@@ -182,9 +181,6 @@ public class MyGame extends Game
 	public static void main(String[] args) 
     {
 		MyGame game = new MyGame();
-
-        //  Set the size of the game UI to 1000 x 1000 pixels
-  //      gameUI.setSize(1000, 1000);
 
 		game.setGameContent(new MyContent());
 		MyPeriodicLoop periodicLoop = new MyPeriodicLoop();

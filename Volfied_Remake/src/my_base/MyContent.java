@@ -79,6 +79,7 @@ import java.awt.Color;
 
 
 import base.GameContent;
+import base.GameDashboard;
 import my_game.Grid;
 import my_game.SpacePilot;
 import my_game.Board;
@@ -87,7 +88,6 @@ import my_game.GameControl;
 import my_game.SmallEnemies;
 import my_game.Score;
 import my_game.StatusLine;
-import my_game.TipManager;
 import shapes.Image;
 import shapes.Shape;
 
@@ -142,7 +142,7 @@ public class MyContent extends GameContent
         tipLine             = new StatusLine();
 		gameControl         = new GameControl(this);
 	}	
-	
+
 	public Grid grid() 
     {
 		return grid;

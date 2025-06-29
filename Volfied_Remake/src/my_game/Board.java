@@ -328,11 +328,16 @@ public class Board
 	
 	private void addScore(Score score) 
     {
-		Text t2     = new Text(score.guid(), score.getText() , 70,70);
+		Text t1     = new Text("ZoneCapture", "Zone Capture" , 250,70);
+		t1.setColor(Color.ORANGE);
+		t1.setFontSize(60);
+		canvas.addShape(t1);
+
+		Text t2     = new Text(score.guid(), score.getText() , 70,120);
 		t2.setColor(Color.WHITE);
 		t2.setFontSize(40);
 		canvas.addShape(t2);
-        Text t3     = new Text(score.guidPercentage(), score.getPercentage(), 400, 70); 
+        Text t3     = new Text(score.guidPercentage(), score.getPercentage(), 400, 120); 
 		t3.setColor(Color.GREEN);
 		t3.setFontSize(40);
 		canvas.addShape(t3);
