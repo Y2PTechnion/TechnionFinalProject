@@ -327,6 +327,12 @@ public class Grid
         board.addGridSpacePilotLine(new GridLine(firstSpacePilotLinePoint, secondSpacePilotLinePoint));
     }
 
+	public void hideUnusedGridLines() 
+    {
+        //  Remove unused space pilot line from the board
+        board.hideUnusedGridLines();
+    }
+
 	public void addGridToBoard() 
     {
         //  Add grid border lines to board
@@ -457,6 +463,20 @@ public class Grid
                         isTheMovingBlockedByLogic  =  true;
                     }
                 }
+            }
+        }
+
+
+        if (false == isTheMovingBlockedByLogic)
+        {
+            //  Only check if the moving has not been blocked
+            if (gameCharacter instanceof SmallEnemy)
+            {
+                //  Only in case of small enemies
+                //  Sets the previous region as empty
+                this.regions()[sourcePoint.getRow()][sourcePoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_EMPTY);
+                //  Sets the current region as 'small enemy over'
+                this.regions()[destinationPoint.getRow()][destinationPoint.getColumn()].setRegionStatus(RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER);
             }
         }
 

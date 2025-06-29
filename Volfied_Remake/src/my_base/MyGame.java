@@ -81,8 +81,8 @@ import base.Game;
 import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
-import ui_elements.GameText;
-
+import my_ui_elements.GetNameButton;
+import my_ui_elements.EndButton;
 public class MyGame extends Game 
 {	
 	private MyContent content;
@@ -121,29 +121,9 @@ public class MyGame extends Game
 		GameDashboard dashboard = gameUI.dashboard();
 		
 		dashboard.setBackground(Color.BLACK);
-
-        dashboard.addUIElement(new GameText("e1", "%", 60, 40, 400, 10));
- //       dashboard.addUIElement(new Text("score", "Score: 0", 20, 20, 200, 40, Color.GREEN));
-
-		// Add a the Polygon buttons
-//		dashboard.addUIElement(new EditPolygonButton("editButton", "Edit", 60, 40));
-//		dashboard.addUIElement(new RotatePolygonButton("rotateButton", "Rotate", 60, 100));
-
-		// Add a the Circle drag checkbox
-//		dashboard.addUIElement(new DragCircleCB("dragCB", "Drag Circle", 280, 80, 200, 40, false));
-
-		// Add a the direction list combo
-//		dashboard.addUIElement(new DirectionCombo(280, 40));
-
-		// Add a the AddButton button
-//		dashboard.addUIElement(new AddButton("addButton", "Add", 540, 40));
-		
-		// Add the ChangeButton button to the dashboard
-//		dashboard.addUIElement(new ChangeButton("changeButton", "Change", 540, 100));
-//		dashboard.addUIElement(new MusicButton("musicButton", "Play", 700, 40));
-
-//		dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
-//		dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));
+ //     dashboard.addUIElement(new Text("score", "Score: 0", 20, 20, 200, 40, Color.GREEN));
+        dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
+        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));
 	}
 	
 	@Override

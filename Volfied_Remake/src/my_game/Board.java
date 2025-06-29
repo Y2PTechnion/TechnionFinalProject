@@ -81,11 +81,11 @@ import base.Game;
 import base.GameCanvas;
 import my_base.MyContent;
 import my_game.Grid.Direction;
+import my_game.Region.RegionStatus;
 import shapes.Image;
 import shapes.Line;
 import shapes.Rectangle;
 import shapes.Text;
-import ui_elements.GameText;
 
 /**
  * The Board class is responsible for the display of the elements.
@@ -250,11 +250,53 @@ public class Board
 
         lineShape.setColor(Color.GREEN);
         lineShape.setWeight(2); 
-        lineShape.setzOrder(GRID_LINE_Z_ORDER);    
+        lineShape.setzOrder(GRID_LINE_Z_ORDER); 
 
         //  Add the line to the canvas
-        canvas.addShape(lineShape); 
+        canvas.addShape(lineShape);
 	}
+
+	public void hideUnusedGridLines() 
+    {
+        for (int gridSpacePilotSpecificLine = 0;  gridSpacePilotSpecificLine < gridSpacePilotLine; gridSpacePilotSpecificLine++)
+        {
+            //  Check all the green grid space pilot lines
+            Line line = (Line) canvas.getShape("ml" + gridSpacePilotSpecificLine);
+            boolean     isLineToBeHidden    = false;
+            final int   STARTING_ROW        = reverseTransY((line.getY1() > line.getY2()) 
+                                                ? (line.getY2() - BOARD_SCALE/2) 
+                                                : (line.getY1() - BOARD_SCALE/2));
+            final int   ENDING_ROW          = reverseTransY((line.getY1() <= line.getY2()) 
+                                                ? (line.getY2() - BOARD_SCALE/2) 
+                                                : (line.getY1() - BOARD_SCALE/2));
+            final int   STARTING_COLUMN     = reverseTransX((line.getX1() > line.getX2()) 
+                                                ? (line.getX2() - BOARD_SCALE/2) 
+                                                : (line.getX1() - BOARD_SCALE/2));
+            final int   ENDING_COLUMN       = reverseTransX((line.getX1() <= line.getX2()) 
+                                            ? (line.getX2() - BOARD_SCALE/2) 
+                                            : (line.getX1() - BOARD_SCALE/2));
+
+            for (int row = STARTING_ROW; row <= ENDING_ROW; row++)
+            {
+                for (int column = STARTING_COLUMN; column <= ENDING_COLUMN; column++)
+                {
+                    if (RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == content.grid().regions()[row][column].getRegionStatus())
+                    {
+                        //  The line has a point at least conquered by space pilot
+                        isLineToBeHidden    = true;
+                    }
+                }
+            }
+
+            //  For now until it will be solved more elengatly
+            isLineToBeHidden    = true;
+
+            if (true == isLineToBeHidden)
+            {
+                canvas.hideShape("ml" + gridSpacePilotSpecificLine);
+            }
+        }
+    }
 	
 	public void addRegion(Region rg) 
     {
@@ -321,17 +363,6 @@ public class Board
         grid.addGridSpacePilotLines(rg.getLocation(), content.spacePilot().getLocation());
     }
 
-	
-	public void updateScore() 
-    {
-		Text        t1          = (Text) canvas.getShape(content.score().guid());
-		t1.setText(content.score().getText());
-		Text        t2          = (Text) canvas.getShape(content.score().guidPercentage());
-		t2.setText(content.score().getPercentage());
-        GameText    gameText    = (GameText) Game.UI().dashboard().getUIElement("percentage");
-  //      gameText.setText(content.score().getPercentage());
-	}
-
 	public void updateStatusLine() 
     {
 		Text    t1  = (Text) canvas.getShape(content.statusLine().guid());
@@ -349,6 +380,18 @@ public class Board
 	private int transY(int y) 
     {
 		return BOARD_Y_OFFSET + (y * BOARD_SCALE);
+	}
+
+	//  transform an X coordinate from the canvas coordinates to the grid coordinates 
+	private int reverseTransX(int x) 
+    {
+		return (int) ((x - BOARD_X_OFFSET) / BOARD_SCALE);
+	}
+
+	//  transform a Y coordinate ffrom the canvas coordinates to the grid coordinates 
+	private int reverseTransY(int y) 
+    {
+		return (int) ((y - BOARD_Y_OFFSET) / BOARD_SCALE);
 	}
 
   /**

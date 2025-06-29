@@ -369,7 +369,7 @@ public class SmallEnemy extends GameCharacter
             //  If move is possible, i.e., grid does not block,
             //  continue the current direction in the same direction polity as now
             setLocation(desired);
-		}
+    	}
         else
         {
             //  If reached here, desired policy is not applicable, update policy

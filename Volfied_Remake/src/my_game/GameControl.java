@@ -76,6 +76,8 @@
 package my_game;
 
 import java.awt.Color;
+
+import base.Game;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
 
@@ -110,7 +112,10 @@ public class GameControl
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
             //  Handle collisions between small enemies and space pilot
-		    handleCollisions();
+		    if (true == handleCollisions())
+            {
+                Game.endGame();
+            }
 
         //  Graphics (canvas) section of gameStep()
         //      Update space pilot in canvas
@@ -129,6 +134,10 @@ public class GameControl
             //  Update the number of conquered regions
             final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
             content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
+
+            //  It will hide the space pilot grid lines when one of the areas is conquered
+            content.grid().hideUnusedGridLines();
+
 
 //            for (int row = 0; row < Grid.TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
 //            {
@@ -155,14 +164,13 @@ public class GameControl
 		}
 
         content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
-		board.updateScore();
 		content.statusLine().refresh();
 		board.updateStatusLine();
 //		content.historyRecorder().recordState();
 //      checkGameOver();
 	}
 
-	private void handleCollisions() 
+	private boolean handleCollisions() 
     {
 		SpacePilot 		spacePilot   	= content.spacePilot();
 		SmallEnemies	smallEnemies	= content.smallEnemies();
@@ -171,13 +179,15 @@ public class GameControl
         {
 			if (s.getLocation().isEqual(spacePilot.getLocation())) 
             {
-				content.score().reset();
-				content.statusLine().showText("Oops ...", Color.RED, 2000);
+//				content.score().reset();
+				content.statusLine().showText("Oops you LOST...", Color.RED, 2000);
                 //  Reset the grid
-                content.grid().resetRegions();
-				return;
+ //               content.grid().resetRegions();
+				return true;
 			}
 		}
+
+        return false;
 	}
 
 	public Region conquerCurrentRegion(BoardPoint location) 
@@ -565,24 +575,4 @@ public class GameControl
         boardPointInsideThePotentialConqueredZone.setRow(centerRow);
         boardPointInsideThePotentialConqueredZone.setColumn(centerColumn);
     } 
-
-    private void conquerRegion(BoardPoint startPoint, int currentLine) 
-    {
-//  In the game Volfied, the algorithm to determine if a region is conquered involves several steps. 
-//  Here's a simplified version of how it works:
-
-//  1)  Start Drawing: When the player starts drawing a line, the game keeps track of the starting point and the current position of the line.
-//  2)  Detect Line Closure: The game continuously checks if the line has closed a loop by intersecting with itself or the boundary of the play area.
-//  3)  Flood Fill Algorithm: Once a loop is detected, the game uses a flood fill algorithm to determine the enclosed area. This algorithm works by starting from a point inside the loop and "filling" outwards until it hits the boundary of the loop.
-//  4)  Check for Enemies: After filling the area, the game checks if any enemies are present within that area. If there are no enemies, the area is considered conquered.
-//  5)  Update Game State: If the area is conquered, the game updates the map to reflect the new territory and adjusts the player's score accordingly.
-
-    //  if lineClosesLoop(currentLine) {
-    //      enclosedArea = floodFill(startPoint, currentLine);
-    //       if noEnemiesInArea(enclosedArea) {
-    //            markAreaAsConquered(enclosedArea);
-    //            updateScore();
-    //        }
-    //}
-    }
 }

@@ -17,7 +17,7 @@ public class EndButton extends GameButton {
 		super.action();
 		//Game.excelDB().getTable("pokimonMoves").sortByKey();
 		Game.endGame();
-		Game.excelDB().commit();
+//		Game.excelDB().commit();
 //		((MyContent)(Game.Content())).pokimon().showLastMoves();
 
 	}
