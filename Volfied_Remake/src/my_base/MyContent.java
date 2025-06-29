@@ -98,17 +98,17 @@ public class MyContent extends GameContent
     private final int   	QUANTITY_OF_SMALL_ENEMIES   = 10;
 
 //  Private variables for the class
-	private Grid 			grid;
-    private SpacePilot  	spacePilot;
-	private SmallEnemies	smallEnemies;
-	private Score 			score;
-	private StatusLine 		statusLine;
-    private StatusLine 		tipLine;
-	private Board           board;
-	private GameControl     gameControl;
-    private Image           gameOverImage                               = null;
-    private Image           youWinImage                                 = null;
-    private Image           youFinishedImage                            = null;
+	private Grid 			grid                = null;
+    private SpacePilot  	spacePilot          = null;
+	private SmallEnemies	smallEnemies        = null;
+	private Score 			score               = null;
+	private StatusLine 		statusLine          = null;
+    private StatusLine 		tipLine             = null;
+	private Board           board               = null;
+	private GameControl     gameControl         = null;
+    private Image           gameOverImage       = null;
+    private Image           youWinImage         = null;
+    private Image           youFinishedImage    = null;
 
 	@Override
 	public void initContent() 
@@ -140,37 +140,38 @@ public class MyContent extends GameContent
 		statusLine 		    = new StatusLine();
 		statusLine.showText("Good Luck!", Color.GREEN, 3000);
         tipLine             = new StatusLine();
+ //       tipLine.showText("Nothing", Color.WHITE, 3000);
 		gameControl         = new GameControl(this);
 	}	
 
 	public Grid grid() 
     {
-		return grid;
+		return this.grid;
 	}
 	
 	public SpacePilot spacePilot() 
     {
-		return spacePilot;
+		return this.spacePilot;
 	}
 	
 	public SmallEnemies smallEnemies() 
     {
-		return smallEnemies;
+		return this.smallEnemies;
 	}
 	
 	public Score score() 
     {
-		return score;
+		return this.score;
 	}
 
 	public StatusLine statusLine() 
     {
-		return statusLine;
+		return this.statusLine;
 	}
 
 	public StatusLine tipLine() 
     {
-		return tipLine;
+		return this.tipLine;
 	}
 
 	public Board getBoard() 

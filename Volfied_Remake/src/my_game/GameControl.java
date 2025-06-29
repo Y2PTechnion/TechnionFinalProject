@@ -156,10 +156,12 @@ public class GameControl
                 + region.getLocation().getColumn() + ", " + region.getGuid() + ", " + region.getRegionStatus());
 		}
 
-		content.statusLine().refresh();
 		board.updateStatusLine();
+        board.updateTipLine();
         board.updateScore();
         tipManager.update();
+		content.statusLine().refresh();
+        content.tipLine().refresh();
 
 //		content.historyRecorder().recordState();
         //  Handle collisions between small enemies and space pilot

@@ -172,18 +172,18 @@ public class Board
 	 */
 	public void addGridBorderLine(GridLine line) 
     {
-		int minX    = Math.min(line.p1().getColumn(), line.p2().getColumn());
-		int maxX    = Math.max(line.p1().getColumn(), line.p2().getColumn());
-		int minY    = Math.min(line.p1().getRow(), line.p2().getRow());
-		int maxY    = Math.max(line.p1().getRow(), line.p2().getRow());
+		final int MIN_X = Math.min(line.p1().getColumn(), line.p2().getColumn());
+		final int MAX_X = Math.max(line.p1().getColumn(), line.p2().getColumn());
+		final int MIN_Y = Math.min(line.p1().getRow(), line.p2().getRow());
+		final int MAX_Y = Math.max(line.p1().getRow(), line.p2().getRow());
 
 		// Represent each line as a thin 2-pixel wide
         Line    lineShape   = null;
 
-        if (minX == maxX)   
+        if (MIN_X == MAX_X)   
         {
             //  Vertical line
-            if (0 == minX)
+            if (0 == MIN_X)
             {
                 //  Vertical left line
                 lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
@@ -200,10 +200,10 @@ public class Board
                 transY(line.p2().getRow()-1) + BOARD_SCALE/2);
             }
         }  
-        else if (minY == maxY) 
+        else if (MIN_Y == MAX_Y) 
         {
             //  Horizontal line
-            if (0 == minY)
+            if (0 == MIN_Y)
             {
                 //  Horizonal upper line
                 lineShape   = new Line("bl" + gridBorderLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
@@ -231,15 +231,15 @@ public class Board
 
 	public void addGridSpacePilotLine(GridLine line) 
     {
-		int minX    = Math.min(line.p1().getColumn(), line.p2().getColumn());
-		int maxX    = Math.max(line.p1().getColumn(), line.p2().getColumn());
-		int minY    = Math.min(line.p1().getRow(), line.p2().getRow());
-		int maxY    = Math.max(line.p1().getRow(), line.p2().getRow());
+		final int MIN_X = Math.min(line.p1().getColumn(), line.p2().getColumn());
+		final int MAX_X = Math.max(line.p1().getColumn(), line.p2().getColumn());
+		final int MIN_Y = Math.min(line.p1().getRow(), line.p2().getRow());
+		final int MAX_Y = Math.max(line.p1().getRow(), line.p2().getRow());
 
 	    // Represent each line as a thin 2-pixel wide
         Line    lineShape   = null;
 
-        if (minX == maxX)   
+        if (MIN_X == MAX_X)   
         {
             //  Vertical line
             lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
@@ -247,7 +247,7 @@ public class Board
             transX(line.p2().getColumn()) + BOARD_SCALE/2, 
             transY(line.p2().getRow()) + BOARD_SCALE/2);
         }  
-        else if (minY == maxY) 
+        else if (MIN_Y == MAX_Y) 
         {
             //  Horizontal line
             lineShape   = new Line("ml" + gridSpacePilotLine++, transX(line.p1().getColumn()) + BOARD_SCALE/2, 
@@ -346,7 +346,7 @@ public class Board
 	private void addStatusLine() 
     {
 		StatusLine  status  = content.statusLine();
-		Text        t2      = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
+		Text        t2      = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 720);
 		t2.setColor(status.getColor());
 		t2.setFontSize(30);
 		canvas.addShape(t2);
@@ -355,7 +355,7 @@ public class Board
 	private void addTipLine() 
     {
 		StatusLine  status  = content.tipLine();
-		Text        t8      = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
+		Text        t8      = new Text(status.tip(), status.getText() , BOARD_X_OFFSET + 400, 760);
 		t8.setColor(status.getColor());
 		t8.setFontSize(16);
 		canvas.addShape(t8);
@@ -409,8 +409,9 @@ public class Board
 
 	public void updateTipLine() 
     {
-		Text    t8  = (Text) canvas.getShape(content.tipLine().guid());
+		Text    t8  = (Text) canvas.getShape(content.tipLine().tip());
 		t8.setText(content.tipLine().getText());
+        t8.setFontSize(18);
 		t8.setColor(content.tipLine().getColor());
 	}
 

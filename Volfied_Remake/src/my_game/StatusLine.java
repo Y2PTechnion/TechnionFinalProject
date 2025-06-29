@@ -98,6 +98,11 @@ public class StatusLine
     {
 		return "status";
 	}
+
+	public String tip() 
+    {
+		return "tip";
+	}
 	
 	public String getText() 
     {
