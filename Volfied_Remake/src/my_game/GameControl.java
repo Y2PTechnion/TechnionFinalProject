@@ -164,7 +164,7 @@ public class GameControl
         content.tipLine().refresh();
 
 //		content.historyRecorder().recordState();
-        //  Handle collisions between small enemies and space pilot
+        //  Verify if game is over
 		if (true == checkGameOver())
         {
             Game.endGame();
