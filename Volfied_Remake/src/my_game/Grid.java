@@ -667,45 +667,64 @@ public class Grid
             for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-2; column++) 
             {
                 final RegionStatus  REGION_STATUS_CURRENT       = regions()[row][column].getRegionStatus();
+                final RegionStatus  REGION_STATUS_LEFT          = regions()[row][column-1].getRegionStatus();
                 final RegionStatus  REGION_STATUS_RIGHT         = regions()[row][column+1].getRegionStatus();
                 final RegionStatus  REGION_STATUS_BOTTOM        = regions()[row+1][column].getRegionStatus();
+                final RegionStatus  REGION_STATUS_BOTTOM_RIGHT  = regions()[row+1][column+1].getRegionStatus();
+                final RegionStatus  REGION_STATUS_BOTTOM_LEFT   = regions()[row+1][column-1].getRegionStatus();
                 final RegionStatus  REGION_STATUS_TOP           = regions()[row-1][column].getRegionStatus();
-                final boolean       CURRENT_REGION_CONQUERED    = (REGION_STATUS_CURRENT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
-                                        || (REGION_STATUS_CURRENT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-                final boolean       RIGHT_REGION_CONQUERED      = (REGION_STATUS_RIGHT == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
-                                        || (REGION_STATUS_RIGHT == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-                final boolean       BOTTOM_REGION_CONQUERED     = (REGION_STATUS_BOTTOM == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
-                                        || (REGION_STATUS_BOTTOM == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
-                final boolean       TOP_REGION_CONQUERED        = (REGION_STATUS_TOP == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
-                                        || (REGION_STATUS_TOP == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                final RegionStatus  REGION_STATUS_TOP_RIGHT     = regions()[row-1][column+1].getRegionStatus();
+                final RegionStatus  REGION_STATUS_TOP_LEFT      = regions()[row-1][column-1].getRegionStatus();
+                final boolean       CURRENT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES     
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_CURRENT);
+                final boolean       LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES    
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_LEFT);
+                final boolean       RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES     
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_RIGHT);
+                final boolean       BOTTOM_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES    
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_BOTTOM);
+                final boolean       BOTTOM_RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES     
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_BOTTOM_RIGHT);
+                final boolean       BOTTOM_LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES    
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_BOTTOM_LEFT);
+                final boolean       TOP_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES     
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_TOP);
+                final boolean       TOP_RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES    
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_TOP_RIGHT);
+                final boolean       TOP_LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES    
+                                                = isRegionNotAllowedToSmallEnemies(REGION_STATUS_TOP_LEFT);
 
-                if ((true == CURRENT_REGION_CONQUERED) && (false == RIGHT_REGION_CONQUERED))
+                if (true == CURRENT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES)
                 {
-                    //  Left region is conquered, right region is not, therefore left region is border
-                    regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
-                }
-                else if ((false == CURRENT_REGION_CONQUERED) && (true == RIGHT_REGION_CONQUERED))
-                {
-                    //  Left region is not conquered, right region is conquered, therefore right region is border
-                    regions()[row][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
-                }
-                else if ((true == CURRENT_REGION_CONQUERED) && (true == RIGHT_REGION_CONQUERED))
-                {
-                    //  Left and right regions are conquered, therefore right region is not border
-                    if ((true == BOTTOM_REGION_CONQUERED) && (true == TOP_REGION_CONQUERED))
+                    //  If the current region is not allowed to small enemies
+                    if (((true == LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (true == RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                        && ((true == BOTTOM_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (true == BOTTOM_RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                        && ((true == BOTTOM_LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (true == TOP_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                        && ((true == TOP_RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (true == TOP_LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES)))
                     {
-                        //  ONLY if bottom region is conquered
-                        regions()[row][column+1].setRegionStatus(RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                        //  If all the regions surrounding the cell are NOT allowed to small enemies, therefore current region is conquered
+                        regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                    }   
+                    else if (((true == LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (false == RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                            || (false == LEFT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (true == RIGHT_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                    {
+                        //  If one of the horizontals adjacents regions is NOT allowed to small enemies but the other adjacen region is, 
+                        //  therefore current region is border conquered
+                        regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
+                    } 
+                    else if (((true == TOP_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (false == BOTTOM_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                            || (false == TOP_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES) && (true == BOTTOM_REGION_NOT_ALLOWED_TO_SMALL_ENEMIES))
+                    {
+                        //  If one of the vertical adjacents regions is NOT allowed to small enemies but the other adjacen region is, 
+                        //  therefore current region is border conquered
+                        regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
                     }
                     else
                     {
-                        //  Otherwise is 'border'
-                        regions()[row][column+1].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
+                        //  If the current region is conquered, but none of the above conditions are met, 
+                        //  then it is a border region conquered by space pilot
+                        regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT);
                     }
-                }
-                else if ((false == CURRENT_REGION_CONQUERED) && (false == RIGHT_REGION_CONQUERED))
-                {
-                    //  Nothing to do
                 }
             }
         }
@@ -843,4 +862,15 @@ public class Grid
             }
         }
     }
+
+    private boolean isRegionNotAllowedToSmallEnemies(RegionStatus regionStatus)
+    {
+        final boolean    REGION_NOT_ALLOWED_TO_SMALL_ENEMIES = (regionStatus == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                                                || (regionStatus == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT)
+                                                || (regionStatus == RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT)
+                                                || (regionStatus == RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE);
+
+            return REGION_NOT_ALLOWED_TO_SMALL_ENEMIES;
+    } 
 }
+  
