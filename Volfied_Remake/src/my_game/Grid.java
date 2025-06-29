@@ -609,7 +609,7 @@ public class Grid
         final boolean       IS_REGION_STATUS_SMALL_ENEMY_OVER 
                                             = (RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER == REGION_STATUS);  
 
-        if (false == IS_REGION_STATUS_SMALL_ENEMY_OVER) 
+ //       if (false == IS_REGION_STATUS_SMALL_ENEMY_OVER) 
         {
             //  If the region status is not SMALL_ENEMY_OVER, proceed with DFS
             //  Check if the current region is within bounds and has the original region status
@@ -654,7 +654,7 @@ public class Grid
             return true;
         }
     
-        return false;   //  If the region status is SMALL_ENEMY_OVER
+//        return false;   //  If the region status is SMALL_ENEMY_OVER
     }
 
     /**
