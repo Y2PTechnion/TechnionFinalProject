@@ -82,6 +82,7 @@ import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
 import my_ui_elements.GetNameButton;
+import my_ui_elements.HelpButton;
 import shapes.Shape.STATUS;
 import shapes.Image;
 import shapes.Text;
@@ -161,6 +162,7 @@ public class MyGame extends Game
 		dashboard.setBackground(Color.BLACK);
         dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
         dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));  
+        dashboard.addUIElement(new HelpButton("btHelp", "Help", 130, 40, 500, 50));
 	}
 	
 	@Override

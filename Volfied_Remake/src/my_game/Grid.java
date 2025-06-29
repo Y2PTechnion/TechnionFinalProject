@@ -606,8 +606,8 @@ public class Grid
         final int           ROW             = boardPoint.getRow();
         final int           COLUMN          = boardPoint.getColumn();
         final RegionStatus  REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
-        final boolean       IS_REGION_STATUS_SMALL_ENEMY_OVER 
-                                            = (RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER == REGION_STATUS);  
+//       final boolean       IS_REGION_STATUS_SMALL_ENEMY_OVER 
+//                                            = (RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER == REGION_STATUS);  
 
  //       if (false == IS_REGION_STATUS_SMALL_ENEMY_OVER) 
         {
@@ -887,14 +887,14 @@ public class Grid
         }
     }
 
-    private boolean isRegionNotAllowedToSmallEnemies(RegionStatus regionStatus)
+    public static boolean isRegionNotAllowedToSmallEnemies(RegionStatus regionStatus)
     {
         final boolean    REGION_NOT_ALLOWED_TO_SMALL_ENEMIES = (regionStatus == RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
                                                 || (regionStatus == RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT)
                                                 || (regionStatus == RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT)
                                                 || (regionStatus == RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE);
 
-            return REGION_NOT_ALLOWED_TO_SMALL_ENEMIES;
+        return REGION_NOT_ALLOWED_TO_SMALL_ENEMIES;
     } 
 }
   
