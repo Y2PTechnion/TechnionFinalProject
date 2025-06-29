@@ -124,6 +124,11 @@ public class Board
 		this.canvas = canvas;
 	}
 
+	public GameCanvas getCanvas() 
+    {
+		return this.canvas;
+	}
+
 	public void setContent(MyContent content) 
     {
 		this.content = content;
@@ -156,8 +161,9 @@ public class Board
         addSpacePilotToCanvas(content.spacePilot());
 		addSmallEnemiesToCanvas();
 
-
+        addTipLine();
 		addStatusLine();
+
 //		content.historyIndication().addToCanvas();
 	}
 
@@ -341,6 +347,15 @@ public class Board
 		canvas.addShape(t2);
 	}
 
+	private void addTipLine() 
+    {
+		StatusLine  status  = content.tipLine();
+		Text        t8      = new Text(status.guid(), status.getText() , BOARD_X_OFFSET + 400, 740);
+		t8.setColor(status.getColor());
+		t8.setFontSize(16);
+		canvas.addShape(t8);
+	}
+
 	public void updateRegion(Region rg) 
     {
         //  Remove the old region rectangle
@@ -385,6 +400,13 @@ public class Board
 		Text    t1  = (Text) canvas.getShape(content.statusLine().guid());
 		t1.setText(content.statusLine().getText());
 		t1.setColor(content.statusLine().getColor());
+	}
+
+	public void updateTipLine() 
+    {
+		Text    t8  = (Text) canvas.getShape(content.tipLine().guid());
+		t8.setText(content.tipLine().getText());
+		t8.setColor(content.tipLine().getColor());
 	}
 
 	//  transform an X coordinate from the grid coordinates to the canvas coordinates

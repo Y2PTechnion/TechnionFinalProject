@@ -80,13 +80,17 @@ import java.awt.Color;
 import base.Game;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
+import my_ui_elements.EndButton;
+import my_ui_elements.GetNameButton;
 import shapes.Image;
 
 public class GameControl 
 {
-//  Private variables for the class
+    private final int          GRID_PERCENTAGE_TO_CONQUER = 80; //  Percentage of the grid to conquer to win the game
+    //  Private variables for the class
     private MyContent           content                                     = null;
 	private Board               board                                       = null;
+    private TipManager          tipManager                                  = null;
     static  private boolean     getSpacePilotIsOutsideSafeZone              = false;
     static  private BoardPoint  boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
     static  private int         spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
@@ -98,6 +102,7 @@ public class GameControl
     {
         this.content        = content;
         this.board          = content.getBoard();
+        this.tipManager     = new TipManager(this.board.getCanvas());
     }
 
 	public void gameStep() 
@@ -156,11 +161,36 @@ public class GameControl
 		content.statusLine().refresh();
 		board.updateStatusLine();
         board.updateScore();
+        tipManager.update();
 
 //		content.historyRecorder().recordState();
-//      checkGameOver();
+        //  Handle collisions between small enemies and space pilot
+		if (true == checkGameOver())
+        {
+            Game.endGame();
+        }
 	}
 
+    private boolean checkGameOver() 
+    {
+        if (content.grid().getPercentageOfConqueredRegions() >= GRID_PERCENTAGE_TO_CONQUER) 
+        {
+            content.statusLine().showText("You WON !!!", Color.GREEN, 5000);
+            content.grid().hideUnusedGridLines();
+            return true;
+        }
+
+        return false;
+    }   
+
+    /**
+     * handleCollisions method
+     * 
+     * @implNote handleCollisions method to check if the space pilot collides with any small enemy
+     *
+     * @param none
+     * @return (boolean) true if collision occurred, false otherwise
+     */
 	private boolean handleCollisions() 
     {
 		SpacePilot 		spacePilot   	= content.spacePilot();
@@ -170,10 +200,7 @@ public class GameControl
         {
 			if (s.getLocation().isEqual(spacePilot.getLocation())) 
             {
-//				content.score().reset();
-				content.statusLine().showText("Oops you LOST...", Color.RED, 2000);
-                //  Reset the grid
- //               content.grid().resetRegions();
+				content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 2000);
 				return true;
 			}
 		}

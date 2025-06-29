@@ -87,6 +87,7 @@ import my_game.GameControl;
 import my_game.SmallEnemies;
 import my_game.Score;
 import my_game.StatusLine;
+import my_game.TipManager;
 import shapes.Image;
 import shapes.Shape;
 
@@ -102,6 +103,7 @@ public class MyContent extends GameContent
 	private SmallEnemies	smallEnemies;
 	private Score 			score;
 	private StatusLine 		statusLine;
+    private StatusLine 		tipLine;
 	private Board           board;
 	private GameControl     gameControl;
     private Image           gameOverImage                               = null;
@@ -137,9 +139,8 @@ public class MyContent extends GameContent
 		score 			    = new Score();
 		statusLine 		    = new StatusLine();
 		statusLine.showText("Good Luck!", Color.GREEN, 3000);
+        tipLine             = new StatusLine();
 		gameControl         = new GameControl(this);
-
-
 	}	
 	
 	public Grid grid() 
@@ -165,6 +166,11 @@ public class MyContent extends GameContent
 	public StatusLine statusLine() 
     {
 		return statusLine;
+	}
+
+	public StatusLine tipLine() 
+    {
+		return tipLine;
 	}
 
 	public Board getBoard() 
