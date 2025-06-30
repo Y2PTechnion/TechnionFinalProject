@@ -93,10 +93,11 @@ public class TipManager
 {
     private GameCanvas      canvas;
     private String[]        tips;
-    private int             currentTipIndex = 0;
-    private long            lastUpdateTime = 0;
-    private final long      TIP_INTERVAL_MS  = 10000; // 10 seconds
-    private final String    TIP_GUID = "motivational_tip";
+    private int             currentTipIndex         = 0;
+    private long            lastUpdateTime          = 0;
+    private final int       MILLISECONDS_IN_SECOND  = 1000;
+    private final long      TIP_INTERVAL_MS         = 10 * MILLISECONDS_IN_SECOND; // 10 seconds
+    private final String    TIP_GUID                = "motivational_tip";
 
     public TipManager(GameCanvas canvas) 
     {
@@ -197,7 +198,7 @@ public class TipManager
             MyContent   content = (MyContent)(Game.Content());
             content.tipLine().showText("" != GetNameButton.getPlayerName() 
                 ? GetNameButton.getPlayerName() + ", " + tip
-                : "" + tip, Color.ORANGE, 4000);
+                : "" + tip, Color.ORANGE, 4 * MILLISECONDS_IN_SECOND);
         }
     }
 }

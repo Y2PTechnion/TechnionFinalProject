@@ -142,7 +142,7 @@ public class GameControl
                 if ((false == isGameOver) && (true == handleCollisions()))
                 {
                     content.gameOverShow(350, 320);
-                    content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60000);
+                    content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60 * MILLISECONDS_IN_SECOND);
                     content.grid().hideUnusedGridLines();
                     isGameOver  = true;
                 }
@@ -215,7 +215,7 @@ public class GameControl
         if (content.grid().getPercentageOfConqueredRegions() >= GRID_PERCENTAGE_TO_CONQUER) 
         {
             content.youWinShow(300,320);
-            content.statusLine().showText("You WON !!!", Color.GREEN, 60000);
+            content.statusLine().showText("You WON !!!", Color.GREEN, 60 * MILLISECONDS_IN_SECOND);
             content.grid().hideUnusedGridLines();
             return true;
         }
@@ -224,7 +224,7 @@ public class GameControl
             if (true == EndButton.endButtonPushed())
             {
                 content.youFinishedShow(320, 260);
-                content.statusLine().showText("You decided to finish !!!, Whyyyyy ????", Color.ORANGE, 60000);
+                content.statusLine().showText("You decided to finish !!!, Whyyyyy ????", Color.ORANGE, 60 * MILLISECONDS_IN_SECOND);
                 content.grid().hideUnusedGridLines();
                 return true;
             }

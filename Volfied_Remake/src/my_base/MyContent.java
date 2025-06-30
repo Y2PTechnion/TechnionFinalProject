@@ -96,6 +96,7 @@ public class MyContent extends GameContent
 //  Private constants for the class
     //  Quantity of small enemies to place in  the board
     private final int   	QUANTITY_OF_SMALL_ENEMIES   = 20;
+    private final int       MILLISECONDS_IN_SECOND      = 1000;
 
 //  Private variables for the class
 	private Grid 			grid                = null;
@@ -138,7 +139,7 @@ public class MyContent extends GameContent
 
 		messages 			= new Messages();
 		statusLine 		    = new StatusLine();
-		statusLine.showText("Good Luck!", Color.GREEN, 3000);
+		statusLine.showText("Good Luck!", Color.GREEN, 5 * MILLISECONDS_IN_SECOND);
         tipLine             = new StatusLine();
 		gameControl         = new GameControl(this);
 	}	
