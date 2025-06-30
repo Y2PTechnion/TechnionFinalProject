@@ -160,7 +160,7 @@ public class GameControl
 
             if (true == regionsWereConquered)
             {
-                content.grid().volfiedGameCompletionAlgorithm();
+                content.grid().zoneCaptureGameCompletionAlgorithm();
                 //  Update the number of conquered regions
                 final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
                 content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);

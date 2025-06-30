@@ -662,15 +662,32 @@ public class Grid
     }
 
     /**
-        * volfiedGameCompletionAlgorithm algorithm method
+        * zoneCaptureGameCompletionAlgorithm algorithm method
         * 
-        * @implNote volfiedGameCompletionAlgorithm is a completion algorithm needed to set the empty
+        * @implNote zoneCaptureGameCompletionAlgorithm is a completion algorithm needed to set the empty
         *           cells between conquered cells as conquered cells
         *
         * @param (none) 
         * @return (none)
         */
-    public void volfiedGameCompletionAlgorithm() 
+    public void zoneCaptureGameCompletionAlgorithm() 
+    {
+        //  Convert all the temporal 'conquering' cells as 'border conquered'
+        FixConversionFromConqueringCellsToBorderConquered();
+        
+        //  Convert all the temporal cells that are in the border as 'border' conquered
+        FixConversionAllTemporalRegionsInBorderAsBorderConquered();
+
+        //  Convert all the border ONLY for pilot cells that are relevant to NOT relevant
+        fixBorderOnlyForPilotRegionsFromRelevantToNotRelevant();
+
+        //  Fix issue that there are 'thin' conquered borders close to game borders
+        //  The idea is to find all the conquered borders and not relevant game borders
+        //  We'll do it in two-phase, first the game borders, later all the others
+        fixThinBordersRegions();
+    }
+
+    private void FixConversionFromConqueringCellsToBorderConquered()
     {
         //  Convert all the temporal 'conquering' cells as 'border conquered'
         for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
@@ -684,7 +701,10 @@ public class Grid
                 }
             }
         }
+    }
 
+    private void FixConversionAllTemporalRegionsInBorderAsBorderConquered()
+    {
         //  Convert all the temporal cells that are in the border as 'border' conquered
         for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1; row++)
         {
@@ -756,7 +776,10 @@ public class Grid
                 }
             }
         }
+    }
 
+    private void fixBorderOnlyForPilotRegionsFromRelevantToNotRelevant()
+    {
         //  Convert all the border ONLY for pilot cells that are relevant to NOT relevant
         //  Row 0
         for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW-1; column++)
@@ -889,7 +912,10 @@ public class Grid
                 regions()[ROW][column].setRegionStatus(RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT);
             }
         }
+    }
 
+    private void fixThinBordersRegions()
+    {
         //  Fix issue that there are 'thin' conquered borders close to game borders
         //  The idea is to find all the conquered borders and not relevant game borders
         //  We'll do it in two-phase, first the game borders, later all the others
