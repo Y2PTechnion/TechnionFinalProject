@@ -466,7 +466,6 @@ public class Grid
             }
         }
 
-
         if (false == isTheMovingBlockedByLogic)
         {
             //  Only check if the moving has not been blocked

@@ -87,6 +87,7 @@ import my_ui_elements.GetNameButton;
 import shapes.Image;
 import shapes.Line;
 import shapes.Rectangle;
+import shapes.Shape.STATUS;
 import shapes.Text;
 
 /**
@@ -390,14 +391,17 @@ public class Board
         grid.addGridSpacePilotLines(rg.getLocation(), content.spacePilot().getLocation());
     }
 
-	public void updateScore() 
+	public void updateMessages() 
     {
-		Text        t1          = (Text) canvas.getShape(content.messages().guidScore());
+		Text        t1              = (Text) canvas.getShape(content.messages().guidScore());
 		t1.setText(content.messages().getText());
-		Text        t2          = (Text) canvas.getShape(content.messages().guidPercentage());
+		Text        t2              = (Text) canvas.getShape(content.messages().guidPercentage());
 		t2.setText(content.messages().getPercentage());
-	    Text        t4          = (Text) canvas.getShape(content.messages().guidTime());
-		t4.setText(content.messages().getTime());
+	    Text        t3              = (Text) canvas.getShape(content.messages().guidTime());
+		t3.setText(content.messages().getTime());
+        final int FROZEN_ENEMIES    = content.getQuantityOfEnemies() - content.smallEnemies().getQuantityOfSmallEnemiesRunning();
+	    Text        t4              = (Text) canvas.getShape("QuantityOfEnemies");
+		t4.setText("Enemies:" + content.getQuantityOfEnemies() + ", " + FROZEN_ENEMIES + " frozen");
 
         String  playerName      = GetNameButton.getPlayerName();
         if (null != playerName && !playerName.isEmpty()) 

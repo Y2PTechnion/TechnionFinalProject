@@ -76,6 +76,7 @@
 package my_game;
 
 import my_game.Grid.Direction;
+import my_game.Region.RegionStatus;
 
 /**
  * SmallEnemy class
@@ -91,6 +92,7 @@ import my_game.Grid.Direction;
 public class SmallEnemy extends GameCharacter 
 {
 //  Private variables for the class
+    private boolean isRunning   = true;
 
     /**
         * SmallEnemy constructor method
@@ -109,6 +111,7 @@ public class SmallEnemy extends GameCharacter
         //  Sets the initial direction policy randomally
         //  Generate a random number between 0 and 1
         double randomValue  = Math.random();
+        isRunning           = true;
 
         if (randomValue <= 0.125)
         {
@@ -280,7 +283,7 @@ public class SmallEnemy extends GameCharacter
 	}
 
     /**
-        * move updateCornerDirectionPolicy
+        * updateCornerDirectionPolicy method
         * 
         * @implNote updateCornerDirectionPolicy method that updates the direction policy
         *               according to the corner direction when it is reached
@@ -340,6 +343,19 @@ public class SmallEnemy extends GameCharacter
 	}
 
     /**
+        * isSmallEnemyRunning method
+        * 
+        * @implNote returns to the caller the status (if running or not) of the small enemy
+        *
+        * @param (none)
+        * @return (boolean)
+        */
+	public boolean isSmallEnemyRunning()
+    {
+        return isRunning;
+    } 
+
+    /**
         * move method
         * 
         * @implNote move method that overrides based GameCharacter method and implemented
@@ -354,73 +370,85 @@ public class SmallEnemy extends GameCharacter
 		//  First try to move according to policy
 		BoardPoint desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
             getLocation().getColumn() + directionPolicy.xVector());
-        if (true == grid.getIsBoardPointACornerForEnemies(desired))
+
+        //  Check if the small enemy is in a conquered region and therefore could not move
+        RegionStatus    SMALL_ENEMY_REGION_STATUS   = grid.regions()[getLocation().getRow()][getLocation().getColumn()].getRegionStatus();
+        if ((RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == SMALL_ENEMY_REGION_STATUS)
+            || (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT == SMALL_ENEMY_REGION_STATUS))
         {
-            //  If it is a corner, then update policy
-            final Direction CORNER = grid.getCornerForEnemies(desired);
-            //  Update direction policy for corner points
-            updateCornerDirectionPolicy(CORNER);
-            desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
-                getLocation().getColumn() + directionPolicy.xVector());
+            isRunning   = false;
         }
 
-		if (false == grid.blocksMove(getLocation(), desired, this)) 
+        if (true == isRunning)
         {
-            //  If move is possible, i.e., grid does not block,
-            //  continue the current direction in the same direction polity as now
-            setLocation(desired);
-    	}
-        else
-        {
-            //  If reached here, desired policy is not applicable, update policy
-            if (false == grid.getIsBoardPointACornerForEnemies(desired))
+            if (true == grid.getIsBoardPointACornerForEnemies(desired))
             {
-                //  Update direction policy for 'normal' points (no corners)
-                updateNormalDirectionPolicy();
-            }
-            else
-            {
+                //  If it is a corner, then update policy
                 final Direction CORNER = grid.getCornerForEnemies(desired);
                 //  Update direction policy for corner points
                 updateCornerDirectionPolicy(CORNER);
+                desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+                    getLocation().getColumn() + directionPolicy.xVector());
             }
 
-            BoardPoint next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
-                    getLocation().getColumn() + directionPolicy.xVector());
-            
-            if (true == grid.blocksMove(getLocation(), next, this)) 
+            if (false == grid.blocksMove(getLocation(), desired, this)) 
+            {
+                //  If move is possible, i.e., grid does not block,
+                //  continue the current direction in the same direction polity as now
+                setLocation(desired);
+            }
+            else
             {
                 //  If reached here, desired policy is not applicable, update policy
-                if (false == grid.getIsBoardPointACornerForEnemies(next))
+                if (false == grid.getIsBoardPointACornerForEnemies(desired))
                 {
                     //  Update direction policy for 'normal' points (no corners)
                     updateNormalDirectionPolicy();
                 }
                 else
                 {
-                    final Direction CORNER = grid.getCornerForEnemies(next);
+                    final Direction CORNER = grid.getCornerForEnemies(desired);
                     //  Update direction policy for corner points
                     updateCornerDirectionPolicy(CORNER);
                 }
 
-                //  recalculate next point according to new policy
-                next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
-                                        getLocation().getColumn() + directionPolicy.xVector());
+                BoardPoint next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+                        getLocation().getColumn() + directionPolicy.xVector());
+                
+                if (true == grid.blocksMove(getLocation(), next, this)) 
+                {
+                    //  If reached here, desired policy is not applicable, update policy
+                    if (false == grid.getIsBoardPointACornerForEnemies(next))
+                    {
+                        //  Update direction policy for 'normal' points (no corners)
+                        updateNormalDirectionPolicy();
+                    }
+                    else
+                    {
+                        final Direction CORNER = grid.getCornerForEnemies(next);
+                        //  Update direction policy for corner points
+                        updateCornerDirectionPolicy(CORNER);
+                    }
 
-                if (false == grid.blocksMove(getLocation(), next, this))
+                    //  recalculate next point according to new policy
+                    next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
+                                            getLocation().getColumn() + directionPolicy.xVector());
+
+                    if (false == grid.blocksMove(getLocation(), next, this))
+                    {
+                        //  move to next point
+                        setLocation(next);
+                    }
+                    else
+                    {
+                        //  Do NOT move, let's try next cycle
+                    }
+                }
+                else
                 {
                     //  move to next point
                     setLocation(next);
                 }
-                else
-                {
-                    //  Do NOT move, let's try next cycle
-                }
-            }
-            else
-            {
-                //  move to next point
-                setLocation(next);
             }
         }
 	}

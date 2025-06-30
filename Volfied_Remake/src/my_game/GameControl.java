@@ -170,7 +170,7 @@ public class GameControl
 
 		board.updateStatusLine();
         board.updateTipLine();
-        board.updateScore();
+        board.updateMessages();
         tipManager.update();
 		content.statusLine().refresh();
         content.tipLine().refresh();

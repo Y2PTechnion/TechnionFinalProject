@@ -153,6 +153,45 @@ public class SmallEnemies
 	}
 	
   /**
+        * getQuantityOfSmallEnemiesRunning method
+        * 
+        * @implNote this method returns the actual number of small enemies running (not frozen)
+        *
+        * @param (none)
+        * @return (quantity of small enemies running)
+      */
+	public int getQuantityOfSmallEnemiesRunning() 
+    {
+        int quantityOfSmallEnemiesRunning   = 0;
+        //  'Navigate' into the small enemies array
+		for (SmallEnemy s : smallEnemies) 
+        {
+            //  Call the smallEnemy move method for
+            //  each one of the small enemies in the array
+			boolean isSmallEnemyRunning = s.isSmallEnemyRunning();
+            if (true == isSmallEnemyRunning)
+            {
+                quantityOfSmallEnemiesRunning++;
+            }
+		}
+
+        return quantityOfSmallEnemiesRunning;
+	}
+	
+  /**
+        * getSmallEnemies method
+        * 
+        * @implNote getSmallEnemies getter method to return the array of small enemies
+        *
+        * @param (none)
+        * @return (SmallEnemy[])
+        */
+	public SmallEnemy[] getSmallEnemies() 
+    {
+		return smallEnemies;
+	}
+
+  /**
         * move method
         * 
         * @implNote move method to make the small enemies move inside the grid
@@ -169,19 +208,5 @@ public class SmallEnemies
             //  each one of the small enemies in the array
 			s.move();
 		}
-	}
-	
-
-  /**
-        * getSmallEnemies method
-        * 
-        * @implNote getSmallEnemies getter method to return the array of small enemies
-        *
-        * @param (none)
-        * @return (SmallEnemy[])
-        */
-	public SmallEnemy[] getSmallEnemies() 
-    {
-		return smallEnemies;
 	}
 }

@@ -130,7 +130,8 @@ public class MyGame extends Game
         textPercentageTarget.setStatus(STATUS.SHOW);
         canvas.addShape(textPercentageTarget);
 
-        Text    textQuantityOfEnemies   = new Text("QuantityOfEnemies", "Quantity of enemies:" + content.getQuantityOfEnemies(), 20, 50 + textDeltaInY);     
+        final int FROZEN_ENEMIES    = content.getQuantityOfEnemies() - content.smallEnemies().getQuantityOfSmallEnemiesRunning();
+        Text    textQuantityOfEnemies   = new Text("QuantityOfEnemies", "Enemies:" + content.getQuantityOfEnemies() + ", " + FROZEN_ENEMIES + " frozen", 20, 50 + textDeltaInY);     
         textQuantityOfEnemies.setColor(textColor);
         textQuantityOfEnemies.setFontName(textFont);
         textQuantityOfEnemies.setFontSize(textSize);
