@@ -126,8 +126,9 @@ public class MyContent extends GameContent
 		smallEnemies	    = new SmallEnemies(QUANTITY_OF_SMALL_ENEMIES);
 		smallEnemies.initSmallEnemies(grid);
 
-        gameImage           = new Image("gameOverImage", "resources/gameOver.png", 225, 225, 200,200);
+        gameImage           = new Image("gameOverImage", "resources/OpeningPicture1.png", 1024, 1024, 0,0);
         gameImage.setzOrder(15);
+        gameImage.setStatus(Shape.STATUS.SHOW);
 
 		messages 			= new Messages();
 		statusLine 		    = new StatusLine();

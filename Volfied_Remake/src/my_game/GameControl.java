@@ -77,6 +77,7 @@ package my_game;
 
 import java.awt.Color;
 
+import base.PeriodicLoop;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
 import my_ui_elements.EndButton;
@@ -84,18 +85,23 @@ import my_ui_elements.GetNameButton;
 
 public class GameControl 
 {
+    //  Private constants for the class
     private final int           GRID_PERCENTAGE_TO_CONQUER                  = 80; //  Percentage of the grid to conquer to win the game
+    private final int           MILLISECONDS_IN_SECOND                      = 1000;
+    private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS = 5;
+    private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME            = OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS * MILLISECONDS_IN_SECOND;
     //  Private variables for the class
     private MyContent           content                                     = null;
 	private Board               board                                       = null;
     private TipManager          tipManager                                  = null;
-    static  private boolean     getSpacePilotIsOutsideSafeZone              = false;
-    static  private BoardPoint  boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
-    static  private int         spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
-    static  private int         spacePilotRightestColumnWhenOutsideSafeZone = 0;
-    static  private int         spacePilotSouthestRowWhenOutsideSafeZone    = 0;
-    static  private int         spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
-    static boolean              isGameOver                                  = false;
+    static private boolean      getSpacePilotIsOutsideSafeZone              = false;
+    static private BoardPoint   boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
+    static private int          spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
+    static private int          spacePilotRightestColumnWhenOutsideSafeZone = 0;
+    static private int          spacePilotSouthestRowWhenOutsideSafeZone    = 0;
+    static private int          spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
+    static private boolean      isGameOver                                  = false;
+    static private boolean      isOpeningPictureShown                       = true;
 
     public GameControl(MyContent content) 
     {
@@ -115,79 +121,87 @@ public class GameControl
         final BoardPoint        SOURCE_LOCATION         = content.spacePilot().getLocation();
         Region[][]              regionsAfterFloodFill   = null;
 
-        //  Logic section of gameStep()         
-            //  Space pilot moving method
-            boolean     regionsWereConquered    = false;
+        if (false == isOpeningPictureShown)
+        {
+            //  Logic section of gameStep()         
+                //  Space pilot moving method
+                boolean     regionsWereConquered    = false;
+                if (false == isGameOver)
+                {
+                    //  If the game is over, don't let the player move the space pilot
+                    regionsWereConquered    = spacePilotMoving(SOURCE_LOCATION, regionsAfterFloodFill);
+                }
+
+                final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
+                //  Try to move the small enemies randomally
+                content.smallEnemies().move();
+                //  Handle collisions between small enemies and space pilot
+                if ((false == isGameOver) && (true == handleCollisions()))
+                {
+                    content.gameOverShow(350, 320);
+                    content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60000);
+                    content.grid().hideUnusedGridLines();
+                    isGameOver  = true;
+                }
+
+            //  Graphics (canvas) section of gameStep()
+            //      Update space pilot in canvas
+            board.updateSpacePilotInCanvas();
+
+            if ((SOURCE_LOCATION.getColumn() != destinationLocation.getColumn())
+                || (SOURCE_LOCATION.getRow() != destinationLocation.getRow()))
+            {
+                //  Update grid space pilot lines in canvas
+                content.grid().addGridSpacePilotLines(SOURCE_LOCATION, destinationLocation);
+            }
+
+            if (true == regionsWereConquered)
+            {
+                content.grid().volfiedGameCompletionAlgorithm();
+                //  Update the number of conquered regions
+                final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
+                content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
+
+                content.messages().setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
+                content.messages().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
+
+                //  It will hide the space pilot grid lines when one of the areas is conquered
+                content.grid().hideUnusedGridLines();
+            }
+
+            //      Update small enemies in canvas
+            board.updateSmallEnemiesInCanvas();
+
+            //  Update section of gameStep()
+            if (null != region) 
+            {
+                System.out.println("Space pilot at: " + region.getLocation().getRow() + ", " 
+                    + region.getLocation().getColumn() + ", " + region.getGuid() + ", " + region.getRegionStatus());
+            }
+
+            board.updateStatusLine();
+            board.updateTipLine();
             if (false == isGameOver)
             {
-                //  If the game is over, don't let the player move the space pilot
-                regionsWereConquered    = spacePilotMoving(SOURCE_LOCATION, regionsAfterFloodFill);
+                //  Only update messages during game
+                board.updateMessages();
             }
+            tipManager.update();
+            content.statusLine().refresh();
+            content.tipLine().refresh();
 
-            final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
-            //  Try to move the small enemies randomally
-            content.smallEnemies().move();
-            //  Handle collisions between small enemies and space pilot
-		    if ((false == isGameOver) && (true == handleCollisions()))
+    //		content.historyRecorder().recordState();
+            //  Verify if game is over
+            if ((false == isGameOver) && (true == checkGameOver()))
             {
-                content.gameOverShow(350, 320);
-                content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60000);
-                content.grid().hideUnusedGridLines();
                 isGameOver  = true;
+    //            Game.endGame();
             }
-
-        //  Graphics (canvas) section of gameStep()
-        //      Update space pilot in canvas
-		board.updateSpacePilotInCanvas();
-
-        if ((SOURCE_LOCATION.getColumn() != destinationLocation.getColumn())
-            || (SOURCE_LOCATION.getRow() != destinationLocation.getRow()))
-        {
-            //  Update grid space pilot lines in canvas
-            content.grid().addGridSpacePilotLines(SOURCE_LOCATION, destinationLocation);
         }
-
-        if (true == regionsWereConquered)
+        else if (PeriodicLoop.elapsedTime() > OPENING_PICTURE_TO_BE_SHOWN_TIME)
         {
-            content.grid().volfiedGameCompletionAlgorithm();
-            //  Update the number of conquered regions
-            final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
-            content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
-
-            content.messages().setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
-            content.messages().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
-
-            //  It will hide the space pilot grid lines when one of the areas is conquered
-            content.grid().hideUnusedGridLines();
-        }
-
-        //      Update small enemies in canvas
-		board.updateSmallEnemiesInCanvas();
-
-        //  Update section of gameStep()
-		if (null != region) 
-        {
-            System.out.println("Space pilot at: " + region.getLocation().getRow() + ", " 
-                + region.getLocation().getColumn() + ", " + region.getGuid() + ", " + region.getRegionStatus());
-		}
-
-		board.updateStatusLine();
-        board.updateTipLine();
-        if (false == isGameOver)
-        {
-            //  Only update messages during game
-            board.updateMessages();
-        }
-        tipManager.update();
-		content.statusLine().refresh();
-        content.tipLine().refresh();
-
-//		content.historyRecorder().recordState();
-        //  Verify if game is over
-		if ((false == isGameOver) && (true == checkGameOver()))
-        {
-            isGameOver  = true;
-//            Game.endGame();
+            isOpeningPictureShown   = false;
+            content.gameImageHide();
         }
 	}
 

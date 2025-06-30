@@ -161,7 +161,6 @@ public class MyGame extends Game
         //  Add the you game image to the canvas, invisibles
         Image gameImage     = content.gameImage();
         canvas.addShape(gameImage);
-        content.gameImageHide();
 	}
 	
 	@Override
