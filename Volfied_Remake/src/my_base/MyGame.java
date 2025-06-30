@@ -83,10 +83,12 @@ import base.GameCanvas;
 import base.GameDashboard;
 import my_ui_elements.GetNameButton;
 import my_ui_elements.HelpButton;
+import my_ui_elements.EndButton;
+import my_ui_elements.RestartButton;
 import shapes.Shape.STATUS;
 import shapes.Image;
 import shapes.Text;
-import my_ui_elements.EndButton;
+
 public class MyGame extends Game 
 {	
 	private MyContent content;
@@ -172,6 +174,7 @@ public class MyGame extends Game
         dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
         dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));  
         dashboard.addUIElement(new HelpButton("btHelp", "Help", 130, 40, 500, 50));
+        dashboard.addUIElement(new RestartButton("btRestart", "Restart", 130, 40, 500, 100));
 	}
 	
 	@Override

@@ -4,17 +4,17 @@ import base.Game;
 import my_base.MyContent;
 import ui_elements.GameButton;
 
-public class EndButton extends GameButton {
+public class RestartButton extends GameButton {
 	
-    private static boolean endButtonPushed = false;
+    private static boolean restartButtonPushed = false;
 
-	public EndButton(String id, String name, int width, int height, int posX, int posY) {
+	public RestartButton(String id, String name, int width, int height, int posX, int posY) {
 		super(id, name, width, height, posX, posY);
 	}
 
-    public static boolean endButtonPushed()
+    public static boolean restartButtonPushed()
     {
-        return endButtonPushed;
+        return restartButtonPushed;
     }
 
 	@Override
@@ -25,7 +25,7 @@ public class EndButton extends GameButton {
 		//Game.excelDB().getTable("pokimonMoves").sortByKey();
 //        MyContent content = (MyContent) Game.Content();
 //        content.gameOverShow(350, 320);
-        endButtonPushed = true;
+        restartButtonPushed = true;
 //		Game.endGame();
 //		Game.excelDB().commit();
 //		((MyContent)(Game.Content())).pokimon().showLastMoves();

@@ -328,7 +328,22 @@ public class GameControl
 
             case REGION_STATUS_SPACE_PILOT_CONQUERING:
             {
-                //  Do nothing, the region is being conquered
+                if ((true == getSpacePilotIsOutsideSafeZone)
+                    && (!sourceLocation.isEqual(DESTINATION_LOCATION)))
+                {
+                    //  Because of Yuval's comments, when making loops within
+                    //  conquering regions, then reset the limits, if we 
+                    //  were moving between different locations.
+                    //  Reset the limits of space pilot when outside safe zone
+                    resetLimitsOfSpacePilotWhenOutsideSafeZone();
+                    //  Update the limits of space pilot when even when inside safe zone
+                    updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
+                    updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
+                }   
+                else
+                {
+                    //  Do nothing, the region is being conquered
+                }
                 break;
             }
 
