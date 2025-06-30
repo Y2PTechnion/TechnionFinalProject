@@ -139,8 +139,8 @@ public class GameControl
             final int NUMBER_OF_CONQUERED_REGIONS   = content.grid().updateNumberOfConqueredRegions();
             content.grid().regions()[0][0].setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
 
-            content.score().setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
-            content.score().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
+            content.messages().setNumberOfConqueredRegions(NUMBER_OF_CONQUERED_REGIONS);
+            content.messages().setConqueredRegionsPercentage(content.grid().getPercentageOfConqueredRegions());
 
             //  It will hide the space pilot grid lines when one of the areas is conquered
             content.grid().hideUnusedGridLines();

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                   ALL STUDENTS COMPLETE THESE SECTIONS
 // Title:            Final Project
-// Files:            Score.java
+// Files:            Messages.java
 // Semester:         Spring 2025
 //
 // Author:           YuvalYossiPablo
@@ -78,10 +78,10 @@ package my_game;
 import base.PeriodicLoop;
 
 /**
- * This is a simple class that manages the score.
- * It is responsible for resetting and increasing the score, as well managing its text.
+ * This is a simple class that manages the messages.
+ * It is responsible for resetting and increasing the score, as well managing all the screen messages.
  */
-public class Score 
+public class Messages 
 {
 //  Private variables for the class
 	private int     score                       = 0;
@@ -108,7 +108,7 @@ public class Score
 		return score;
 	}
 	
-	public String guid() 
+	public String guidScore() 
     {
 		return "score";
 	}

@@ -197,7 +197,7 @@ public class TipManager
             MyContent   content = (MyContent)(Game.Content());
             content.tipLine().showText("" != GetNameButton.getPlayerName() 
                 ? GetNameButton.getPlayerName() + ", " + tip
-                : "" + tip, Color.WHITE, 4000);
+                : "" + tip, Color.ORANGE, 4000);
         }
     }
 }

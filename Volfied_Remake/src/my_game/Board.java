@@ -154,7 +154,7 @@ public class Board
 		canvas.addShape(background);
 
         //		canvas.addShape(new Image("title", "resources/PacmanTitle.png", 372, 123, 300, -10));
-		addScore(content.score());
+		addMessages(content.messages());
 		grid.addGridToBoard();	
 
         //  Add the space pilot and small enemies to the canvas
@@ -326,23 +326,23 @@ public class Board
 //		canvas.addShape(rectangle);
 	}
 	
-	private void addScore(Score score) 
+	private void addMessages(Messages messages) 
     {
 		Text t1     = new Text("ZoneCapture", "Zone Capture" , 250,70);
 		t1.setColor(Color.ORANGE);
 		t1.setFontSize(60);
 		canvas.addShape(t1);
 
-		Text t2     = new Text(score.guid(), score.getText() , 30,120);
+		Text t2     = new Text(messages.guidScore(), messages.getText() , 30,120);
 		t2.setColor(Color.WHITE);
 		t2.setFontSize(40);
 		canvas.addShape(t2);
-        Text t3     = new Text(score.guidPercentage(), score.getPercentage(), 400, 120); 
+        Text t3     = new Text(messages.guidPercentage(), messages.getPercentage(), 400, 120); 
 		t3.setColor(Color.GREEN);
 		t3.setFontSize(40);
 		canvas.addShape(t3);
 
-        Text t4     = new Text(score.guidTime(), score.getTime(), 700, 120);
+        Text t4     = new Text(messages.guidTime(), messages.getTime(), 700, 120);
 		t4.setColor(Color.WHITE);
 		t4.setFontSize(30);
 		canvas.addShape(t4);
@@ -362,7 +362,7 @@ public class Board
 		StatusLine  status  = content.tipLine();
 		Text        t8      = new Text(status.tip(), status.getText() , BOARD_X_OFFSET + 320, 770);
 		t8.setColor(status.getColor());
-		t8.setFontSize(16);
+		t8.setFontSize(15);
 		canvas.addShape(t8);
 	}
 
@@ -392,12 +392,12 @@ public class Board
 
 	public void updateScore() 
     {
-		Text        t1          = (Text) canvas.getShape(content.score().guid());
-		t1.setText(content.score().getText());
-		Text        t2          = (Text) canvas.getShape(content.score().guidPercentage());
-		t2.setText(content.score().getPercentage());
-	    Text        t4          = (Text) canvas.getShape(content.score().guidTime());
-		t4.setText(content.score().getTime());
+		Text        t1          = (Text) canvas.getShape(content.messages().guidScore());
+		t1.setText(content.messages().getText());
+		Text        t2          = (Text) canvas.getShape(content.messages().guidPercentage());
+		t2.setText(content.messages().getPercentage());
+	    Text        t4          = (Text) canvas.getShape(content.messages().guidTime());
+		t4.setText(content.messages().getTime());
 
         String  playerName      = GetNameButton.getPlayerName();
         if (null != playerName && !playerName.isEmpty()) 

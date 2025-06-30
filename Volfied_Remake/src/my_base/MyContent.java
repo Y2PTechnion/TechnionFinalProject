@@ -86,7 +86,7 @@ import my_game.Board;
 import my_game.BoardPoint;
 import my_game.GameControl;
 import my_game.SmallEnemies;
-import my_game.Score;
+import my_game.Messages;
 import my_game.StatusLine;
 import shapes.Image;
 import shapes.Shape;
@@ -101,7 +101,7 @@ public class MyContent extends GameContent
 	private Grid 			grid                = null;
     private SpacePilot  	spacePilot          = null;
 	private SmallEnemies	smallEnemies        = null;
-	private Score 			score               = null;
+	private Messages 		messages            = null;
 	private StatusLine 		statusLine          = null;
     private StatusLine 		tipLine             = null;
 	private Board           board               = null;
@@ -136,11 +136,10 @@ public class MyContent extends GameContent
         youFinishedImage    = new Image("youFinishedImage", "resources/youFinishedImage.png", 1718, 2048, 200,200);
         youFinishedImage.setzOrder(15);
 
-		score 			    = new Score();
+		messages 			= new Messages();
 		statusLine 		    = new StatusLine();
 		statusLine.showText("Good Luck!", Color.GREEN, 3000);
         tipLine             = new StatusLine();
- //       tipLine.showText("Nothing", Color.WHITE, 3000);
 		gameControl         = new GameControl(this);
 	}	
 
@@ -159,9 +158,9 @@ public class MyContent extends GameContent
 		return this.smallEnemies;
 	}
 	
-	public Score score() 
+	public Messages messages() 
     {
-		return this.score;
+		return this.messages;
 	}
 
 	public StatusLine statusLine() 
