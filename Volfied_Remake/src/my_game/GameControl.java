@@ -77,7 +77,6 @@ package my_game;
 
 import java.awt.Color;
 
-import base.Game;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
 import my_ui_elements.EndButton;
@@ -85,7 +84,7 @@ import my_ui_elements.GetNameButton;
 
 public class GameControl 
 {
-    private final int           GRID_PERCENTAGE_TO_CONQUER                  = 40; //  Percentage of the grid to conquer to win the game
+    private final int           GRID_PERCENTAGE_TO_CONQUER                  = 80; //  Percentage of the grid to conquer to win the game
     //  Private variables for the class
     private MyContent           content                                     = null;
 	private Board               board                                       = null;

@@ -94,7 +94,7 @@ public class MyContent extends GameContent
 {
 //  Private constants for the class
     //  Quantity of small enemies to place in  the board
-    private final int   	QUANTITY_OF_SMALL_ENEMIES   = 15;
+    private final int   	QUANTITY_OF_SMALL_ENEMIES   = 20;
 
 //  Private variables for the class
 	private Grid 			grid                = null;
