@@ -77,6 +77,7 @@ package my_game;
 
 import java.awt.Color;
 
+import base.Game;
 import base.PeriodicLoop;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
@@ -88,7 +89,7 @@ public class GameControl
     //  Private constants for the class
     private final int           GRID_PERCENTAGE_TO_CONQUER                  = 80; //  Percentage of the grid to conquer to win the game
     private final int           MILLISECONDS_IN_SECOND                      = 1000;
-    private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS = 5;
+    private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS = 15;
     private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME            = OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS * MILLISECONDS_IN_SECOND;
     //  Private variables for the class
     private MyContent           content                                     = null;
@@ -202,6 +203,7 @@ public class GameControl
         {
             isOpeningPictureShown   = false;
             content.gameImageHide();
+            Game.audioPlayer().stop();
         }
 	}
 

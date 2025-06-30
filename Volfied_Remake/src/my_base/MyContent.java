@@ -77,7 +77,7 @@ package my_base;
 
 import java.awt.Color;
 
-
+import base.Game;
 import base.GameContent;
 import my_game.Grid;
 import my_game.SpacePilot;
@@ -89,6 +89,7 @@ import my_game.Messages;
 import my_game.StatusLine;
 import shapes.Image;
 import shapes.Shape;
+import base.AudioPlayer.MusicStatus;
 
 public class MyContent extends GameContent 
 {
@@ -129,6 +130,11 @@ public class MyContent extends GameContent
         gameImage           = new Image("gameOverImage", "resources/OpeningPicture1.png", 1024, 1024, 0,0);
         gameImage.setzOrder(15);
         gameImage.setStatus(Shape.STATUS.SHOW);
+
+		if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
+        {
+		    Game.audioPlayer().play("resources/audio/Lunar Lander - Jupiter.wav", 1);
+        }
 
 		messages 			= new Messages();
 		statusLine 		    = new StatusLine();
