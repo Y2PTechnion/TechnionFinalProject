@@ -360,7 +360,7 @@ public class Board
 	private void addTipLine() 
     {
 		StatusLine  status  = content.tipLine();
-		Text        t8      = new Text(status.tip(), status.getText() , BOARD_X_OFFSET + 400, 760);
+		Text        t8      = new Text(status.tip(), status.getText() , BOARD_X_OFFSET + 320, 770);
 		t8.setColor(status.getColor());
 		t8.setFontSize(16);
 		canvas.addShape(t8);
@@ -418,7 +418,7 @@ public class Board
     {
 		Text    t8  = (Text) canvas.getShape(content.tipLine().tip());
 		t8.setText(content.tipLine().getText());
-        t8.setFontSize(18);
+//        t8.setFontSize(18);
 		t8.setColor(content.tipLine().getColor());
 	}
 
