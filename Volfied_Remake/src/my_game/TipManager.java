@@ -78,7 +78,6 @@ package my_game;
 
 import base.Game;
 import base.GameCanvas;
-import base.GameDashboard;
 import my_base.MyContent;
 import my_ui_elements.GetNameButton;
 import shapes.Text;

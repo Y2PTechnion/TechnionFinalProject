@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import ui_elements.ScreenPoint;
 import ui_elements.UIElement;
 import shapes.Circle;
 import shapes.Image;
@@ -70,8 +69,6 @@ public class GameCanvas extends JPanel  {
 	int positionY;
 
 	private ImageIcon backgroundImage = null;
-	private ScreenPoint backgroundImagePoint = null;
-	private int[] backgroundImageSize = null;
 	private MouseHandler mouseHandler;
 	public GameCanvas() {
 		super();

@@ -87,7 +87,6 @@ import my_ui_elements.GetNameButton;
 import shapes.Image;
 import shapes.Line;
 import shapes.Rectangle;
-import shapes.Shape.STATUS;
 import shapes.Text;
 
 /**

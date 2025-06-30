@@ -1,7 +1,5 @@
 package my_ui_elements;
 
-import base.Game;
-import my_base.MyContent;
 import ui_elements.GameButton;
 
 public class EndButton extends GameButton {
