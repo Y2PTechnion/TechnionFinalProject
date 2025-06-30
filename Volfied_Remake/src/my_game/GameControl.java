@@ -109,6 +109,7 @@ public class GameControl
         this.content        = content;
         this.board          = content.getBoard();
         this.tipManager     = new TipManager(this.board.getCanvas());
+        content.messages().setInitialTime(OPENING_PICTURE_TO_BE_SHOWN_TIME);
     }
 
     public int getTargetPercentageToWin()

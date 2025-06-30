@@ -86,6 +86,7 @@ public class Messages
 //  Private variables for the class
 	private int     score                       = 0;
     private double  conqueredRegionsPercentage  = 0.0;
+    private long    initialTimeInMilliseconds   = 0;
 	
 	public void reset() 
     {
@@ -134,11 +135,16 @@ public class Messages
 		return (stringConquredRegionsPercentage + "  %") ;
 	}
 
+    public void setInitialTime(long initialTimeInMilliseconds)
+    {
+        this.initialTimeInMilliseconds   = initialTimeInMilliseconds;
+    }
+
     public String getTime()
     {
         final int   SECONDS_PER_MINUTE  = 60;
         final int   MINUTES_PER_HOUR    = 60;
-        final long  SECONDS             = (long) (PeriodicLoop.elapsedTime() / 1000.0);
+        final long  SECONDS             = (long) ((PeriodicLoop.elapsedTime() - initialTimeInMilliseconds) / 1000.0);
         int     seconds                 = (int) SECONDS % SECONDS_PER_MINUTE;
         int     minutes                 = ((int) SECONDS / SECONDS_PER_MINUTE);
         int     hours                   = ((int) SECONDS / (SECONDS_PER_MINUTE * MINUTES_PER_HOUR));

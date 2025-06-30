@@ -422,7 +422,6 @@ public class Board
     {
 		Text    t8  = (Text) canvas.getShape(content.tipLine().tip());
 		t8.setText(content.tipLine().getText());
-//        t8.setFontSize(18);
 		t8.setColor(content.tipLine().getColor());
 	}
 
