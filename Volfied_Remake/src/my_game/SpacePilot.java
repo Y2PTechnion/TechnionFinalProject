@@ -171,7 +171,7 @@ public class SpacePilot extends GameCharacter
 		//  if move is possible, i.e., grid does not block
         BoardPoint current = getLocation();
 
-		if (false == grid.blocksMove(current, desired, this)) 
+		if (false == grid.isCurrentMoveBlockedByLogicOrGameConstraints(current, desired, this)) 
         {
             //  Only set the desired location if the move is allowed
             setLocation(desired);

@@ -355,7 +355,7 @@ public class Grid
 	}
 
     /**
-        * blocksMove method
+        * isCurrentMoveBlockedByLogicOrGameConstraints method
         * 
         * @implNote this function checks if the move from sourcePoint to destinationPoint is blocked 
         *           by any of the grid lines, border lines or space pilot lines, or any other constraints.
@@ -365,7 +365,7 @@ public class Grid
         * @param GameCharacter gameCharacter (the game character that is trying to move)
         * @return boolean (true if the move is blocked, false otherwise)
         */
-	public boolean blocksMove(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
+	public boolean isCurrentMoveBlockedByLogicOrGameConstraints(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
     {
         boolean             isTheMovingBlockedByLogic   = false;
         final int           DESTINATION_ROW             = destinationPoint.getRow();

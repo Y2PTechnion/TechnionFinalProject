@@ -391,7 +391,7 @@ public class SmallEnemy extends GameCharacter
                     getLocation().getColumn() + directionPolicy.xVector());
             }
 
-            if (false == grid.blocksMove(getLocation(), desired, this)) 
+            if (false == grid.isCurrentMoveBlockedByLogicOrGameConstraints(getLocation(), desired, this)) 
             {
                 //  If move is possible, i.e., grid does not block,
                 //  continue the current direction in the same direction polity as now
@@ -415,7 +415,7 @@ public class SmallEnemy extends GameCharacter
                 BoardPoint next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
                         getLocation().getColumn() + directionPolicy.xVector());
                 
-                if (true == grid.blocksMove(getLocation(), next, this)) 
+                if (true == grid.isCurrentMoveBlockedByLogicOrGameConstraints(getLocation(), next, this)) 
                 {
                     //  If reached here, desired policy is not applicable, update policy
                     if (false == grid.getIsBoardPointACornerForEnemies(next))
@@ -434,7 +434,7 @@ public class SmallEnemy extends GameCharacter
                     next = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
                                             getLocation().getColumn() + directionPolicy.xVector());
 
-                    if (false == grid.blocksMove(getLocation(), next, this))
+                    if (false == grid.isCurrentMoveBlockedByLogicOrGameConstraints(getLocation(), next, this))
                     {
                         //  move to next point
                         setLocation(next);
