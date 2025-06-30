@@ -162,18 +162,22 @@ public class MyGame extends Game
         Image gameImage     = content.gameImage();
         canvas.addShape(gameImage);
 	}
+
+    public static void addButtonsToDashboard()
+    {
+        GameDashboard dashboard = gameUI.dashboard();
+        dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
+        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));  
+        dashboard.addUIElement(new HelpButton("btHelp", "Help", 130, 40, 500, 50));
+        dashboard.addUIElement(new RestartButton("btRestart", "Restart", 130, 40, 500, 100));
+    }       
 	
 	@Override
 	protected void initDashboard() 
     {
 		super.initDashboard();
-		GameDashboard dashboard = gameUI.dashboard();
-		
-		dashboard.setBackground(Color.BLACK);
-        dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
-        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));  
-        dashboard.addUIElement(new HelpButton("btHelp", "Help", 130, 40, 500, 50));
-        dashboard.addUIElement(new RestartButton("btRestart", "Restart", 130, 40, 500, 100));
+        GameDashboard dashboard = gameUI.dashboard();
+        dashboard.setBackground(Color.BLACK);
 	}
 	
 	@Override

@@ -83,6 +83,7 @@ import my_base.MyContent;
 import my_game.Region.RegionStatus;
 import my_ui_elements.EndButton;
 import my_ui_elements.GetNameButton;
+import my_base.MyGame;
 
 public class GameControl 
 {
@@ -205,6 +206,7 @@ public class GameControl
             isOpeningPictureShown   = false;
             content.gameImageHide();
             Game.audioPlayer().stop();
+            MyGame.addButtonsToDashboard();
         }
 	}
 
@@ -356,10 +358,10 @@ public class GameControl
                     //  conquering regions, then reset the limits, if we 
                     //  were moving between different locations.
                     //  Reset the limits of space pilot when outside safe zone
-                    resetLimitsOfSpacePilotWhenOutsideSafeZone();
+                   resetLimitsOfSpacePilotWhenOutsideSafeZone();
                     //  Update the limits of space pilot when even when inside safe zone
-                    updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
-                    updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
+                  updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
+                  updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
                 }   
                 else
                 {
