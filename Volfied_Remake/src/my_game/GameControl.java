@@ -95,6 +95,7 @@ public class GameControl
     static  private int         spacePilotRightestColumnWhenOutsideSafeZone = 0;
     static  private int         spacePilotSouthestRowWhenOutsideSafeZone    = 0;
     static  private int         spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
+    static boolean              isGameOver                                  = false;
 
     public GameControl(MyContent content) 
     {
@@ -116,7 +117,13 @@ public class GameControl
 
         //  Logic section of gameStep()         
             //  Space pilot moving method
-            final boolean       regionsWereConquered    = spacePilotMoving(SOURCE_LOCATION, regionsAfterFloodFill);
+            boolean     regionsWereConquered    = false;
+            if (false == isGameOver)
+            {
+                //  If the game is over, don't let the player move the space pilot
+                regionsWereConquered    = spacePilotMoving(SOURCE_LOCATION, regionsAfterFloodFill);
+            }
+
             final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
@@ -170,9 +177,10 @@ public class GameControl
 
 //		content.historyRecorder().recordState();
         //  Verify if game is over
-		if (true == checkGameOver())
+		if ((false == isGameOver) && (true == checkGameOver()))
         {
-            Game.endGame();
+            isGameOver  = true;
+//            Game.endGame();
         }
 	}
 
@@ -180,7 +188,7 @@ public class GameControl
     {
         if (content.grid().getPercentageOfConqueredRegions() >= GRID_PERCENTAGE_TO_CONQUER) 
         {
-            content.statusLine().showText("You WON !!!", Color.GREEN, 5000);
+            content.statusLine().showText("You WON !!!", Color.GREEN, 60000);
             content.grid().hideUnusedGridLines();
             return true;
         }
