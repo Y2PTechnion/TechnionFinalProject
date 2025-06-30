@@ -123,13 +123,27 @@ public class MyGame extends Game
         textSpeed.setStatus(STATUS.SHOW);
         canvas.addShape(textSpeed);
 
-        Text    textYossi    = new Text("Yossi", "Yossi Huttner             ID: 0-1183208-6", 20, 720 );
+        Text    textPercentageTarget    = new Text("PercentageTarget", "Target % territory: " + content.gameControl().getTargetPercentageToWin(), 20, 50);     
+        textPercentageTarget.setColor(textColor);
+        textPercentageTarget.setFontName(textFont);
+        textPercentageTarget.setFontSize(textSize);
+        textPercentageTarget.setStatus(STATUS.SHOW);
+        canvas.addShape(textPercentageTarget);
+
+        Text    textQuantityOfEnemies   = new Text("QuantityOfEnemies", "Quantity of enemies:" + content.getQuantityOfEnemies(), 20, 50 + textDeltaInY);     
+        textQuantityOfEnemies.setColor(textColor);
+        textQuantityOfEnemies.setFontName(textFont);
+        textQuantityOfEnemies.setFontSize(textSize);
+        textQuantityOfEnemies.setStatus(STATUS.SHOW);
+        canvas.addShape(textQuantityOfEnemies);
+
+        Text    textYossi    = new Text("Yossi", "Yossi Huttner              ID: 0-1183208-6", 20, 720 );
         textYossi.setColor(textColor);
         textYossi.setFontName(textFont);
         textYossi.setFontSize(textSize);
         canvas.addShape(textYossi);
 
-        Text    textYuval    = new Text("Yuval", "Yuval Shechter          ID: 0-3170874-6", 20, 720 + 1 * textDeltaInY);
+        Text    textYuval    = new Text("Yuval", "Yuval Shechter           ID: 0-3170874-6", 20, 720 + 1 * textDeltaInY);
         textYuval.setColor(textColor);
         textYuval.setFontName(textFont);
         textYuval.setFontSize(textSize);

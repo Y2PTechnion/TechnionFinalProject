@@ -84,7 +84,7 @@ import my_ui_elements.GetNameButton;
 
 public class GameControl 
 {
-    private final int          GRID_PERCENTAGE_TO_CONQUER = 40; //  Percentage of the grid to conquer to win the game
+    private final int           GRID_PERCENTAGE_TO_CONQUER                  = 40; //  Percentage of the grid to conquer to win the game
     //  Private variables for the class
     private MyContent           content                                     = null;
 	private Board               board                                       = null;
@@ -101,6 +101,11 @@ public class GameControl
         this.content        = content;
         this.board          = content.getBoard();
         this.tipManager     = new TipManager(this.board.getCanvas());
+    }
+
+    public int getTargetPercentageToWin()
+    {
+        return GRID_PERCENTAGE_TO_CONQUER;
     }
 
 	public void gameStep() 
@@ -816,6 +821,12 @@ public class GameControl
                     centerRow       = row;
                     centerColumn    = column;
                 }
+                else
+                {
+                    centerRow       = AVERAGE_ROW;
+                    centerColumn    = AVERAGE_COLUMN;
+                    System.out.println("getBoardPointInsideThePotentialConqueredZone() - We should have not reach this point");
+                }
             } 
             else if (spacePilotLeftistColumnWhenOutsideSafeZone == 1)
             {
@@ -828,8 +839,14 @@ public class GameControl
                     centerRow       = row;
                     centerColumn    = column;
                 }
+                else
+                {
+                    centerRow       = AVERAGE_ROW;
+                    centerColumn    = AVERAGE_COLUMN;
+                    System.out.println("getBoardPointInsideThePotentialConqueredZone() - We should have not reach this point");
+                }
             }
-            else if (spacePilotSouthestRowWhenOutsideSafeZone == Grid.getTotalGameCellsInXPerRow()-2)
+            else if (spacePilotSouthestRowWhenOutsideSafeZone == Grid.getTotalGameCellsInYPerColumn()-2)
             {
                 //  We reached the southest row
                 int row     = AVERAGE_ROW;
@@ -839,6 +856,12 @@ public class GameControl
                 {
                     centerRow       = row;
                     centerColumn    = column;
+                }
+                else
+                {
+                    centerRow       = AVERAGE_ROW;
+                    centerColumn    = AVERAGE_COLUMN;
+                    System.out.println("getBoardPointInsideThePotentialConqueredZone() - We should have not reach this point");
                 }
             }
             else if (spacePilotNorthestRowWhenOutsideSafeZone == 1)
@@ -852,10 +875,16 @@ public class GameControl
                     centerRow       = row;
                     centerColumn    = column;
                 }
+                else
+                {
+                    centerRow       = AVERAGE_ROW;
+                    centerColumn    = AVERAGE_COLUMN;
+                    System.out.println("getBoardPointInsideThePotentialConqueredZone() - We should have not reach this point");
+                }
             }
             else if (spacePilotNorthestRowWhenOutsideSafeZone == spacePilotSouthestRowWhenOutsideSafeZone)
             {
-                //  We reached a vertical line
+                //  We reached a horizontal line
                 int row         = AVERAGE_ROW < (int)((Grid.getTotalGameCellsInYPerColumn()) / 2.0) 
                     ? AVERAGE_ROW-1 : AVERAGE_ROW+1;
                 int column  = AVERAGE_COLUMN;
@@ -867,12 +896,14 @@ public class GameControl
                 }
                 else
                 {
+                    centerRow       = AVERAGE_ROW;
+                    centerColumn    = AVERAGE_COLUMN;
                     System.out.println("getBoardPointInsideThePotentialConqueredZone() - We should have not reach this point");
                 }
             }
             else if (spacePilotLeftistColumnWhenOutsideSafeZone == spacePilotRightestColumnWhenOutsideSafeZone)
             {
-                //  We reached a horizontal line
+                //  We reached a vertical line
                 int row         = AVERAGE_ROW;
                 int column      = AVERAGE_COLUMN < (int)((Grid.getTotalGameCellsInXPerRow()) / 2.0) 
                     ? AVERAGE_COLUMN-1 : AVERAGE_COLUMN+1;
@@ -883,6 +914,8 @@ public class GameControl
                 }
                 else
                 {
+                    centerRow       = AVERAGE_ROW;
+                    centerColumn    = AVERAGE_COLUMN;
                     System.out.println("getBoardPointInsideThePotentialConqueredZone() - We should have not reach this point");
                 }
             }

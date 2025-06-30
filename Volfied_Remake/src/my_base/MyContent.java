@@ -79,7 +79,6 @@ import java.awt.Color;
 
 
 import base.GameContent;
-import base.GameDashboard;
 import my_game.Grid;
 import my_game.SpacePilot;
 import my_game.Board;
@@ -142,6 +141,11 @@ public class MyContent extends GameContent
         tipLine             = new StatusLine();
 		gameControl         = new GameControl(this);
 	}	
+
+    public int getQuantityOfEnemies()
+    {
+        return QUANTITY_OF_SMALL_ENEMIES;
+    }
 
 	public Grid grid() 
     {
