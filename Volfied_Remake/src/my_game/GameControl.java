@@ -231,7 +231,11 @@ public class GameControl
         {
 			if (s.getLocation().isEqual(spacePilot.getLocation())) 
             {
-				return true;
+                if (true == s.isSmallEnemyRunning())
+                {
+                    //  Only if the small enemy is running (not frozen)
+				    return true;
+                }
 			}
 		}
 

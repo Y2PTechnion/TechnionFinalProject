@@ -466,8 +466,8 @@ public class Board
             spacePilot.getImageWidth(),spacePilot.getImageHeight(), 
             transX(spacePilot.getLocation().getColumn()), 
             transY(spacePilot.getLocation().getRow()));
-        //  Set the image into the upper Z order (0)
-		image.setzOrder(0);
+        //  Set the image into the lower Z order (1) - z order - more positive is over
+		image.setzOrder(1);
         //  Add the space pilot graphic into the canvas
 		canvas.addShape(image);
 	}
@@ -569,7 +569,7 @@ public class Board
                 s.getImageHeight(), 
                 transX(s.getLocation().getColumn()), 
                 transY(s.getLocation().getRow()));
-            //  Set the image into the upper Z order (0)
+            //  Set the image into the lowest Z order (0)
             image.setzOrder(0);
             //  Add the graphics of the specific small enemy into the canvas
             canvas.addShape(image);
