@@ -6,9 +6,16 @@ import ui_elements.GameButton;
 
 public class EndButton extends GameButton {
 	
+    private static boolean endButtonPushed = false;
+
 	public EndButton(String id, String name, int width, int height, int posX, int posY) {
 		super(id, name, width, height, posX, posY);
 	}
+
+    public static boolean endButtonPushed()
+    {
+        return endButtonPushed;
+    }
 
 	@Override
 	public void action() {
@@ -17,12 +24,9 @@ public class EndButton extends GameButton {
 		super.action();
 		//Game.excelDB().getTable("pokimonMoves").sortByKey();
         MyContent content = (MyContent) Game.Content();
-
-        content.youFinishedShow(10, 10);
-        content.gameOverShow(10, 10);
-        content.youWinShow(10,10);
-
-		Game.endGame();
+//        content.gameOverShow(350, 320);
+        endButtonPushed = true;
+//		Game.endGame();
 //		Game.excelDB().commit();
 //		((MyContent)(Game.Content())).pokimon().showLastMoves();
 

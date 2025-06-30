@@ -156,16 +156,10 @@ public class MyGame extends Game
         textPablo.setFontSize(textSize);
         canvas.addShape(textPablo);
 
-        //  Add the you signs to the canvas, invisibles
-        Image youFinished   = content.youFinished();
-        canvas.addShape(youFinished);
-        content.youFinishedHide();
-        Image youWin        = content.youWin();
-        canvas.addShape(youWin);
-        content.youWinHide();
-        Image gameOver      = content.gameOver();
-        canvas.addShape(gameOver);
-        content.gameOverHide();
+        //  Add the you game image to the canvas, invisibles
+        Image gameImage     = content.gameImage();
+        canvas.addShape(gameImage);
+        content.gameImageHide();
 	}
 	
 	@Override

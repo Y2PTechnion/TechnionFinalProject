@@ -80,6 +80,7 @@ import java.awt.Color;
 import base.Game;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
+import my_ui_elements.EndButton;
 import my_ui_elements.GetNameButton;
 
 public class GameControl 
@@ -128,9 +129,12 @@ public class GameControl
             //  Try to move the small enemies randomally
             content.smallEnemies().move();
             //  Handle collisions between small enemies and space pilot
-		    if (true == handleCollisions())
+		    if ((false == isGameOver) && (true == handleCollisions()))
             {
-                Game.endGame();
+                content.gameOverShow(350, 320);
+                content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60000);
+                content.grid().hideUnusedGridLines();
+                isGameOver  = true;
             }
 
         //  Graphics (canvas) section of gameStep()
@@ -188,9 +192,20 @@ public class GameControl
     {
         if (content.grid().getPercentageOfConqueredRegions() >= GRID_PERCENTAGE_TO_CONQUER) 
         {
+            content.youWinShow(300,320);
             content.statusLine().showText("You WON !!!", Color.GREEN, 60000);
             content.grid().hideUnusedGridLines();
             return true;
+        }
+        else    
+        {
+            if (true == EndButton.endButtonPushed())
+            {
+                content.youFinishedShow(320, 260);
+                content.statusLine().showText("You decided to finish !!!, Whyyyyy ????", Color.ORANGE, 60000);
+                content.grid().hideUnusedGridLines();
+                return true;
+            }
         }
 
         return false;
@@ -213,7 +228,6 @@ public class GameControl
         {
 			if (s.getLocation().isEqual(spacePilot.getLocation())) 
             {
-				content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 2000);
 				return true;
 			}
 		}
