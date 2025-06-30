@@ -430,6 +430,11 @@ public class Grid
                     //  Do NOT let the space pilot to navigate on the borders of the grid
                     isTheMovingBlockedByLogic  = true;
                 }
+                else if (RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING ==  DESTINATION_CELL_REGION_STATUS)
+                {
+                    //  Do NOT let the space pilot to navigate on the green lines (conquering) he was doing
+                    isTheMovingBlockedByLogic  = true;
+                }
             }
         }
         else
