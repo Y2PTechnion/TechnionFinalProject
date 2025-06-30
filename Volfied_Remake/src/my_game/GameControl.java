@@ -173,7 +173,11 @@ public class GameControl
 
 		board.updateStatusLine();
         board.updateTipLine();
-        board.updateMessages();
+        if (false == isGameOver)
+        {
+            //  Only update messages during game
+            board.updateMessages();
+        }
         tipManager.update();
 		content.statusLine().refresh();
         content.tipLine().refresh();
