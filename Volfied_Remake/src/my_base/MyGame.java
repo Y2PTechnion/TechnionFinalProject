@@ -214,6 +214,6 @@ public class MyGame extends Game
     }
 
     public static void main(String[] args) {
-        MainMenuGUI.main(args);
+        MainMenuGUI.start(args);
     }
 }

@@ -135,7 +135,8 @@ public class Grid
 	private Board               board                               = null;
 	private ArrayList<GridLine> gridBorderOnlyForSpacePilotLines    = new ArrayList<GridLine>();
     private ArrayList<GridLine> gridSpacePilotLines                 = new ArrayList<GridLine>();
-    //  Region[column][row]
+    private BoardPoint          lastSpacePilotPointInSafeZone       = new BoardPoint(0,0);
+    //  Region[row][column]
 	private Region[][]          regions                             = new Region[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][TOTAL_GAME_CELLS_IN_X_PER_ROW];
 	
 	public Grid(Board board) 
@@ -318,6 +319,21 @@ public class Grid
         Region.resetConqueredRegions();
     }
 
+    public void resetConqueringRegions() 
+    {
+		for (int row = 1; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
+        {
+			for (int column = 1; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+                final RegionStatus  REGION_STATUS   = regions()[row][column].getRegionStatus();
+                if (RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING == REGION_STATUS)
+                {   
+                    regions()[row][column].setRegionStatus(RegionStatus.REGION_STATUS_EMPTY);
+                }
+			}
+		}
+    }
+
 	public void addGridSpacePilotLines(BoardPoint firstSpacePilotLinePoint, BoardPoint secondSpacePilotLinePoint) 
     {
 		//  Internal space pilot lines
@@ -434,6 +450,17 @@ public class Grid
                     //  Do NOT let the space pilot to navigate on the green lines (conquering) he was doing
                     isTheMovingBlockedByLogic  = true;
                 }
+                else if (RegionStatus.REGION_STATUS_EMPTY == DESTINATION_CELL_REGION_STATUS)
+                {
+                    final RegionStatus  SOURCE_CELL_REGION_STATUS  = regions[sourcePoint.getRow()][sourcePoint.getColumn()].getRegionStatus();
+                    //  If the destination region status is outside safe zone
+                    if (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT ==  SOURCE_CELL_REGION_STATUS)
+                    {
+                        //  Set this point as the last space pilot in safe zone
+                        this.lastSpacePilotPointInSafeZone.setRow(sourcePoint.getRow());
+                        this.lastSpacePilotPointInSafeZone.setColumn(sourcePoint.getColumn());
+                    }
+                }
             }
         }
         else
@@ -501,6 +528,11 @@ public class Grid
 		//  If reached here, it is not on any line
 		return false;
 	}
+
+    public BoardPoint getLastSpacePilotPointInSafeZone()
+    {
+        return this.lastSpacePilotPointInSafeZone;
+    }
 
 	public int getCurrentNumberOfUnconqueredRegions() 
     {

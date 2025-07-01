@@ -77,6 +77,7 @@ package my_game;
 
 import java.awt.Color;
 
+import base.AudioPlayer.MusicStatus;
 import base.Game;
 import base.PeriodicLoop;
 import my_base.MyContent;
@@ -111,6 +112,7 @@ public class GameControl
         this.board          = content.getBoard();
         this.tipManager     = new TipManager(this.board.getCanvas());
         content.messages().setInitialTime(OPENING_PICTURE_TO_BE_SHOWN_TIME);
+        content.messages().setLives(content.spacePilot().getLives());
     }
 
     public int getTargetPercentageToWin()
@@ -138,13 +140,54 @@ public class GameControl
                 final BoardPoint    destinationLocation     = content.spacePilot().getLocation();
                 //  Try to move the small enemies randomally
                 content.smallEnemies().move();
-                //  Handle collisions between small enemies and space pilot
-                if ((false == isGameOver) && (true == handleCollisions()))
+                
+                if (false == isGameOver)
                 {
-                    content.gameOverShow(350, 320);
-                    content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60 * MILLISECONDS_IN_SECOND);
-                    content.grid().hideUnusedGridLines();
-                    isGameOver  = true;
+                    //  Handle collisions between small enemies and space pilot
+                    if (true == handleCollisionBetweenSmallEnemyAndSpacePilot())
+                    {
+                        isGameOver  = true;
+                    }  
+                    //  Handle collisions between small enemies and space pilot green lines
+                    else if (true == handleCollisionBetweenSmallEnemyAndGreenLines())
+                    {
+                        //  Reduce the space pilot lives
+                        content.spacePilot().reduceLives();
+                        content.messages().setLives(content.spacePilot().getLives());
+
+                        if (0 == content.spacePilot().getLives())
+                        {
+                            isGameOver  = true;
+                        }
+                        else
+                        {
+                            final BoardPoint    LAST_SPACE_PILOT_POINT_IN_SAFE_ZONE =   content.grid().getLastSpacePilotPointInSafeZone();
+                            content.grid().hideUnusedGridLines();
+                            content.grid().resetConqueringRegions();
+                            //  Reset the limits of space pilot when outside safe zone
+                            resetLimitsOfSpacePilotWhenOutsideSafeZone();
+                            content.spacePilot().setLocation(LAST_SPACE_PILOT_POINT_IN_SAFE_ZONE);
+                            regionsAfterFloodFill           = null;
+                            getSpacePilotIsOutsideSafeZone  = false;
+                            content.youLostLifeShow(320, 260);
+                            content.statusLine().showText("You lost one life", Color.ORANGE, 2 * MILLISECONDS_IN_SECOND);
+ //                           if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
+                            {
+                                Game.audioPlayer().play("resources/audio/Buzz.wav", 1);
+                            }
+                        }
+                    }
+
+                    if (true == isGameOver)
+                    {
+                        content.gameOverShow(350, 320);
+                        content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60 * MILLISECONDS_IN_SECOND);
+//                      if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
+                        {
+                            Game.audioPlayer().play("resources/audio/aw_crap.wav", 1);
+                        }
+                        content.grid().hideUnusedGridLines();
+                    }
                 }
 
             //  Graphics (canvas) section of gameStep()
@@ -206,6 +249,12 @@ public class GameControl
                 isGameOver  = true;
     //            Game.endGame();
             }
+
+            if ("" == content.statusLine().getText())
+            {
+                //  If the status line is "", then also hide the image
+                content.gameImageHide();
+            }
         }
         else if (PeriodicLoop.elapsedTime() > OPENING_PICTURE_TO_BE_SHOWN_TIME)
         {
@@ -223,6 +272,10 @@ public class GameControl
             content.youWinShow(300,320);
             content.statusLine().showText("You WON !!!", Color.GREEN, 60 * MILLISECONDS_IN_SECOND);
             content.grid().hideUnusedGridLines();
+//           if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
+            {
+                Game.audioPlayer().play("resources/audio/Applause.wav", 1);
+            }
             return true;
         }
         else    
@@ -232,6 +285,10 @@ public class GameControl
                 content.youFinishedShow(320, 260);
                 content.statusLine().showText("You decided to finish !!!, Whyyyyy ????", Color.ORANGE, 60 * MILLISECONDS_IN_SECOND);
                 content.grid().hideUnusedGridLines();
+//              if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
+                {
+                    Game.audioPlayer().play("resources/audio/aw_crap.wav", 1);
+                }
                 return true;
             }
         }
@@ -240,14 +297,15 @@ public class GameControl
     }   
 
     /**
-     * handleCollisions method
+     * handleCollisionBetweenSmallEnemyAndSpacePilot method
      * 
-     * @implNote handleCollisions method to check if the space pilot collides with any small enemy
+     * @implNote handleCollisionBetweenSmallEnemyAndSpacePilot method to check if the space pilot 
+     *              collides with any small enemy
      *
      * @param none
      * @return (boolean) true if collision occurred, false otherwise
      */
-	private boolean handleCollisions() 
+	private boolean handleCollisionBetweenSmallEnemyAndSpacePilot() 
     {
 		SpacePilot 		spacePilot   	= content.spacePilot();
 		SmallEnemies	smallEnemies	= content.smallEnemies();
@@ -262,6 +320,34 @@ public class GameControl
 				    return true;
                 }
 			}
+		}
+
+        return false;
+	}
+
+    /**
+     * handleCollisionBetweenSmallEnemyAndGreenLines method
+     * 
+     * @implNote handleCollisionBetweenSmallEnemyAndGreenLines method to check if one of the small 
+     *              enemies collides with the green line of the space pilot
+     *
+     * @param none
+     * @return (boolean) true if collision occurred, false otherwise
+     */
+	private boolean handleCollisionBetweenSmallEnemyAndGreenLines() 
+    {
+		SmallEnemies	smallEnemies	= content.smallEnemies();
+		
+		for (SmallEnemy s : smallEnemies.getSmallEnemies()) 
+        {
+            final RegionStatus    CURRENT_ENEMY_REGION_STATUS 
+                = content.grid().regions()[s.getLocation().getRow()][s.getLocation().getColumn()].getRegionStatus();
+
+            if (CURRENT_ENEMY_REGION_STATUS == RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING)
+            {
+                //  If the region is a conquering region
+                return true;
+            }
 		}
 
         return false;

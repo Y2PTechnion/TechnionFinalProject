@@ -134,7 +134,7 @@ public class MyContent extends GameContent
         gameImage.setzOrder(15);
         gameImage.setStatus(Shape.STATUS.SHOW);
 
-		if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
+//		if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
         {
 		    Game.audioPlayer().play("resources/audio/Lunar Lander - Jupiter.wav", 1);
         }
@@ -255,6 +255,21 @@ public class MyContent extends GameContent
         */
 	public void youFinishedShow(int x, int y) {
         gameImage.setImage("resources/youFinished.png", 257, 307);
+        gameImage.moveToLocation(x, y);
+        gameImage.setzOrder(15);
+		gameImage.setStatus(Shape.STATUS.SHOW);
+	}	
+
+    /**
+        * youLostLife method
+        * 
+        * @implNote This method shows the "you lost life" image sign
+        *
+        * @param (int x) (No parameters)
+        * @return (No return value)
+        */
+	public void youLostLifeShow(int x, int y) {
+        gameImage.setImage("resources/youLostLife.png", 294, 153);
         gameImage.moveToLocation(x, y);
         gameImage.setzOrder(15);
 		gameImage.setStatus(Shape.STATUS.SHOW);

@@ -337,6 +337,7 @@ public class Board
 		t2.setColor(Color.WHITE);
 		t2.setFontSize(40);
 		canvas.addShape(t2);
+
         Text t3     = new Text(messages.guidPercentage(), messages.getPercentage(), 400, 120); 
 		t3.setColor(Color.GREEN);
 		t3.setFontSize(40);
@@ -346,6 +347,11 @@ public class Board
 		t4.setColor(Color.WHITE);
 		t4.setFontSize(30);
 		canvas.addShape(t4);
+
+        Text t5     = new Text(messages.guidLives(), messages.getLives(), 250, 120);
+		t5.setColor(Color.WHITE);
+		t5.setFontSize(30);
+		canvas.addShape(t5);
 	}
 
 	private void addStatusLine() 
@@ -401,6 +407,8 @@ public class Board
         final int FROZEN_ENEMIES    = content.getQuantityOfEnemies() - content.smallEnemies().getQuantityOfSmallEnemiesRunning();
 	    Text        t4              = (Text) canvas.getShape("QuantityOfEnemies");
 		t4.setText("Enemies:" + content.getQuantityOfEnemies() + ", " + FROZEN_ENEMIES + " frozen");
+	    Text        t5              = (Text) canvas.getShape(content.messages().guidLives());
+		t5.setText(content.messages().getLives());
 
         String  playerName      = GetNameButton.getPlayerName();
         if (null != playerName && !playerName.isEmpty()) 

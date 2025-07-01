@@ -90,8 +90,12 @@ import my_game.Grid.Direction;
  */
 public class SpacePilot extends GameCharacter 
 {
+//  Private constant for the class
+    final private int   SPACE_PILOT_LIVES   = 5;
 //  Private variables for the class
-    private int             imageIndex              = 0;
+    private int         imageIndex          = 0;
+    private int         lives               = SPACE_PILOT_LIVES;        
+
 
     //  Array of different types of images of space pilot
 	private final String[]	images = {"YellowSpaceshipRight", "YellowSpaceshipLeft",
@@ -134,6 +138,32 @@ public class SpacePilot extends GameCharacter
 
         //  Updates current direction
         currentDirection    = direction;
+	}
+
+    /**
+        * reduceLives method
+        * 
+        * @implNote this method reduces the lives when the enemy collisions the green line
+        *
+        * @param (none)
+        * @return (none)
+        */
+	public void reduceLives() 
+    {
+        this.lives--;
+	}
+
+    /**
+        * getLives getter method
+        * 
+        * @implNote this method gets the current number of lives
+        *
+        * @param (none)
+        * @return (int) (number of space pilot lives)
+        */
+	public int getLives() 
+    {
+        return this.lives;
 	}
 	
     /**

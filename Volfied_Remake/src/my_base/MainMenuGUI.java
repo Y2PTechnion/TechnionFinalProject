@@ -116,7 +116,7 @@ public class MainMenuGUI
         return selectedDifficulty.QUANTITY_OF_DIFFERENT_SMALL_ENEMIES;
     }
 
-    public static void main(String[] args) 
+    public static void start(String[] args) 
     {
         JFrame frame    = new JFrame("Zone Capture - Main Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

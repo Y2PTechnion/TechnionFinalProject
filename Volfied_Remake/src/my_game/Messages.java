@@ -85,6 +85,7 @@ public class Messages
 {
 //  Private variables for the class
 	private int     score                       = 0;
+    private int     lives                       = 0;
     private double  conqueredRegionsPercentage  = 0.0;
     private long    initialTimeInMilliseconds   = 0;
 	
@@ -151,4 +152,19 @@ public class Messages
         String  stringTime  = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 		return ("Elapsed: " + stringTime);
     }
+
+	public void setLives(int lives) 
+    {
+		this.lives  = lives;
+	}
+
+    public String getLives()
+    {
+        return "Lives: "+ this.lives;
+    }
+
+	public String guidLives() 
+    {
+		return "lives";
+	}
 }
