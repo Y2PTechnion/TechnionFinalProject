@@ -165,11 +165,19 @@ public class MyGame extends Game
 
     public static void addButtonsToDashboard()
     {
+        final   int FIRST_LINE_IN_PIXELS    = 50;
+        final   int SECOND_LINE_IN_PIXELS   = 100;
+        final   int BUTTON_WIDTH_IN_PIXELS  = 130;
+        final   int BUTTON_HEIGHT_IN_PIXELS = 40;
+        final   int FIRST_COLUMN_IN_PIXELS  = 500;
+        final   int SECOND_COLUMN_IN_PIXELS = 800;
         GameDashboard dashboard = gameUI.dashboard();
-        dashboard.addUIElement(new EndButton("btnEND", "END", 130, 40, 800, 50));
-        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 130, 40, 800, 100));  
-        dashboard.addUIElement(new HelpButton("btHelp", "Help", 130, 40, 500, 50));
-        dashboard.addUIElement(new RestartButton("btRestart", "Restart", 130, 40, 500, 100));
+        dashboard.addUIElement(new RestartButton("btRestart", "Restart", 
+            BUTTON_WIDTH_IN_PIXELS, BUTTON_HEIGHT_IN_PIXELS, FIRST_COLUMN_IN_PIXELS, FIRST_LINE_IN_PIXELS));
+        dashboard.addUIElement(new EndButton("btnEND", "END", 
+                BUTTON_WIDTH_IN_PIXELS, BUTTON_HEIGHT_IN_PIXELS, SECOND_COLUMN_IN_PIXELS, FIRST_LINE_IN_PIXELS));
+        dashboard.addUIElement(new GetNameButton("btnName", "Get Name", 
+                BUTTON_WIDTH_IN_PIXELS, BUTTON_HEIGHT_IN_PIXELS, SECOND_COLUMN_IN_PIXELS, SECOND_LINE_IN_PIXELS));
     }       
 	
 	@Override
@@ -195,16 +203,18 @@ public class MyGame extends Game
 		return this.content;
 	}
 	
-	public static void main(String[] args) 
-    {
-		MyGame game = new MyGame();
+    public void start() 
+	{
+        this.setGameContent(new MyContent());
+        MyPeriodicLoop periodicLoop = new MyPeriodicLoop();
+        periodicLoop.setContent(this.getContent());
+        this.setPeriodicLoop(periodicLoop);
+        this.setMouseHandler(new MyMouseHandler());
+        this.setKeyboardListener(new MyKeyboardListener());
+        this.initGame();
+    }
 
-		game.setGameContent(new MyContent());
-		MyPeriodicLoop periodicLoop = new MyPeriodicLoop();
-		periodicLoop.setContent(game.getContent());
-		game.setPeriodicLoop(periodicLoop);
-		game.setMouseHandler(new MyMouseHandler());
-		game.setKeyboardListener(new MyKeyboardListener());
-		game.initGame();
-	}
+    public static void main(String[] args) {
+        MainMenuGUI.main(args);
+    }
 }

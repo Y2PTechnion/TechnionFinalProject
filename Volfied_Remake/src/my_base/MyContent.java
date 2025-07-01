@@ -75,6 +75,8 @@
 //////////////////////////// 80 columns wide //////////////////////////////////
 package my_base;
 
+import my_base.MainMenuGUI;
+
 import java.awt.Color;
 
 import base.Game;
@@ -95,7 +97,7 @@ public class MyContent extends GameContent
 {
 //  Private constants for the class
     //  Quantity of small enemies to place in  the board
-    private final int   	QUANTITY_OF_SMALL_ENEMIES   = 20;
+    private final int   	QUANTITY_OF_SMALL_ENEMIES   = MainMenuGUI.selectedDifficultyInMainMenuGUI();
     private final int       MILLISECONDS_IN_SECOND      = 1000;
 
 //  Private variables for the class

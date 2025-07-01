@@ -148,9 +148,9 @@ public class Grid
     public boolean getIsBoardPointACornerForEnemies(BoardPoint boardPoint)
     {
         final int       NORTH_CORNER    = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_Y_PER_COLUMN/2;
-        final int       SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-NORTH_CORNER;
+        final int       SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1-NORTH_CORNER;
         final int       WEST_CORNER     = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW/2;
-        final int       EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-WEST_CORNER;
+        final int       EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-1-WEST_CORNER;
         final boolean   IS_BOARD_POINT_A_CORNER_FOR_ENEMIES   =
             /* North-West */
             (((NORTH_CORNER == boardPoint.getRow()) 
@@ -175,7 +175,6 @@ public class Grid
         final int   SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-NORTH_CORNER;
         final int   WEST_CORNER     = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW/2;
         final int   EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-WEST_CORNER;
-  
 
         if ((NORTH_CORNER == boardPoint.getRow()) 
                 && (WEST_CORNER == boardPoint.getColumn()))
