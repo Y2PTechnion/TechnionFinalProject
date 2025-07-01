@@ -172,9 +172,9 @@ public class Grid
     {
         Direction   corner          = Direction.STOPPED;
         final int   NORTH_CORNER    = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_Y_PER_COLUMN/2;
-        final int   SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-NORTH_CORNER;
+        final int   SOUTH_CORNER    = TOTAL_GAME_CELLS_IN_Y_PER_COLUMN-1-NORTH_CORNER;
         final int   WEST_CORNER     = BORDER_CELLS_ONLY_FOR_SPACE_PILOT_IN_X_PER_ROW/2;
-        final int   EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-WEST_CORNER;
+        final int   EAST_CORNER     = TOTAL_GAME_CELLS_IN_X_PER_ROW-1-WEST_CORNER;
 
         if ((NORTH_CORNER == boardPoint.getRow()) 
                 && (WEST_CORNER == boardPoint.getColumn()))
@@ -366,10 +366,10 @@ public class Grid
         */
 	public boolean isCurrentMoveBlockedByLogicOrGameConstraints(BoardPoint sourcePoint, BoardPoint destinationPoint, GameCharacter gameCharacter) 
     {
-        boolean             isTheMovingBlockedByLogic   = false;
-        final int           DESTINATION_ROW             = destinationPoint.getRow();
-        final int           DESTINATION_COLUMN          = destinationPoint.getColumn();
-        
+        boolean             isTheMovingBlockedByLogic       = false;
+        final int           DESTINATION_ROW                 = destinationPoint.getRow();
+        final int           DESTINATION_COLUMN              = destinationPoint.getColumn();
+
         //  First blocking moving according to type of object
 		if (gameCharacter instanceof SmallEnemy)
         {

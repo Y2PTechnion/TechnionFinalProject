@@ -82,7 +82,6 @@ import base.GameContent;
 import base.GameCanvas;
 import base.GameDashboard;
 import my_ui_elements.GetNameButton;
-import my_ui_elements.HelpButton;
 import my_ui_elements.EndButton;
 import my_ui_elements.RestartButton;
 import shapes.Shape.STATUS;
@@ -125,7 +124,7 @@ public class MyGame extends Game
         textSpeed.setStatus(STATUS.SHOW);
         canvas.addShape(textSpeed);
 
-        Text    textPercentageTarget    = new Text("PercentageTarget", "Target % territory: " + content.gameControl().getTargetPercentageToWin(), 20, 50);     
+        Text    textPercentageTarget    = new Text("PercentageTarget", "Target % territory: " + content.gameControl().getTargetPercentageToWin(), 30, 50);     
         textPercentageTarget.setColor(textColor);
         textPercentageTarget.setFontName(textFont);
         textPercentageTarget.setFontSize(textSize);
@@ -133,7 +132,7 @@ public class MyGame extends Game
         canvas.addShape(textPercentageTarget);
 
         final int FROZEN_ENEMIES    = content.getQuantityOfEnemies() - content.smallEnemies().getQuantityOfSmallEnemiesRunning();
-        Text    textQuantityOfEnemies   = new Text("QuantityOfEnemies", "Enemies:" + content.getQuantityOfEnemies() + ", " + FROZEN_ENEMIES + " frozen", 20, 50 + textDeltaInY);     
+        Text    textQuantityOfEnemies   = new Text("QuantityOfEnemies", "Enemies:" + content.getQuantityOfEnemies() + ", " + FROZEN_ENEMIES + " frozen", 30, 50 + textDeltaInY);     
         textQuantityOfEnemies.setColor(textColor);
         textQuantityOfEnemies.setFontName(textFont);
         textQuantityOfEnemies.setFontSize(textSize);

@@ -130,7 +130,7 @@ public class MyContent extends GameContent
 		smallEnemies	    = new SmallEnemies(QUANTITY_OF_SMALL_ENEMIES);
 		smallEnemies.initSmallEnemies(grid);
 
-        gameImage           = new Image("gameOverImage", "resources/OpeningPicture1.png", 1024, 1024, 0,0);
+        gameImage           = new Image("gameImage", "resources/OpeningPicture1.png", 1024, 1024, 0,0);
         gameImage.setzOrder(15);
         gameImage.setStatus(Shape.STATUS.SHOW);
 

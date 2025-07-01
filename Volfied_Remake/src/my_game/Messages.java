@@ -126,7 +126,7 @@ public class Messages
 	
 	public String getText() 
     {
-		return "1UP: " + score;
+		return "Zones: " + score;
 	}
 
 	public String getPercentage() 

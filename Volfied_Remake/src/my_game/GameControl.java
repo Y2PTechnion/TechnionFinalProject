@@ -154,8 +154,14 @@ public class GameControl
             if ((SOURCE_LOCATION.getColumn() != destinationLocation.getColumn())
                 || (SOURCE_LOCATION.getRow() != destinationLocation.getRow()))
             {
-                //  Update grid space pilot lines in canvas
-                content.grid().addGridSpacePilotLines(SOURCE_LOCATION, destinationLocation);
+                final RegionStatus  DESTINATION_REGION_STATUS   
+                    = content.grid().regions()[destinationLocation.getRow()][destinationLocation.getColumn()].getRegionStatus();
+
+                if (DESTINATION_REGION_STATUS != RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT)
+                {
+                    //  Update grid space pilot lines in canvas (but only if it not in border conquered)
+                    content.grid().addGridSpacePilotLines(SOURCE_LOCATION, destinationLocation);
+                }
             }
 
             if (true == regionsWereConquered)
