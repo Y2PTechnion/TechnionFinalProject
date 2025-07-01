@@ -77,13 +77,7 @@
 package my_base;
 
 import javax.swing.*;
-
-import org.apache.poi.ss.usermodel.DifferentialStyleProvider;
-
-import my_game.SmallEnemy;
-
 import java.awt.*;
-import java.util.Arrays;
 
 
 /**
@@ -155,7 +149,7 @@ public class MainMenuGUI
         difficultyButton.addActionListener(e -> 
         {
             final int   QUANTITY_OF_ENUMERATORS = Difficulty.values().length;
-            String[] options    = new String[QUANTITY_OF_ENUMERATORS];
+            String[]    options = new String[QUANTITY_OF_ENUMERATORS];
 
             for (int index = 0; index < QUANTITY_OF_ENUMERATORS; index++) 
             {
