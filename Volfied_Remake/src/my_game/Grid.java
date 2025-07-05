@@ -135,7 +135,7 @@ public class Grid
 	private Board               board                               = null;
 	private ArrayList<GridLine> gridBorderOnlyForSpacePilotLines    = new ArrayList<GridLine>();
     private ArrayList<GridLine> gridSpacePilotLines                 = new ArrayList<GridLine>();
-    private BoardPoint          lastSpacePilotPointInSafeZone       = new BoardPoint(0,0);
+    private BoardPoint          lastSpacePilotPointInSafeZone       = null;
     //  Region[row][column]
 	private Region[][]          regions                             = new Region[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][TOTAL_GAME_CELLS_IN_X_PER_ROW];
 	
@@ -144,6 +144,7 @@ public class Grid
 		this.board  = board;
 		initGridLines();
 		initRegions();
+        lastSpacePilotPointInSafeZone       = new BoardPoint(0, 0);
 	}
 
     public boolean getIsBoardPointACornerForEnemies(BoardPoint boardPoint)
@@ -454,7 +455,8 @@ public class Grid
                 {
                     final RegionStatus  SOURCE_CELL_REGION_STATUS  = regions[sourcePoint.getRow()][sourcePoint.getColumn()].getRegionStatus();
                     //  If the destination region status is outside safe zone
-                    if (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT ==  SOURCE_CELL_REGION_STATUS)
+                    if ((RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT ==  SOURCE_CELL_REGION_STATUS)
+                        || (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SOURCE_CELL_REGION_STATUS))
                     {
                         //  Set this point as the last space pilot in safe zone
                         this.lastSpacePilotPointInSafeZone.setRow(sourcePoint.getRow());

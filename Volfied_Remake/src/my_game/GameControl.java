@@ -76,8 +76,9 @@
 package my_game;
 
 import java.awt.Color;
+import java.util.LinkedList;
 
-import base.AudioPlayer.MusicStatus;
+
 import base.Game;
 import base.PeriodicLoop;
 import my_base.MyContent;
@@ -89,28 +90,34 @@ import my_base.MyGame;
 public class GameControl 
 {
     //  Private constants for the class
-    private final int           GRID_PERCENTAGE_TO_CONQUER                  = 80; //  Percentage of the grid to conquer to win the game
-    private final int           MILLISECONDS_IN_SECOND                      = 1000;
-    private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS = 15;
-    private final int           OPENING_PICTURE_TO_BE_SHOWN_TIME            = OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS * MILLISECONDS_IN_SECOND;
+    private final int               GRID_PERCENTAGE_TO_CONQUER                  = 80; //  Percentage of the grid to conquer to win the game
+    private final int               MILLISECONDS_IN_SECOND                      = 1000;
+    private final int               OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS = 15;
+    private final int               OPENING_PICTURE_TO_BE_SHOWN_TIME            = OPENING_PICTURE_TO_BE_SHOWN_TIME_IN_SECONDS * MILLISECONDS_IN_SECOND;
     //  Private variables for the class
-    private MyContent           content                                     = null;
-	private Board               board                                       = null;
-    private TipManager          tipManager                                  = null;
-    static private boolean      getSpacePilotIsOutsideSafeZone              = false;
-    static private BoardPoint   boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
-    static private int          spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
-    static private int          spacePilotRightestColumnWhenOutsideSafeZone = 0;
-    static private int          spacePilotSouthestRowWhenOutsideSafeZone    = 0;
-    static private int          spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
-    static private boolean      isGameOver                                  = false;
-    static private boolean      isOpeningPictureShown                       = true;
+    private MyContent               content                                     = null;
+	private Board                   board                                       = null;
+    private TipManager              tipManager                                  = null;
+    static private boolean          getSpacePilotIsOutsideSafeZone              = false;
+    static private BoardPoint       boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
+    static private int              spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
+    static private int              spacePilotRightestColumnWhenOutsideSafeZone = 0;
+    static private int              spacePilotSouthestRowWhenOutsideSafeZone    = 0;
+    static private int              spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
+    static private boolean          isGameOver                                  = false;
+    static private boolean          isOpeningPictureShown                       = true;
+    private BoardPoint              lastInsideOfSafeZonePoint                   = null;
+    private BoardPoint              firstOutsideOfSafeZonePoint                 = null;
+    private LinkedList<BoardPoint>  tripLinkedList                              = null;
 
     public GameControl(MyContent content) 
     {
-        this.content        = content;
-        this.board          = content.getBoard();
-        this.tipManager     = new TipManager(this.board.getCanvas());
+        this.content                            = content;
+        this.board                              = content.getBoard();
+        this.tipManager                         = new TipManager(this.board.getCanvas());
+        this.lastInsideOfSafeZonePoint          = new BoardPoint(0, 0);
+        this.firstOutsideOfSafeZonePoint        = new BoardPoint(0, 0);
+        this.tripLinkedList                     = new LinkedList<>();
         content.messages().setInitialTime(OPENING_PICTURE_TO_BE_SHOWN_TIME);
         content.messages().setLives(content.spacePilot().getLives());
     }
@@ -120,6 +127,15 @@ public class GameControl
         return GRID_PERCENTAGE_TO_CONQUER;
     }
 
+    /**
+        * gameStep() method
+        * 
+        * @implNote this method is the "cyclic" game step called by MyPeriodicLoop class
+        *               to perform the mechanics of the game
+        *
+        * @param (none)
+        * @return (none) 
+        */
 	public void gameStep() 
     {
         Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
@@ -144,12 +160,9 @@ public class GameControl
                 if (false == isGameOver)
                 {
                     //  Handle collisions between small enemies and space pilot
-                    if (true == handleCollisionBetweenSmallEnemyAndSpacePilot())
-                    {
-                        isGameOver  = true;
-                    }  
-                    //  Handle collisions between small enemies and space pilot green lines
-                    else if (true == handleCollisionBetweenSmallEnemyAndGreenLines())
+                    if ((true == handleCollisionBetweenSmallEnemyAndSpacePilot())
+                        //  Handle collisions between small enemies and space pilot green lines
+                        || (true == handleCollisionBetweenSmallEnemyAndGreenLines()))
                     {
                         //  Reduce the space pilot lives
                         content.spacePilot().reduceLives();
@@ -162,6 +175,7 @@ public class GameControl
                         else
                         {
                             final BoardPoint    LAST_SPACE_PILOT_POINT_IN_SAFE_ZONE =   content.grid().getLastSpacePilotPointInSafeZone();
+
                             content.grid().hideUnusedGridLines();
                             content.grid().resetConqueringRegions();
                             //  Reset the limits of space pilot when outside safe zone
@@ -171,10 +185,7 @@ public class GameControl
                             getSpacePilotIsOutsideSafeZone  = false;
                             content.youLostLifeShow(320, 260);
                             content.statusLine().showText("You lost one life", Color.ORANGE, 2 * MILLISECONDS_IN_SECOND);
- //                           if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
-                            {
-                                Game.audioPlayer().play("resources/audio/Buzz.wav", 1);
-                            }
+                            Game.audioPlayer().play("resources/audio/Buzz.wav", 1);
                         }
                     }
 
@@ -182,10 +193,7 @@ public class GameControl
                     {
                         content.gameOverShow(350, 320);
                         content.statusLine().showText("Oops " + GetNameButton.getPlayerName() + " you LOST...", Color.RED, 60 * MILLISECONDS_IN_SECOND);
-//                      if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
-                        {
-                            Game.audioPlayer().play("resources/audio/aw_crap.wav", 1);
-                        }
+                        Game.audioPlayer().play("resources/audio/aw_crap.wav", 1);
                         content.grid().hideUnusedGridLines();
                     }
                 }
@@ -272,10 +280,8 @@ public class GameControl
             content.youWinShow(300,320);
             content.statusLine().showText("You WON !!!", Color.GREEN, 60 * MILLISECONDS_IN_SECOND);
             content.grid().hideUnusedGridLines();
-//           if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
-            {
-                Game.audioPlayer().play("resources/audio/Applause.wav", 1);
-            }
+            Game.audioPlayer().play("resources/audio/Applause.wav", 1);
+
             return true;
         }
         else    
@@ -285,10 +291,8 @@ public class GameControl
                 content.youFinishedShow(320, 260);
                 content.statusLine().showText("You decided to finish !!!, Whyyyyy ????", Color.ORANGE, 60 * MILLISECONDS_IN_SECOND);
                 content.grid().hideUnusedGridLines();
-//              if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
-                {
-                    Game.audioPlayer().play("resources/audio/aw_crap.wav", 1);
-                }
+                Game.audioPlayer().play("resources/audio/aw_crap.wav", 1);
+
                 return true;
             }
         }

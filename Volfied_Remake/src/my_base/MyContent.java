@@ -75,8 +75,6 @@
 //////////////////////////// 80 columns wide //////////////////////////////////
 package my_base;
 
-import my_base.MainMenuGUI;
-
 import java.awt.Color;
 
 import base.Game;
@@ -91,39 +89,41 @@ import my_game.Messages;
 import my_game.StatusLine;
 import shapes.Image;
 import shapes.Shape;
-import base.AudioPlayer.MusicStatus;
+//import base.AudioPlayer.MusicStatus;
 
 public class MyContent extends GameContent 
 {
 //  Private constants for the class
     //  Quantity of small enemies to place in  the board
-    private final int   	QUANTITY_OF_SMALL_ENEMIES   = MainMenuGUI.selectedDifficultyInMainMenuGUI();
-    private final int       MILLISECONDS_IN_SECOND      = 1000;
+    private final int   	QUANTITY_OF_SMALL_ENEMIES       = MainMenuGUI.selectedDifficultyInMainMenuGUI();
+    private final int       MILLISECONDS_IN_SECOND          = 1000;
 
 //  Private variables for the class
-	private Grid 			grid                = null;
-    private SpacePilot  	spacePilot          = null;
-	private SmallEnemies	smallEnemies        = null;
-	private Messages 		messages            = null;
-	private StatusLine 		statusLine          = null;
-    private StatusLine 		tipLine             = null;
-	private Board           board               = null;
-	private GameControl     gameControl         = null;
-    private Image           gameImage           = null;
+	private Grid 			grid                            = null;
+    private SpacePilot  	spacePilot                      = null;
+	private SmallEnemies	smallEnemies                    = null;
+	private Messages 		messages                        = null;
+	private StatusLine 		statusLine                      = null;
+    private StatusLine 		tipLine                         = null;
+	private Board           board                           = null;
+	private GameControl     gameControl                     = null;
+    private Image           gameImage                       = null;
+    private BoardPoint      spacePilotStartingPositiPoint   = null;
 
 	@Override
 	public void initContent() 
     {
+        spacePilotStartingPositiPoint   
+            = new BoardPoint(Grid.getTotalGameCellsInYPerColumn()-1, Grid.getTotalGameCellsInXPerRow()/2);
 		board 			= new Board();
 		board.setContent(this);
-		grid 			= new Grid(board);
+		grid 			= new Grid(board);                                          
 
         //  Create the space pilot and set its initial location
         //  The space pilot is the main character of the game
 		spacePilot		= new SpacePilot("spacePilot", grid);
         //  Set the space pilot in the middle of last row of the grid
-        spacePilot.setLocation(new BoardPoint(Grid.getTotalGameCellsInYPerColumn()-1, 
-                                                Grid.getTotalGameCellsInXPerRow()/2));
+        spacePilot.setLocation(spacePilotStartingPositiPoint);
 
         //  Creates the small enemies and sets their initial locations
         //  The small enemies are the enemies of the game
@@ -134,10 +134,7 @@ public class MyContent extends GameContent
         gameImage.setzOrder(15);
         gameImage.setStatus(Shape.STATUS.SHOW);
 
-//		if (Game.audioPlayer().getStatus() == MusicStatus.STOPPED) 
-        {
-		    Game.audioPlayer().play("resources/audio/Lunar Lander - Jupiter.wav", 1);
-        }
+	    Game.audioPlayer().play("resources/audio/Lunar Lander - Jupiter.wav", 1);
 
 		messages 			= new Messages();
 		statusLine 		    = new StatusLine();
@@ -149,6 +146,11 @@ public class MyContent extends GameContent
     public int getQuantityOfEnemies()
     {
         return QUANTITY_OF_SMALL_ENEMIES;
+    }
+
+    final public BoardPoint getSpacePilotStartingPositiPoint()
+    {
+        return spacePilotStartingPositiPoint;
     }
 
 	public Grid grid() 
