@@ -698,7 +698,7 @@ public class Grid
 
             //  Explore 4-directional neighbors
             final BoardPoint BOARD_POINT_DOWN   = new BoardPoint(ROW + 1, COLUMN);
-            final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);        
+            final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);
             final BoardPoint BOARD_POINT_RIGHT  = new BoardPoint(ROW, COLUMN + 1);
             final BoardPoint BOARD_POINT_LEFT   = new BoardPoint(ROW, COLUMN - 1);
             dfs(region, BOARD_POINT_DOWN, originalRegionStatus, newRegionStatus);   //  Down

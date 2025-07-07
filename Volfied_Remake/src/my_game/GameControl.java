@@ -78,9 +78,11 @@ package my_game;
 import java.awt.Color;
 import java.util.LinkedList;
 
+import javax.lang.model.util.ElementScanner6;
 
 import base.Game;
 import base.PeriodicLoop;
+import base.KeyboardListener.Direction;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
 import my_ui_elements.EndButton;
@@ -138,8 +140,8 @@ public class GameControl
         */
 	public void gameStep() 
     {
-        Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
         final BoardPoint        SOURCE_LOCATION         = content.spacePilot().getLocation();
+        Region                  region                  = conquerCurrentRegion(content.spacePilot().getLocation());
         Region[][]              regionsAfterFloodFill   = null;
 
         if (false == isOpeningPictureShown)
@@ -387,112 +389,231 @@ public class GameControl
         boolean     regionsWereConquered                        = false;
 
         //  Try to move the space pilot, if it was moved
-        content.spacePilot().move();
+        boolean     SPACE_PILOT_HAS_MOVED                       = content.spacePilot().move();
 
-        //  Get space pilot destination location
-        final BoardPoint    DESTINATION_LOCATION        = content.spacePilot().getLocation();
-        Region              destinationRegion           = content.grid().regions()[DESTINATION_LOCATION.getRow()][DESTINATION_LOCATION.getColumn()]; 
-        final RegionStatus  DESTINATION_REGION_STATUS   = destinationRegion.getRegionStatus(); 
-
-        switch (DESTINATION_REGION_STATUS)
+        if (true == SPACE_PILOT_HAS_MOVED)
         {
-            case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
-            case REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT:
-            case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
-            case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE:
+                //  If the space pilot has moved
+        //  Get space pilot destination location
+            final BoardPoint    DESTINATION_LOCATION        = content.spacePilot().getLocation();
+            Region              destinationRegion           = content.grid().regions()[DESTINATION_LOCATION.getRow()][DESTINATION_LOCATION.getColumn()]; 
+            final RegionStatus  DESTINATION_REGION_STATUS   = destinationRegion.getRegionStatus(); 
+
+            switch (DESTINATION_REGION_STATUS)
             {
-                //  The space pilot has reached a region that is already conquered (safe zone)
-
-                if (true == getSpacePilotIsOutsideSafeZone)
+                case REGION_STATUS_CONQUERED_BY_SPACE_PILOT:
+                case REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT:
+                case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT:
+                case REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT_BUT_NOT_IN_USE_ANYMORE:
                 {
-                    //  Find a board point inside the potential conquered zone 
-                    //  to start the flood fill algorithm
-                    getBoardPointInsideThePotentialConqueredZone();
-   
-                    //  The space pilot has reached one of the safe places
-                    //  after conquering
-                    //  Perform flood fill algorithm
-                    regionsAfterFloodFill = content.grid().floodFillAlgorithm(
-                                        content.grid().regions(), 
-                                        boardPointInsideThePotentialConqueredZone, 
-                                        RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                    //  The space pilot has reached a region that is already conquered (safe zone)
 
-                    if (null != regionsAfterFloodFill)
+                    if (true == getSpacePilotIsOutsideSafeZone)
                     {
-                        regionsWereConquered                    = true;
+                        //  Sets all the info needed to know the 'trip' the space pilot is doing
+                        if (!DESTINATION_LOCATION.isEqual(sourceLocation))
+                        {
+                            //  Only if the space pilot has moved
+                            tripLinkedList.add(DESTINATION_LOCATION);
+                        }
+
+                        final int       POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE         = 2;
+                        BoardPoint[]    potentialPointsInsideTheConqueredZone                   = new BoardPoint[]
+                        {
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0)
+                        };  
+
+                        //  Find a board point inside the potential conquered zone 
+                        //  to start the flood fill algorithm
+                            final int POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE = 
+                            getBoardPointInsideThePotentialConqueredZone(tripLinkedList, 
+                            POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE, 
+                            potentialPointsInsideTheConqueredZone);
+    
+                        if (POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE == POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE)
+                        {
+                            //  The space pilot has reached one of the safe places
+                            //  after conquering
+                            //  Perform flood fill algorithm
+                            final int CONQUERED_REGIONS_UNTIL_NOW = content.grid().calculateNumberOfConqueredRegions();
+
+                            final int FLOOD_FILL_ALGORITHM_TEST_CASES   = POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE;
+                            Grid[] floodFillAlgorithmTestCasesGrid      = new Grid[] 
+                            {
+                                new Grid(content.grid()),
+                                new Grid(content.grid())
+                            };
+                            int floodFillAlgorithmTestCasesConqueredRegions[] = new int[FLOOD_FILL_ALGORITHM_TEST_CASES];
+
+                            for (int testCase = 0; testCase < FLOOD_FILL_ALGORITHM_TEST_CASES; testCase++)
+                            {
+                                regionsAfterFloodFill   = floodFillAlgorithmTestCasesGrid[testCase].floodFillAlgorithm(
+                                    floodFillAlgorithmTestCasesGrid[testCase].regions(), 
+                                    potentialPointsInsideTheConqueredZone[testCase], 
+                                    RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                                floodFillAlgorithmTestCasesConqueredRegions[testCase] = 
+                                    (null != regionsAfterFloodFill) ? 
+                                        floodFillAlgorithmTestCasesGrid[testCase].calculateNumberOfConqueredRegions()-CONQUERED_REGIONS_UNTIL_NOW 
+                                        : -1;
+                            }
+
+                            //  Nullify the references to the grid to make them eligible for garbage collection
+                            for (int numberOfGrid = 0; numberOfGrid < floodFillAlgorithmTestCasesGrid.length; numberOfGrid++) 
+                            {
+                                floodFillAlgorithmTestCasesGrid[numberOfGrid] = null; // Nullify the reference
+                            }
+
+                            //  Find the best flood fill algorithm test case
+                            int bestFloodFillAlgorithmTestCase  = -1;
+
+                            //  Find the lowest
+                            for (int testCase = 0; testCase < FLOOD_FILL_ALGORITHM_TEST_CASES; testCase++)
+                            {
+                                if (-1 != floodFillAlgorithmTestCasesConqueredRegions[testCase])
+                                {
+                                    //  If the test case is valid
+                                    if (-1 == bestFloodFillAlgorithmTestCase)
+                                    {
+                                        //  If this is the first valid one
+                                        bestFloodFillAlgorithmTestCase  = testCase;
+                                    }
+                                    else
+                                    {
+
+                                        if (floodFillAlgorithmTestCasesConqueredRegions[testCase] <
+                                            floodFillAlgorithmTestCasesConqueredRegions[bestFloodFillAlgorithmTestCase])
+                                        {
+                                            bestFloodFillAlgorithmTestCase = testCase;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (-1 != bestFloodFillAlgorithmTestCase)
+                            {
+                                regionsAfterFloodFill = content.grid().floodFillAlgorithm(
+                                                    content.grid().regions(), 
+                                                    potentialPointsInsideTheConqueredZone[bestFloodFillAlgorithmTestCase], 
+                                                    RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                            }
+
+                            //  Nullify the references to the BoardPoint to make them eligible for garbage collection
+                            for (int potentialPoint = 0; potentialPoint < potentialPointsInsideTheConqueredZone.length; potentialPoint++) 
+                            {
+                                potentialPointsInsideTheConqueredZone[potentialPoint] = null; // Nullify the reference
+                            }
+                        }
+                        else if (1 == POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE)
+                        {
+                            System.out.println("Should not happen");
+                        }
+                        else    
+                        {
+                            System.out.println("Should not happen");
+                        }
+                    
+                        //  Resets the info about the 'trip' the space pilot did
+                        tripLinkedList.clear();
+                        lastInsideOfSafeZonePoint.set(new BoardPoint(0,0));
+                        firstOutsideOfSafeZonePoint.set(new BoardPoint(0,0));
+
+                        if (null != regionsAfterFloodFill)
+                        {
+                            regionsWereConquered                    = true;
+                        }
+                        else
+                        {
+                            //  If one of the region status is SMALL_ENEMY_OVER
+                            regionsWereConquered                    = false;
+                            //  Reverse all what should be done
+                        }
+
+                        //  Reset the limits of space pilot when outside safe zone
+                        resetLimitsOfSpacePilotWhenOutsideSafeZone();
                     }
                     else
                     {
-                        //  If one of the region status is SMALL_ENEMY_OVER
-                        regionsWereConquered                    = false;
-                        //  Reverse all what should be done
+                        //  Reset the limits of space pilot when outside safe zone
+                        resetLimitsOfSpacePilotWhenOutsideSafeZone();
+                        //  Update the limits of space pilot when even when inside safe zone
+                        updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
+                        updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
                     }
 
-                    //  Reset the limits of space pilot when outside safe zone
-                    resetLimitsOfSpacePilotWhenOutsideSafeZone();
+                    //  The space pilot has reached a region that is already conquered
+                    getSpacePilotIsOutsideSafeZone  = false;
+                    break;
                 }
-                else
+
+                case REGION_STATUS_SPACE_PILOT_CONQUERING:
                 {
-                    //  Reset the limits of space pilot when outside safe zone
-                    resetLimitsOfSpacePilotWhenOutsideSafeZone();
-                    //  Update the limits of space pilot when even when inside safe zone
+                    if ((true == getSpacePilotIsOutsideSafeZone)
+                        && (!sourceLocation.isEqual(DESTINATION_LOCATION)))
+                    {
+                        //  Because of Yuval's comments, when making loops within
+                        //  conquering regions, then reset the limits, if we 
+                        //  were moving between different locations.
+                        //  Reset the limits of space pilot when outside safe zone
+                        resetLimitsOfSpacePilotWhenOutsideSafeZone();
+                            //  Update the limits of space pilot when even when inside safe zone
+                        updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
+                        updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
+                    }   
+                    else
+                    {
+                        //  Do nothing, the region is being conquered
+                    }
+                    break;
+                }
+
+                case REGION_STATUS_EMPTY:
+                {
+                    if (false == getSpacePilotIsOutsideSafeZone)
+                    {
+                        //  The space pilot has in this movement
+                        //  go out from the safe zone
+                        //  The space pilot has reached a region that is NOT already conquered
+                        getSpacePilotIsOutsideSafeZone          = true;
+
+                        //  Sets all the info needed to know the 'trip' the space pilot is doing
+                        lastInsideOfSafeZonePoint               = sourceLocation;
+                        firstOutsideOfSafeZonePoint             = DESTINATION_LOCATION;
+                        tripLinkedList.clear();
+                        tripLinkedList.add(lastInsideOfSafeZonePoint);
+                    }
+                    else
+                    {
+                        //  Sets all the info needed to know the 'trip' the space pilot is doing
+                        if (!DESTINATION_LOCATION.isEqual(sourceLocation))
+                        {
+                            //  Only if the space pilot has moved
+                            tripLinkedList.add(DESTINATION_LOCATION);
+                        }
+                    }
+
+                    //  Set the region as a region being conquered
+                    destinationRegion.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
+
+                    //  Update the limits of space pilot when outside safe zone
                     updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
                     updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
+                    
+                    //  Sets all the info needed to know the 'trip' the space pilot is doing
+                    tripLinkedList.add(firstOutsideOfSafeZonePoint);
+                    break;
                 }
 
-                //  The space pilot has reached a region that is already conquered
-                getSpacePilotIsOutsideSafeZone  = false;
-                break;
-            }
-
-            case REGION_STATUS_SPACE_PILOT_CONQUERING:
-            {
-                if ((true == getSpacePilotIsOutsideSafeZone)
-                    && (!sourceLocation.isEqual(DESTINATION_LOCATION)))
+                case REGION_STATUS_SPACE_PILOT_OVER:
+                case REGION_STATUS_SMALL_ENEMY_OVER:
+                default:
                 {
-                    //  Because of Yuval's comments, when making loops within
-                    //  conquering regions, then reset the limits, if we 
-                    //  were moving between different locations.
-                    //  Reset the limits of space pilot when outside safe zone
-                   resetLimitsOfSpacePilotWhenOutsideSafeZone();
-                    //  Update the limits of space pilot when even when inside safe zone
-                  updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
-                  updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
-                }   
-                else
-                {
-                    //  Do nothing, the region is being conquered
+                    System.out.println("In gameStep() should not happen");
                 }
-                break;
             }
 
-            case REGION_STATUS_EMPTY:
-            {
-                if (false == getSpacePilotIsOutsideSafeZone)
-                {
-                    //  The space pilot has in this movement
-                    //  go out from the safe zone
-                    //  The space pilot has reached a region that is NOT already conquered
-                    getSpacePilotIsOutsideSafeZone          = true;
-                }
-
-                //  Set the region as a region being conquered
-                destinationRegion.setRegionStatus(RegionStatus.REGION_STATUS_SPACE_PILOT_CONQUERING);
-
-                //  Update the limits of space pilot when outside safe zone
-                updateLimitsOfSpacePilotWhenOutsideSafeZone(sourceLocation);
-                updateLimitsOfSpacePilotWhenOutsideSafeZone(DESTINATION_LOCATION);
-                break;
-            }
-
-            case REGION_STATUS_SPACE_PILOT_OVER:
-            case REGION_STATUS_SMALL_ENEMY_OVER:
-            default:
-            {
-                System.out.println("In gameStep() should not happen");
-            }
         }
-
+ 
         return regionsWereConquered;
     }
 
@@ -524,6 +645,234 @@ public class GameControl
         spacePilotNorthestRowWhenOutsideSafeZone    = Grid.getTotalGameCellsInYPerColumn();
     }
 
+
+    /**
+        * findBoardPointInsideThePotentialConqueredZone algorithm method
+        * 
+        * @implNote This function is critical for the game logic, as it finds a point inside the potential conquered zone.
+        *           This point is used to start the flood fill algorithm, which will change the status of the regions
+        *           connected to the space pilot's current position to "conquered" status.
+        *           The algorithm is designed to find a point that is surrounded by regions that are being conquered by the space pilot.
+        *           Failure to find such a point will result in the flood fill algorithm not being able to proceed, conquering 100% of the grid.
+        *
+        * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
+        *
+        * @param (LinkedList<BoardPoint> tripLinkedList) ('trip' complete linked list of board points)
+        * @return (int) (number of potential points)
+        */
+    private int findBoardPointInsideThePotentialConqueredZone(LinkedList<BoardPoint> tripLinkedList,
+        int potentialZonesInsideConqueredZoneSize, 
+        BoardPoint[] boardPointInsideThePotentialConqueredZone)
+    {
+        int quantityOfPotentialPointsInsideTheConqueredZoneFound    = 0;
+        int             numberOfElementsInList                      = 0;
+        BoardPoint      lastPointInSafeZone                         = null;
+        BoardPoint      firstPointOutsideSafeZone                   = null;
+        BoardPoint      previousPointInList                         = null;
+        Grid.Direction  currentDirection                            = null;
+        Grid.Direction  previousDirection                           = null;
+        BoardPoint      foundPoint                                  = null;
+
+        int             sumOfLinkedListRows                         = 0;
+        int             sumOfLinkedListColumns                      = 0;
+        int             linkedListCenterRow                         = 0;
+        int             linkedListCenterColumn                      = 0;
+
+        int             numberOfLinkedListToSum                     = 0;
+
+        for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+                //  Calculate the sum of rows and columns of the linked list points
+                if (0 == numberOfElementsInList)
+                {
+                    sumOfLinkedListRows         += linkedListBoardPoint.getRow();
+                    sumOfLinkedListColumns      += linkedListBoardPoint.getColumn();
+                    lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
+                    numberOfLinkedListToSum++;
+                }
+                else if (1 == numberOfElementsInList)
+                {
+                    sumOfLinkedListRows         += linkedListBoardPoint.getRow();
+                    sumOfLinkedListColumns      += linkedListBoardPoint.getColumn();
+                    firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
+                    previousPointInList         = new BoardPoint(linkedListBoardPoint);
+                    numberOfLinkedListToSum++;
+                }
+                else
+                {
+                    if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
+                        //  Next line because of bug in linked list
+                        && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
+                    {
+                        sumOfLinkedListRows     += linkedListBoardPoint.getRow();
+                        sumOfLinkedListColumns  += linkedListBoardPoint.getColumn();
+                        numberOfLinkedListToSum++;
+                        previousPointInList.set(linkedListBoardPoint);
+                    }
+                }
+        }
+        numberOfElementsInList      = 0;
+        lastPointInSafeZone         = null;
+        firstPointOutsideSafeZone   = null;
+        previousPointInList         = null;
+
+        //  It seems we won't need this center, but anyway
+        linkedListCenterRow                 = sumOfLinkedListRows / numberOfLinkedListToSum;
+        linkedListCenterColumn              = sumOfLinkedListColumns / numberOfLinkedListToSum;
+        final BoardPoint LINKED_LIST_CENTER = new BoardPoint(linkedListCenterRow, linkedListCenterColumn);
+
+        if (potentialZonesInsideConqueredZoneSize >= 1)
+        {
+            for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+                    //  Calculate the sum of rows and columns of the linked list points
+                if (0 == numberOfElementsInList)
+                {
+                    lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
+                    System.out.println("Linked list 1st: " + lastPointInSafeZone.getRow() + ", " + lastPointInSafeZone.getColumn());
+                } 
+                else if (1 == numberOfElementsInList)
+                {
+                    firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
+                    previousDirection           = content.grid().moveDirection(lastPointInSafeZone, firstPointOutsideSafeZone);
+                    previousPointInList         = new BoardPoint(linkedListBoardPoint);
+                    System.out.println("Linked list 2nd: " + firstPointOutsideSafeZone.getRow() + ", " + firstPointOutsideSafeZone.getColumn());
+                }
+                else
+                {
+                    if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
+                        //  Next line because of bug in linked list
+                        && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
+                    {
+                        final int CURRENT_INDEX = numberOfElementsInList + 1;
+                        System.out.println("Linked list " + CURRENT_INDEX + ": " + linkedListBoardPoint.getRow() + ", " + linkedListBoardPoint.getColumn());
+                        //  Only if the linked list point is different from the previous one
+                        currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
+                        if (currentDirection != previousDirection)
+                        {
+// TODO: Do we need to point to center ?    Grid.Direction  DIRECTION_TO_CENTER = content.grid().moveDirection(linkedListBoardPoint, LINKED_LIST_CENTER);
+
+                            BoardPoint              potentialBoardPoint 
+                                = new BoardPoint(
+ // TODO: Do we need to point to center ?   linkedListBoardPoint.getRow() + DIRECTION_TO_CENTER.yVector(), 
+ // TODO: Do we need to point to center ?   linkedListBoardPoint.getColumn() + DIRECTION_TO_CENTER.xVector());
+                                    linkedListBoardPoint.getRow() - previousDirection.yVector(), 
+                                    linkedListBoardPoint.getColumn() - previousDirection.xVector());
+
+                            previousDirection       = currentDirection;
+
+                            final RegionStatus      POTENTIAL_REGION_STATUS   
+                                = content.grid().regions()[potentialBoardPoint.getRow()][potentialBoardPoint.getColumn()].getRegionStatus();
+
+                            if (RegionStatus.REGION_STATUS_EMPTY == POTENTIAL_REGION_STATUS)
+                            {
+                                foundPoint          = new BoardPoint(potentialBoardPoint);
+                                quantityOfPotentialPointsInsideTheConqueredZoneFound++;
+                                potentialBoardPoint = null;
+                                break;
+                            }
+                            potentialBoardPoint = null;
+                        }
+
+                        previousPointInList.set(linkedListBoardPoint);
+                    }
+                }  
+                numberOfElementsInList++;
+            }
+
+            if (null != foundPoint)
+            {
+                boardPointInsideThePotentialConqueredZone[0].set(foundPoint);
+            }
+            else    
+            {
+                boardPointInsideThePotentialConqueredZone[0].set(new BoardPoint(-1, -1));
+                System.out.println("Should not happen");
+            }
+        }
+
+        numberOfElementsInList      = 0;
+        lastPointInSafeZone         = null;
+        firstPointOutsideSafeZone   = null;
+        previousPointInList         = null;
+        currentDirection            = null;
+        previousDirection           = null;
+        foundPoint                  = null;
+        
+        if (potentialZonesInsideConqueredZoneSize >= 2)
+        {
+            for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+                    //  Calculate the sum of rows and columns of the linked list points
+                if (0 == numberOfElementsInList)
+                {
+                    lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
+                    System.out.println("Linked list 1st: " + lastPointInSafeZone.getRow() + ", " + lastPointInSafeZone.getColumn());
+                } 
+                else if (1 == numberOfElementsInList)
+                {
+                    firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
+                    previousDirection           = content.grid().moveDirection(lastPointInSafeZone, firstPointOutsideSafeZone);
+                    previousPointInList         = new BoardPoint(linkedListBoardPoint);
+                    System.out.println("Linked list 2nd: " + firstPointOutsideSafeZone.getRow() + ", " + firstPointOutsideSafeZone.getColumn());
+                }
+                else
+                {
+                    if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
+                        //  Next line because of bug in linked list
+                        && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
+                    {
+                        final int CURRENT_INDEX = numberOfElementsInList + 1;
+                        System.out.println("Linked list " + CURRENT_INDEX + ": " + linkedListBoardPoint.getRow() + ", " + linkedListBoardPoint.getColumn());
+                        //  Only if the linked list point is different from the previous one
+                        currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
+                        if (currentDirection != previousDirection)
+                        {
+// TODO: Do we need to point to center ?    Grid.Direction  DIRECTION_TO_CENTER = content.grid().moveDirection(linkedListBoardPoint, LINKED_LIST_CENTER);
+
+                            BoardPoint              potentialBoardPoint 
+                                = new BoardPoint(
+// TODO: Do we need to point to center ?((currentDirection == Grid.Direction.EAST) || (currentDirection == Grid.Direction.WEST)) ? 
+// TODO: Do we need to point to center ?linkedListBoardPoint.getRow() - DIRECTION_TO_CENTER.yVector()
+// TODO: Do we need to point to center ?: linkedListBoardPoint.getRow() + DIRECTION_TO_CENTER.yVector(), 
+// TODO: Do we need to point to center ?((currentDirection == Grid.Direction.NORTH) || (currentDirection == Grid.Direction.SOUTH)) ?
+// TODO: Do we need to point to center ?linkedListBoardPoint.getColumn() - DIRECTION_TO_CENTER.xVector()
+// TODO: Do we need to point to center ?: linkedListBoardPoint.getColumn() + DIRECTION_TO_CENTER.xVector());
+                                    linkedListBoardPoint.getRow() + previousDirection.yVector(), 
+                                    linkedListBoardPoint.getColumn() + previousDirection.xVector());
+
+                            previousDirection       = currentDirection;
+
+                            final RegionStatus      POTENTIAL_REGION_STATUS   
+                                = content.grid().regions()[potentialBoardPoint.getRow()][potentialBoardPoint.getColumn()].getRegionStatus();
+
+                            if (RegionStatus.REGION_STATUS_EMPTY == POTENTIAL_REGION_STATUS)
+                            {
+                                foundPoint          = new BoardPoint(potentialBoardPoint);
+                                quantityOfPotentialPointsInsideTheConqueredZoneFound++;
+                                potentialBoardPoint = null;
+                                break;
+                            }
+                                potentialBoardPoint = null;
+                        }
+
+                        previousPointInList.set(linkedListBoardPoint);
+                    }
+                }  
+                numberOfElementsInList++;
+            }
+
+            if (null != foundPoint)
+            {
+                boardPointInsideThePotentialConqueredZone[1].set(foundPoint);
+            }
+            else    
+            {
+                 boardPointInsideThePotentialConqueredZone[1].set(new BoardPoint(-1, -1));
+                System.out.println("Should not happen");
+            }
+        }
+
+        return quantityOfPotentialPointsInsideTheConqueredZoneFound;
+    }
+
     /**
         * getBoardPointInsideThePotentialConqueredZone algorithm method
         * 
@@ -535,17 +884,55 @@ public class GameControl
         *
         * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
         *
-        * @param (none)
-        * @return (none)
+        * @param (LinkedList<BoardPoint> tripLinkedList) ('trip' complete linked list of board points)
+        * @return (int) (number of potential points)
         */
-    private void getBoardPointInsideThePotentialConqueredZone()
+    private int getBoardPointInsideThePotentialConqueredZone(LinkedList<BoardPoint> tripLinkedList, 
+            int potentialZonesInsideConqueredZoneSize, 
+            BoardPoint[] boardPointInsideThePotentialConqueredZone)
     {
         //  Find a board point inside the potential conquered zone 
         //  to start the flood fill algorithm
-        int centerRow       = -1;
-        int centerColumn    = -1;
-        int AVERAGE_ROW     = (int) ((spacePilotNorthestRowWhenOutsideSafeZone + spacePilotSouthestRowWhenOutsideSafeZone) / 2.0);
-        int AVERAGE_COLUMN  = (int) ((spacePilotLeftistColumnWhenOutsideSafeZone + spacePilotRightestColumnWhenOutsideSafeZone) / 2.0);
+        int centerRow               = -1;
+        int centerColumn            = -1;
+        int linkedListCenterRow     = -1;
+        int linkedListCenterColumn  = -1;
+        int sumOfLinkedListRows     = 0;
+        int sumOfLinkedListColumns  = 0;
+        int AVERAGE_ROW             = (int) ((spacePilotNorthestRowWhenOutsideSafeZone + spacePilotSouthestRowWhenOutsideSafeZone) / 2.0);
+        int AVERAGE_COLUMN          = (int) ((spacePilotLeftistColumnWhenOutsideSafeZone + spacePilotRightestColumnWhenOutsideSafeZone) / 2.0);
+
+        final int QUANTITY_OF_POTENTIAL_POINTS_FOUND = findBoardPointInsideThePotentialConqueredZone(tripLinkedList,
+            potentialZonesInsideConqueredZoneSize, 
+            boardPointInsideThePotentialConqueredZone);
+
+        if (0 != QUANTITY_OF_POTENTIAL_POINTS_FOUND)
+        {
+            for (int point = 0; point < potentialZonesInsideConqueredZoneSize; point++)
+            {
+                System.out.println("Point found" + point + ": "  + 
+                boardPointInsideThePotentialConqueredZone[point].getRow() + ", " 
+                + boardPointInsideThePotentialConqueredZone[point].getColumn());
+
+                if ((-1 != boardPointInsideThePotentialConqueredZone[point].getRow())
+                    && (-1 != boardPointInsideThePotentialConqueredZone[point].getColumn()))
+                {
+                }
+            }
+
+//            boardPointInsideThePotentialConqueredZone[0].setRow(FOUND_POINT.getRow());
+//            boardPointInsideThePotentialConqueredZone[0].setColumn(FOUND_POINT.getColumn());
+            return QUANTITY_OF_POTENTIAL_POINTS_FOUND;         
+        }
+
+        for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+                //  Calculate the sum of rows and columns of the linked list points
+            sumOfLinkedListRows     += linkedListBoardPoint.getRow();
+            sumOfLinkedListColumns  += linkedListBoardPoint.getColumn();
+        }
+
+        linkedListCenterRow       = sumOfLinkedListRows / tripLinkedList.size();
+        linkedListCenterColumn    = sumOfLinkedListColumns / tripLinkedList.size();
 
         //  Verify first rows, later columns
         for (int row = spacePilotNorthestRowWhenOutsideSafeZone; row <= spacePilotSouthestRowWhenOutsideSafeZone; row++)
@@ -1086,7 +1473,15 @@ public class GameControl
             }
         }
 
-        boardPointInsideThePotentialConqueredZone.setRow(centerRow);
-        boardPointInsideThePotentialConqueredZone.setColumn(centerColumn);
+        boardPointInsideThePotentialConqueredZone[0].setRow(centerRow);
+        boardPointInsideThePotentialConqueredZone[0].setColumn(centerColumn);
+        System.out.println("Point inside: " + centerRow + ", " + centerColumn);
+        System.out.println("Point inside2: " + linkedListCenterRow + ", " + linkedListCenterColumn);
+        System.out.println("Point inside3: " + (linkedListCenterRow+centerRow)/2 + ", " + (linkedListCenterColumn+centerColumn)/2);
+
+        boardPointInsideThePotentialConqueredZone[0].setRow((linkedListCenterRow+centerRow)/2);
+        boardPointInsideThePotentialConqueredZone[0].setColumn((linkedListCenterColumn+centerColumn)/2);
+
+        return QUANTITY_OF_POTENTIAL_POINTS_FOUND;
     } 
 }
