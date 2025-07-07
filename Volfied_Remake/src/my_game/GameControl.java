@@ -673,56 +673,10 @@ public class GameControl
         Grid.Direction  previousDirection                           = null;
         BoardPoint      foundPoint                                  = null;
 
-        int             sumOfLinkedListRows                         = 0;
-        int             sumOfLinkedListColumns                      = 0;
-        int             linkedListCenterRow                         = 0;
-        int             linkedListCenterColumn                      = 0;
-
-        int             numberOfLinkedListToSum                     = 0;
-
-        for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
-                //  Calculate the sum of rows and columns of the linked list points
-                if (0 == numberOfElementsInList)
-                {
-                    sumOfLinkedListRows         += linkedListBoardPoint.getRow();
-                    sumOfLinkedListColumns      += linkedListBoardPoint.getColumn();
-                    lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
-                    numberOfLinkedListToSum++;
-                }
-                else if (1 == numberOfElementsInList)
-                {
-                    sumOfLinkedListRows         += linkedListBoardPoint.getRow();
-                    sumOfLinkedListColumns      += linkedListBoardPoint.getColumn();
-                    firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
-                    previousPointInList         = new BoardPoint(linkedListBoardPoint);
-                    numberOfLinkedListToSum++;
-                }
-                else
-                {
-                    if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
-                        //  Next line because of bug in linked list
-                        && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
-                    {
-                        sumOfLinkedListRows     += linkedListBoardPoint.getRow();
-                        sumOfLinkedListColumns  += linkedListBoardPoint.getColumn();
-                        numberOfLinkedListToSum++;
-                        previousPointInList.set(linkedListBoardPoint);
-                    }
-                }
-        }
-        numberOfElementsInList      = 0;
-        lastPointInSafeZone         = null;
-        firstPointOutsideSafeZone   = null;
-        previousPointInList         = null;
-
-        //  It seems we won't need this center, but anyway
-// TODO: Do we need to point to center ?linkedListCenterRow                 = sumOfLinkedListRows / numberOfLinkedListToSum;
-// TODO: Do we need to point to center ?linkedListCenterColumn              = sumOfLinkedListColumns / numberOfLinkedListToSum;
-// TODO: Do we need to point to center ?    final BoardPoint LINKED_LIST_CENTER = new BoardPoint(linkedListCenterRow, linkedListCenterColumn);
-
         if (potentialZonesInsideConqueredZoneSize >= 1)
         {
-            for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+            for (BoardPoint linkedListBoardPoint : tripLinkedList) 
+            { // Enhanced for loop
                     //  Calculate the sum of rows and columns of the linked list points
                 if (0 == numberOfElementsInList)
                 {
@@ -748,12 +702,8 @@ public class GameControl
                         currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
                         if (currentDirection != previousDirection)
                         {
-// TODO: Do we need to point to center ?    Grid.Direction  DIRECTION_TO_CENTER = content.grid().moveDirection(linkedListBoardPoint, LINKED_LIST_CENTER);
-
                             BoardPoint              potentialBoardPoint 
                                 = new BoardPoint(
- // TODO: Do we need to point to center ?   linkedListBoardPoint.getRow() + DIRECTION_TO_CENTER.yVector(), 
- // TODO: Do we need to point to center ?   linkedListBoardPoint.getColumn() + DIRECTION_TO_CENTER.xVector());
                                     linkedListBoardPoint.getRow() - previousDirection.yVector(), 
                                     linkedListBoardPoint.getColumn() - previousDirection.xVector());
 
@@ -799,7 +749,8 @@ public class GameControl
         
         if (potentialZonesInsideConqueredZoneSize >= 2)
         {
-            for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+            for (BoardPoint linkedListBoardPoint : tripLinkedList) 
+            { // Enhanced for loop
                     //  Calculate the sum of rows and columns of the linked list points
                 if (0 == numberOfElementsInList)
                 {
@@ -825,17 +776,9 @@ public class GameControl
                         currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
                         if (currentDirection != previousDirection)
                         {
-// TODO: Do we need to point to center ?    Grid.Direction  DIRECTION_TO_CENTER = content.grid().moveDirection(linkedListBoardPoint, LINKED_LIST_CENTER);
-
                             BoardPoint              potentialBoardPoint 
                                 = new BoardPoint(
-// TODO: Do we need to point to center ?((currentDirection == Grid.Direction.EAST) || (currentDirection == Grid.Direction.WEST)) ? 
-// TODO: Do we need to point to center ?linkedListBoardPoint.getRow() - DIRECTION_TO_CENTER.yVector()
-// TODO: Do we need to point to center ?: linkedListBoardPoint.getRow() + DIRECTION_TO_CENTER.yVector(), 
-// TODO: Do we need to point to center ?((currentDirection == Grid.Direction.NORTH) || (currentDirection == Grid.Direction.SOUTH)) ?
-// TODO: Do we need to point to center ?linkedListBoardPoint.getColumn() - DIRECTION_TO_CENTER.xVector()
-// TODO: Do we need to point to center ?: linkedListBoardPoint.getColumn() + DIRECTION_TO_CENTER.xVector());
-                                    linkedListBoardPoint.getRow() + previousDirection.yVector(), 
+                                  linkedListBoardPoint.getRow() + previousDirection.yVector(), 
                                     linkedListBoardPoint.getColumn() + previousDirection.xVector());
 
                             previousDirection       = currentDirection;
@@ -925,7 +868,8 @@ public class GameControl
             return QUANTITY_OF_POTENTIAL_POINTS_FOUND;         
         }
 
-        for (BoardPoint linkedListBoardPoint : tripLinkedList) { // Enhanced for loop
+        for (BoardPoint linkedListBoardPoint : tripLinkedList) 
+        { // Enhanced for loop
                 //  Calculate the sum of rows and columns of the linked list points
             sumOfLinkedListRows     += linkedListBoardPoint.getRow();
             sumOfLinkedListColumns  += linkedListBoardPoint.getColumn();
