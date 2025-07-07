@@ -716,9 +716,9 @@ public class GameControl
         previousPointInList         = null;
 
         //  It seems we won't need this center, but anyway
-        linkedListCenterRow                 = sumOfLinkedListRows / numberOfLinkedListToSum;
-        linkedListCenterColumn              = sumOfLinkedListColumns / numberOfLinkedListToSum;
-        final BoardPoint LINKED_LIST_CENTER = new BoardPoint(linkedListCenterRow, linkedListCenterColumn);
+// TODO: Do we need to point to center ?linkedListCenterRow                 = sumOfLinkedListRows / numberOfLinkedListToSum;
+// TODO: Do we need to point to center ?linkedListCenterColumn              = sumOfLinkedListColumns / numberOfLinkedListToSum;
+// TODO: Do we need to point to center ?    final BoardPoint LINKED_LIST_CENTER = new BoardPoint(linkedListCenterRow, linkedListCenterColumn);
 
         if (potentialZonesInsideConqueredZoneSize >= 1)
         {
