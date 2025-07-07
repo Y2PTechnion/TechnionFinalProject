@@ -172,6 +172,8 @@ public class GameControl
 
                         if (0 == content.spacePilot().getLives())
                         {
+                            //  Last update
+                            board.updateMessages();
                             isGameOver  = true;
                         }
                         else
@@ -417,9 +419,31 @@ public class GameControl
                             tripLinkedList.add(DESTINATION_LOCATION);
                         }
 
-                        final int       MAXIMUM_POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE = 8;
+                        final int       MAXIMUM_POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE = 30;
                         BoardPoint[]    potentialPointsInsideTheConqueredZone                   = new BoardPoint[]
                         {
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
                             new BoardPoint(0, 0), 
                             new BoardPoint(0, 0),
                             new BoardPoint(0, 0), 
@@ -453,6 +477,28 @@ public class GameControl
                                 new Grid(content.grid()),
                                 new Grid(content.grid()),
                                 new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
                                 new Grid(content.grid())
                             };
                             int floodFillAlgorithmTestCasesConqueredRegions[] = new int[POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE];
@@ -476,7 +522,7 @@ public class GameControl
                             }
 
                             //  Find the best flood fill algorithm test case
-                            int bestFloodFillAlgorithmTestCase  = -1;
+                            int bestFloodFillAlgorithmTestCase          = -1;
 
                             //  Find the lowest
                             for (int testCase = 0; testCase < POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE; testCase++)
@@ -495,7 +541,7 @@ public class GameControl
                                         if (floodFillAlgorithmTestCasesConqueredRegions[testCase] <
                                             floodFillAlgorithmTestCasesConqueredRegions[bestFloodFillAlgorithmTestCase])
                                         {
-                                            bestFloodFillAlgorithmTestCase = testCase;
+                                            bestFloodFillAlgorithmTestCase          = testCase;                                            
                                         }
                                     }
                                 }
@@ -503,10 +549,18 @@ public class GameControl
 
                             if (-1 != bestFloodFillAlgorithmTestCase)
                             {
-                                regionsAfterFloodFill = content.grid().floodFillAlgorithm(
-                                                    content.grid().regions(), 
-                                                    potentialPointsInsideTheConqueredZone[bestFloodFillAlgorithmTestCase], 
-                                                    RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                                final int BEST_QUANTITY_OF_REGIONS  = floodFillAlgorithmTestCasesConqueredRegions[bestFloodFillAlgorithmTestCase];
+
+                                for (int testCase = 0; testCase < POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE; testCase++)
+                                {
+                                    if (BEST_QUANTITY_OF_REGIONS == floodFillAlgorithmTestCasesConqueredRegions[testCase])
+                                    {
+                                        regionsAfterFloodFill = content.grid().floodFillAlgorithm(
+                                                            content.grid().regions(), 
+                                                            potentialPointsInsideTheConqueredZone[testCase], 
+                                                            RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
+                                    }
+                                }
                             }
 
                             //  Nullify the references to the BoardPoint to make them eligible for garbage collection
@@ -517,7 +571,10 @@ public class GameControl
                         }
                         else if (1 == POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE)
                         {
-                            System.out.println("Should not happen");
+                            regionsAfterFloodFill = content.grid().floodFillAlgorithm(
+                                                content.grid().regions(), 
+                                                potentialPointsInsideTheConqueredZone[0], 
+                                                RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT);
                         }
                         else    
                         {
@@ -619,7 +676,7 @@ public class GameControl
                 case REGION_STATUS_SMALL_ENEMY_OVER:
                 default:
                 {
-                    System.out.println("In gameStep() should not happen");
+                    System.out.println("In spacePilotMoving() should not happen");
                 }
             }
 
