@@ -120,6 +120,12 @@ public class BoardPoint
         this.row    = boardPoint.row;
     }
 
+    public void set(int row, int column) 
+    {
+        this.column = column;
+        this.row    = row;
+    }
+
     public void setColumn(int column) 
     {
         this.column = column;

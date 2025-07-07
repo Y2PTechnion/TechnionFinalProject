@@ -417,9 +417,15 @@ public class GameControl
                             tripLinkedList.add(DESTINATION_LOCATION);
                         }
 
-                        final int       POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE         = 2;
+                        final int       MAXIMUM_POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE = 8;
                         BoardPoint[]    potentialPointsInsideTheConqueredZone                   = new BoardPoint[]
                         {
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
+                            new BoardPoint(0, 0), 
+                            new BoardPoint(0, 0),
                             new BoardPoint(0, 0), 
                             new BoardPoint(0, 0)
                         };  
@@ -428,25 +434,30 @@ public class GameControl
                         //  to start the flood fill algorithm
                             final int POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE = 
                             getBoardPointInsideThePotentialConqueredZone(tripLinkedList, 
-                            POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE, 
+                            MAXIMUM_POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE, 
                             potentialPointsInsideTheConqueredZone);
     
-                        if (POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE == POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE)
+                        if (POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE >= 1)
                         {
                             //  The space pilot has reached one of the safe places
                             //  after conquering
                             //  Perform flood fill algorithm
                             final int CONQUERED_REGIONS_UNTIL_NOW = content.grid().calculateNumberOfConqueredRegions();
 
-                            final int FLOOD_FILL_ALGORITHM_TEST_CASES   = POTENTIAL_POINTS_INSIDE_THE_CONQUERED_ZONE_SIZE;
                             Grid[] floodFillAlgorithmTestCasesGrid      = new Grid[] 
                             {
                                 new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
+                                new Grid(content.grid()),
                                 new Grid(content.grid())
                             };
-                            int floodFillAlgorithmTestCasesConqueredRegions[] = new int[FLOOD_FILL_ALGORITHM_TEST_CASES];
+                            int floodFillAlgorithmTestCasesConqueredRegions[] = new int[POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE];
 
-                            for (int testCase = 0; testCase < FLOOD_FILL_ALGORITHM_TEST_CASES; testCase++)
+                            for (int testCase = 0; testCase < POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE; testCase++)
                             {
                                 regionsAfterFloodFill   = floodFillAlgorithmTestCasesGrid[testCase].floodFillAlgorithm(
                                     floodFillAlgorithmTestCasesGrid[testCase].regions(), 
@@ -468,7 +479,7 @@ public class GameControl
                             int bestFloodFillAlgorithmTestCase  = -1;
 
                             //  Find the lowest
-                            for (int testCase = 0; testCase < FLOOD_FILL_ALGORITHM_TEST_CASES; testCase++)
+                            for (int testCase = 0; testCase < POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE; testCase++)
                             {
                                 if (-1 != floodFillAlgorithmTestCasesConqueredRegions[testCase])
                                 {
@@ -499,7 +510,7 @@ public class GameControl
                             }
 
                             //  Nullify the references to the BoardPoint to make them eligible for garbage collection
-                            for (int potentialPoint = 0; potentialPoint < potentialPointsInsideTheConqueredZone.length; potentialPoint++) 
+                            for (int potentialPoint = 0; potentialPoint < POTENTIAL_POINTS_FOUND_INSIDE_THE_CONQUERED_ZONE; potentialPoint++) 
                             {
                                 potentialPointsInsideTheConqueredZone[potentialPoint] = null; // Nullify the reference
                             }
@@ -658,10 +669,12 @@ public class GameControl
         * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
         *
         * @param (LinkedList<BoardPoint> tripLinkedList) ('trip' complete linked list of board points)
-        * @return (int) (number of potential points)
+        * @param (int maximumPotentialZonesInsideConqueredZoneSize) (maximum number of potential points to return to application)
+        * @param (BoardPoint[] boardPointInsideThePotentialConqueredZone) array of board points that will be filled with the found points
+        * @return (int) (number of found potential points)
         */
     private int findBoardPointInsideThePotentialConqueredZone(LinkedList<BoardPoint> tripLinkedList,
-        int potentialZonesInsideConqueredZoneSize, 
+        int maximumPotentialZonesInsideConqueredZoneSize, 
         BoardPoint[] boardPointInsideThePotentialConqueredZone)
     {
         int quantityOfPotentialPointsInsideTheConqueredZoneFound    = 0;
@@ -673,144 +686,83 @@ public class GameControl
         Grid.Direction  previousDirection                           = null;
         BoardPoint      foundPoint                                  = null;
 
-        if (potentialZonesInsideConqueredZoneSize >= 1)
-        {
-            for (BoardPoint linkedListBoardPoint : tripLinkedList) 
-            { // Enhanced for loop
-                    //  Calculate the sum of rows and columns of the linked list points
-                if (0 == numberOfElementsInList)
+        for (BoardPoint linkedListBoardPoint : tripLinkedList) 
+        { // Enhanced for loop
+                //  Calculate the sum of rows and columns of the linked list points
+            if (0 == numberOfElementsInList)
+            {
+                lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
+                System.out.println("Linked list 1st: " + lastPointInSafeZone.getRow() + ", " + lastPointInSafeZone.getColumn());
+            } 
+            else if (1 == numberOfElementsInList)
+            {
+                firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
+                previousDirection           = content.grid().moveDirection(lastPointInSafeZone, firstPointOutsideSafeZone);
+                previousPointInList         = new BoardPoint(linkedListBoardPoint);
+                System.out.println("Linked list 2nd: " + firstPointOutsideSafeZone.getRow() + ", " + firstPointOutsideSafeZone.getColumn());
+            }
+            else
+            {
+                if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
+                    //  Next line because of bug in linked list
+                    && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
                 {
-                    lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
-                    System.out.println("Linked list 1st: " + lastPointInSafeZone.getRow() + ", " + lastPointInSafeZone.getColumn());
-                } 
-                else if (1 == numberOfElementsInList)
-                {
-                    firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
-                    previousDirection           = content.grid().moveDirection(lastPointInSafeZone, firstPointOutsideSafeZone);
-                    previousPointInList         = new BoardPoint(linkedListBoardPoint);
-                    System.out.println("Linked list 2nd: " + firstPointOutsideSafeZone.getRow() + ", " + firstPointOutsideSafeZone.getColumn());
-                }
-                else
-                {
-                    if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
-                        //  Next line because of bug in linked list
-                        && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
+                    final int CURRENT_INDEX = numberOfElementsInList + 1;
+                    System.out.println("Linked list " + CURRENT_INDEX + ": " + linkedListBoardPoint.getRow() + ", " + linkedListBoardPoint.getColumn());
+                    //  Only if the linked list point is different from the previous one
+                    currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
+                    if (currentDirection != previousDirection)
                     {
-                        final int CURRENT_INDEX = numberOfElementsInList + 1;
-                        System.out.println("Linked list " + CURRENT_INDEX + ": " + linkedListBoardPoint.getRow() + ", " + linkedListBoardPoint.getColumn());
-                        //  Only if the linked list point is different from the previous one
-                        currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
-                        if (currentDirection != previousDirection)
+                        BoardPoint  potentialBoardPoint 
+                            = new BoardPoint(
+                                linkedListBoardPoint.getRow() - previousDirection.yVector(), 
+                                linkedListBoardPoint.getColumn() - previousDirection.xVector());
+
+                        RegionStatus    POTENTIAL_REGION_STATUS   
+                            = content.grid().regions()[potentialBoardPoint.getRow()][potentialBoardPoint.getColumn()].getRegionStatus();
+
+                        if (RegionStatus.REGION_STATUS_EMPTY == POTENTIAL_REGION_STATUS)
                         {
-                            BoardPoint              potentialBoardPoint 
-                                = new BoardPoint(
-                                    linkedListBoardPoint.getRow() - previousDirection.yVector(), 
-                                    linkedListBoardPoint.getColumn() - previousDirection.xVector());
-
-                            previousDirection       = currentDirection;
-
-                            final RegionStatus      POTENTIAL_REGION_STATUS   
-                                = content.grid().regions()[potentialBoardPoint.getRow()][potentialBoardPoint.getColumn()].getRegionStatus();
-
-                            if (RegionStatus.REGION_STATUS_EMPTY == POTENTIAL_REGION_STATUS)
+                            if (quantityOfPotentialPointsInsideTheConqueredZoneFound < maximumPotentialZonesInsideConqueredZoneSize)
                             {
                                 foundPoint          = new BoardPoint(potentialBoardPoint);
+                                boardPointInsideThePotentialConqueredZone[quantityOfPotentialPointsInsideTheConqueredZoneFound].set(foundPoint);
                                 quantityOfPotentialPointsInsideTheConqueredZoneFound++;
-                                potentialBoardPoint = null;
-                                break;
                             }
-                            potentialBoardPoint = null;
+                            foundPoint          = null;
                         }
 
-                        previousPointInList.set(linkedListBoardPoint);
-                    }
-                }  
-                numberOfElementsInList++;
-            }
+                        potentialBoardPoint.set(linkedListBoardPoint.getRow() + previousDirection.yVector(), 
+                                linkedListBoardPoint.getColumn() + previousDirection.xVector());
 
-            if (null != foundPoint)
-            {
-                boardPointInsideThePotentialConqueredZone[0].set(foundPoint);
-            }
-            else    
-            {
-                boardPointInsideThePotentialConqueredZone[0].set(new BoardPoint(-1, -1));
-                System.out.println("Should not happen");
-            }
+                        POTENTIAL_REGION_STATUS   
+                            = content.grid().regions()[potentialBoardPoint.getRow()][potentialBoardPoint.getColumn()].getRegionStatus();
+
+                        if (RegionStatus.REGION_STATUS_EMPTY == POTENTIAL_REGION_STATUS)
+                        {
+                            if (quantityOfPotentialPointsInsideTheConqueredZoneFound < maximumPotentialZonesInsideConqueredZoneSize)
+                            {
+                                foundPoint          = new BoardPoint(potentialBoardPoint);
+                                boardPointInsideThePotentialConqueredZone[quantityOfPotentialPointsInsideTheConqueredZoneFound].set(foundPoint);
+                                quantityOfPotentialPointsInsideTheConqueredZoneFound++;
+                            }
+                            foundPoint          = null;
+                        }
+
+                        potentialBoardPoint     = null;
+                        previousDirection       = currentDirection;
+                    }
+
+                    previousPointInList.set(linkedListBoardPoint);
+                }
+            }  
+            numberOfElementsInList++;
         }
 
-        numberOfElementsInList      = 0;
-        lastPointInSafeZone         = null;
-        firstPointOutsideSafeZone   = null;
-        previousPointInList         = null;
-        currentDirection            = null;
-        previousDirection           = null;
-        foundPoint                  = null;
-        
-        if (potentialZonesInsideConqueredZoneSize >= 2)
+        for (int notFoundPoint = quantityOfPotentialPointsInsideTheConqueredZoneFound; 
+                notFoundPoint < maximumPotentialZonesInsideConqueredZoneSize; notFoundPoint++)
         {
-            for (BoardPoint linkedListBoardPoint : tripLinkedList) 
-            { // Enhanced for loop
-                    //  Calculate the sum of rows and columns of the linked list points
-                if (0 == numberOfElementsInList)
-                {
-                    lastPointInSafeZone         = new BoardPoint(linkedListBoardPoint);
-                    System.out.println("Linked list 1st: " + lastPointInSafeZone.getRow() + ", " + lastPointInSafeZone.getColumn());
-                } 
-                else if (1 == numberOfElementsInList)
-                {
-                    firstPointOutsideSafeZone   = new BoardPoint(linkedListBoardPoint);
-                    previousDirection           = content.grid().moveDirection(lastPointInSafeZone, firstPointOutsideSafeZone);
-                    previousPointInList         = new BoardPoint(linkedListBoardPoint);
-                    System.out.println("Linked list 2nd: " + firstPointOutsideSafeZone.getRow() + ", " + firstPointOutsideSafeZone.getColumn());
-                }
-                else
-                {
-                    if ((!linkedListBoardPoint.isEqual(previousPointInList)) 
-                        //  Next line because of bug in linked list
-                        && (!linkedListBoardPoint.isEqual(firstPointOutsideSafeZone)))
-                    {
-                        final int CURRENT_INDEX = numberOfElementsInList + 1;
-                        System.out.println("Linked list " + CURRENT_INDEX + ": " + linkedListBoardPoint.getRow() + ", " + linkedListBoardPoint.getColumn());
-                        //  Only if the linked list point is different from the previous one
-                        currentDirection            = content.grid().moveDirection(previousPointInList, linkedListBoardPoint);
-                        if (currentDirection != previousDirection)
-                        {
-                            BoardPoint              potentialBoardPoint 
-                                = new BoardPoint(
-                                  linkedListBoardPoint.getRow() + previousDirection.yVector(), 
-                                    linkedListBoardPoint.getColumn() + previousDirection.xVector());
-
-                            previousDirection       = currentDirection;
-
-                            final RegionStatus      POTENTIAL_REGION_STATUS   
-                                = content.grid().regions()[potentialBoardPoint.getRow()][potentialBoardPoint.getColumn()].getRegionStatus();
-
-                            if (RegionStatus.REGION_STATUS_EMPTY == POTENTIAL_REGION_STATUS)
-                            {
-                                foundPoint          = new BoardPoint(potentialBoardPoint);
-                                quantityOfPotentialPointsInsideTheConqueredZoneFound++;
-                                potentialBoardPoint = null;
-                                break;
-                            }
-                                potentialBoardPoint = null;
-                        }
-
-                        previousPointInList.set(linkedListBoardPoint);
-                    }
-                }  
-                numberOfElementsInList++;
-            }
-
-            if (null != foundPoint)
-            {
-                boardPointInsideThePotentialConqueredZone[1].set(foundPoint);
-            }
-            else    
-            {
-                 boardPointInsideThePotentialConqueredZone[1].set(new BoardPoint(-1, -1));
-                System.out.println("Should not happen");
-            }
+            boardPointInsideThePotentialConqueredZone[notFoundPoint].set(new BoardPoint(-1, -1));
         }
 
         return quantityOfPotentialPointsInsideTheConqueredZoneFound;
@@ -828,30 +780,28 @@ public class GameControl
         * @implNote This implementation is not 'generic', it is adapted to the Volfied Remake game
         *
         * @param (LinkedList<BoardPoint> tripLinkedList) ('trip' complete linked list of board points)
-        * @return (int) (number of potential points)
+        * @param (int maximumPotentialZonesInsideConqueredZoneSize) (maximum number of potential points to return to application)
+        * @param (BoardPoint[] boardPointInsideThePotentialConqueredZone) array of board points that will be filled with the found points
+        * @return (int) (number of found potential points)
         */
     private int getBoardPointInsideThePotentialConqueredZone(LinkedList<BoardPoint> tripLinkedList, 
-            int potentialZonesInsideConqueredZoneSize, 
+            int maximumPotentialZonesInsideConqueredZoneSize, 
             BoardPoint[] boardPointInsideThePotentialConqueredZone)
     {
         //  Find a board point inside the potential conquered zone 
         //  to start the flood fill algorithm
         int centerRow               = -1;
         int centerColumn            = -1;
-        int linkedListCenterRow     = -1;
-        int linkedListCenterColumn  = -1;
-        int sumOfLinkedListRows     = 0;
-        int sumOfLinkedListColumns  = 0;
         int AVERAGE_ROW             = (int) ((spacePilotNorthestRowWhenOutsideSafeZone + spacePilotSouthestRowWhenOutsideSafeZone) / 2.0);
         int AVERAGE_COLUMN          = (int) ((spacePilotLeftistColumnWhenOutsideSafeZone + spacePilotRightestColumnWhenOutsideSafeZone) / 2.0);
 
         final int QUANTITY_OF_POTENTIAL_POINTS_FOUND = findBoardPointInsideThePotentialConqueredZone(tripLinkedList,
-            potentialZonesInsideConqueredZoneSize, 
+            maximumPotentialZonesInsideConqueredZoneSize, 
             boardPointInsideThePotentialConqueredZone);
 
         if (0 != QUANTITY_OF_POTENTIAL_POINTS_FOUND)
         {
-            for (int point = 0; point < potentialZonesInsideConqueredZoneSize; point++)
+            for (int point = 0; point < QUANTITY_OF_POTENTIAL_POINTS_FOUND; point++)
             {
                 System.out.println("Point found" + point + ": "  + 
                 boardPointInsideThePotentialConqueredZone[point].getRow() + ", " 
@@ -863,20 +813,8 @@ public class GameControl
                 }
             }
 
-//            boardPointInsideThePotentialConqueredZone[0].setRow(FOUND_POINT.getRow());
-//            boardPointInsideThePotentialConqueredZone[0].setColumn(FOUND_POINT.getColumn());
             return QUANTITY_OF_POTENTIAL_POINTS_FOUND;         
         }
-
-        for (BoardPoint linkedListBoardPoint : tripLinkedList) 
-        { // Enhanced for loop
-                //  Calculate the sum of rows and columns of the linked list points
-            sumOfLinkedListRows     += linkedListBoardPoint.getRow();
-            sumOfLinkedListColumns  += linkedListBoardPoint.getColumn();
-        }
-
-        linkedListCenterRow       = sumOfLinkedListRows / tripLinkedList.size();
-        linkedListCenterColumn    = sumOfLinkedListColumns / tripLinkedList.size();
 
         //  Verify first rows, later columns
         for (int row = spacePilotNorthestRowWhenOutsideSafeZone; row <= spacePilotSouthestRowWhenOutsideSafeZone; row++)
@@ -1420,12 +1358,7 @@ public class GameControl
         boardPointInsideThePotentialConqueredZone[0].setRow(centerRow);
         boardPointInsideThePotentialConqueredZone[0].setColumn(centerColumn);
         System.out.println("Point inside: " + centerRow + ", " + centerColumn);
-        System.out.println("Point inside2: " + linkedListCenterRow + ", " + linkedListCenterColumn);
-        System.out.println("Point inside3: " + (linkedListCenterRow+centerRow)/2 + ", " + (linkedListCenterColumn+centerColumn)/2);
 
-        boardPointInsideThePotentialConqueredZone[0].setRow((linkedListCenterRow+centerRow)/2);
-        boardPointInsideThePotentialConqueredZone[0].setColumn((linkedListCenterColumn+centerColumn)/2);
-
-        return QUANTITY_OF_POTENTIAL_POINTS_FOUND;
+        return 1;
     } 
 }
