@@ -104,8 +104,8 @@ public class GameCharacter implements Intersectable
     
 //  Protected variables for the class
     protected   Grid       	    grid                = null;
-	protected   Direction 		directionPolicy     = Direction.STOPPED;
-	protected   Direction 		currentDirection    = Direction.STOPPED;
+	protected   Grid.Direction 	directionPolicy     = Direction.STOPPED;
+	protected   Grid.Direction 	currentDirection    = Direction.STOPPED;
 	protected   int             speedCellsPerCycle  = 1;
 
     /**
@@ -241,9 +241,9 @@ public class GameCharacter implements Intersectable
         * @param none
         * @return (none)
         */
-	protected void move() 
+	protected boolean move() 
     {
-
+        return false; //  Default implementation does nothing
 	}
 	
     //  Intersectable base class method to be implemented

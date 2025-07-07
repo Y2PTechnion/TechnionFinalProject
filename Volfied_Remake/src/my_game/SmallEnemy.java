@@ -362,11 +362,13 @@ public class SmallEnemy extends GameCharacter
         *               according to small enemy requirements
         *
         * @param none
-        * @return (none)
+        * @return (boolean) (true if the small enemy has moved, false otherwise)
         */
     @Override
-	public void move() 
+	public boolean move() 
     {
+        boolean hasMoved = false;
+
 		//  First try to move according to policy
 		BoardPoint desired  = new BoardPoint(getLocation().getRow() + directionPolicy.yVector(),
             getLocation().getColumn() + directionPolicy.xVector());
@@ -396,6 +398,7 @@ public class SmallEnemy extends GameCharacter
                 //  If move is possible, i.e., grid does not block,
                 //  continue the current direction in the same direction polity as now
                 setLocation(desired);
+                hasMoved    = true;
             }
             else
             {
@@ -438,6 +441,7 @@ public class SmallEnemy extends GameCharacter
                     {
                         //  move to next point
                         setLocation(next);
+                        hasMoved    = true;
                     }
                     else
                     {
@@ -448,8 +452,11 @@ public class SmallEnemy extends GameCharacter
                 {
                     //  move to next point
                     setLocation(next);
+                    hasMoved    = true;
                 }
             }
         }
+
+        return hasMoved;
 	}
 }		

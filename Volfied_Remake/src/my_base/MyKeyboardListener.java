@@ -96,15 +96,15 @@ public class MyKeyboardListener extends KeyboardListener
         {
             case RIGHT: 
             {
-                //  If the direction is right, then move west
-			    myContent.spacePilot().directionalKeyPressed(Grid.Direction.WEST);
+                //  If the direction is right, then move east
+			    myContent.spacePilot().directionalKeyPressed(Grid.Direction.EAST);
 			    break;
 			}
 
 		    case LEFT: 
             {
-                //  If the direction is left, then move east
-		  	    myContent.spacePilot().directionalKeyPressed(Grid.Direction.EAST);
+                //  If the direction is left, then move west
+		  	    myContent.spacePilot().directionalKeyPressed(Grid.Direction.WEST);
 			    break;
 			}
 

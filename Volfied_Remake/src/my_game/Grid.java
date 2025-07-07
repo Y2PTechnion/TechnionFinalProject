@@ -84,15 +84,15 @@ public class Grid
 {
 	public enum Direction 
     {
-		WEST (1,0, 0),
-		EAST (-1,0, 1),
+		WEST (-1,0, 0),
+		EAST (1,0, 1),
 		NORTH (0,-1, 2),
 		SOUTH (0,1, 3),
         STOPPED(0,0, 4),
-        NORTH_WEST (1,-1, 5),
-        NORTH_EAST (-1,-1, 6),
-        SOUTH_WEST (1,1, 7),
-        SOUTH_EAST (-1,1, 8);
+        NORTH_WEST (-1,-1, 5),
+        NORTH_EAST (1,-1, 6),
+        SOUTH_WEST (-1,1, 7),
+        SOUTH_EAST (1,1, 8);
 		
 		private final int xVector, yVector, index;
 		private Direction(int xVector, int yVector, int index) 
@@ -137,11 +137,30 @@ public class Grid
     private ArrayList<GridLine> gridSpacePilotLines                 = new ArrayList<GridLine>();
     private BoardPoint          lastSpacePilotPointInSafeZone       = null;
     //  Region[row][column]
-	private Region[][]          regions                             = new Region[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][TOTAL_GAME_CELLS_IN_X_PER_ROW];
+	private Region[][]          regions                             = null;
 	
+    public Grid(Grid gridToCopyFromOnlyToCompare) 
+    {   
+//        this.board  = gridToCopyFromOnlyToCompare.board;
+        this.regions    = new Region[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][TOTAL_GAME_CELLS_IN_X_PER_ROW];
+        initRegions();
+
+        for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++) 
+        {
+            for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+  //              this.regions[row][column] = gridToCopyFromOnlyToCompare.regions[row][column];
+                this.regions[row][column].setRegionStatus(gridToCopyFromOnlyToCompare.regions[row][column].getRegionStatus());
+            }
+        }
+
+       lastSpacePilotPointInSafeZone       = new BoardPoint(0, 0);
+    }
+
 	public Grid(Board board) 
     {
-		this.board  = board;
+		this.board      = board;
+        this.regions    = new Region[TOTAL_GAME_CELLS_IN_Y_PER_COLUMN][TOTAL_GAME_CELLS_IN_X_PER_ROW];
 		initGridLines();
 		initRegions();
         lastSpacePilotPointInSafeZone       = new BoardPoint(0, 0);
@@ -317,7 +336,7 @@ public class Grid
 			}
 		}
 
-        Region.resetConqueredRegions();
+        regions()[0][0].resetConqueredRegions();
     }
 
     public void resetConqueringRegions() 
@@ -459,8 +478,7 @@ public class Grid
                         || (RegionStatus.REGION_STATUS_BORDER_ONLY_FOR_SPACE_PILOT ==  SOURCE_CELL_REGION_STATUS))
                     {
                         //  Set this point as the last space pilot in safe zone
-                        this.lastSpacePilotPointInSafeZone.setRow(sourcePoint.getRow());
-                        this.lastSpacePilotPointInSafeZone.setColumn(sourcePoint.getColumn());
+                        this.lastSpacePilotPointInSafeZone.set(sourcePoint);
                     }
                 }
             }
@@ -581,6 +599,25 @@ public class Grid
         return getNumberOfConqueredRegions;
     }
 
+    public int calculateNumberOfConqueredRegions()
+    {
+        int getNumberOfConqueredRegions = 0;
+
+        for (int row = 0; row < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN; row++)
+        {
+            for (int column = 0; column < TOTAL_GAME_CELLS_IN_X_PER_ROW; column++) 
+            {
+                if ((RegionStatus.REGION_STATUS_CONQUERED_BY_SPACE_PILOT == regions()[row][column].getRegionStatus())
+                    || (RegionStatus.REGION_STATUS_BORDER_CONQUERED_BY_SPACE_PILOT == regions()[row][column].getRegionStatus()))
+                {
+                    getNumberOfConqueredRegions++;
+                }
+            }
+        }
+
+        return getNumberOfConqueredRegions;
+    }
+
     /**
         * floodFillAlgorithm algorithm method
         * 
@@ -603,21 +640,28 @@ public class Grid
     {
         final int           STARTING_ROW            = startingBoardPoint.getRow();
         final int           STARTING_COLUMN         = startingBoardPoint.getColumn();
-        final RegionStatus  ORIGINAL_REGION_STATUS  = region[STARTING_ROW][STARTING_COLUMN].getRegionStatus();
 
-        if (ORIGINAL_REGION_STATUS != newRegionStatus) 
-        { 
-            //  Avoid infinite recursion if newRegionStatus is same as original
-            if (false == dfs(region, startingBoardPoint, ORIGINAL_REGION_STATUS, newRegionStatus))
-            {
-                //  If one of the region status is SMALL_ENEMY_OVER
-                region  = null;
+        if ((STARTING_ROW >= 0) && (STARTING_ROW < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN)
+            && (STARTING_COLUMN >= 0) || (STARTING_COLUMN < TOTAL_GAME_CELLS_IN_X_PER_ROW)) 
+        {
+            final RegionStatus  ORIGINAL_REGION_STATUS  = region[STARTING_ROW][STARTING_COLUMN].getRegionStatus();
+
+            if (ORIGINAL_REGION_STATUS != newRegionStatus) 
+            { 
+                //  Avoid infinite recursion if newRegionStatus is same as original
+                dfs(region, startingBoardPoint, ORIGINAL_REGION_STATUS, newRegionStatus);
             }
-        }
 
-        //  After the DFS is done, return the modified region
-        //  This will have all connected regions with the newRegionStatus
-        return region;
+            //  After the DFS is done, return the modified region
+            //  This will have all connected regions with the newRegionStatus
+            return region;
+        }   
+        else    
+        {
+            //  If the starting point is out of bounds, return the original region
+            System.out.println("Starting point is out of bounds: " + startingBoardPoint);
+            return null; // or throw an exception
+        }
     }
 
     /**
@@ -636,62 +680,36 @@ public class Grid
         * @param (BoardPoint boardPoint) (the node to start the DFS from)
         * @param (int originalRegionStatus) (the original region status to be replaced)
         * @param (int newRegionStatus) (the new region status to set the connected region)
-        * @return (boolean) (returns true if the DFS was successful, false otherwise)
+        * @return (none)
         */
-    private boolean dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
+    private void dfs(Region[][] region, BoardPoint boardPoint, RegionStatus originalRegionStatus, RegionStatus newRegionStatus) 
     {
         final int           ROW             = boardPoint.getRow();
         final int           COLUMN          = boardPoint.getColumn();
         final RegionStatus  REGION_STATUS   = region[ROW][COLUMN].getRegionStatus();
-//       final boolean       IS_REGION_STATUS_SMALL_ENEMY_OVER 
-//                                            = (RegionStatus.REGION_STATUS_SMALL_ENEMY_OVER == REGION_STATUS);  
-
- //       if (false == IS_REGION_STATUS_SMALL_ENEMY_OVER) 
+        //  If the region status is not SMALL_ENEMY_OVER, proceed with DFS
+        //  Check if the current region is within bounds and has the original region status
+        if (ROW >= 0 && ROW < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
+            && COLUMN >= 0 && COLUMN < TOTAL_GAME_CELLS_IN_X_PER_ROW 
+            && REGION_STATUS == originalRegionStatus) 
         {
-            //  If the region status is not SMALL_ENEMY_OVER, proceed with DFS
-            //  Check if the current region is within bounds and has the original region status
-            if (ROW >= 0 && ROW < TOTAL_GAME_CELLS_IN_Y_PER_COLUMN 
-                && COLUMN >= 0 && COLUMN < TOTAL_GAME_CELLS_IN_X_PER_ROW 
-                && REGION_STATUS == originalRegionStatus) 
-            {
-                //  Change the region status of the current region
-                region[ROW][COLUMN].setRegionStatus(newRegionStatus);
+            //  Change the region status of the current region
+            region[ROW][COLUMN].setRegionStatus(newRegionStatus);
 
-                //  Explore 4-directional neighbors
-                final BoardPoint BOARD_POINT_DOWN   = new BoardPoint(ROW + 1, COLUMN);
-                final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);        
-                final BoardPoint BOARD_POINT_RIGHT  = new BoardPoint(ROW, COLUMN + 1);
-                final BoardPoint BOARD_POINT_LEFT   = new BoardPoint(ROW, COLUMN - 1);
-                if (false == dfs(region, BOARD_POINT_DOWN, originalRegionStatus, newRegionStatus))  //  Down
-                {
-                    //  If the DFS down was not successful, return false
-                    return false;
-                }
-                if (false == dfs(region, BOARD_POINT_UP, originalRegionStatus, newRegionStatus))    //  Up
-                {
-                    //  If the DFS down was not successful, return false
-                    return false;
-                }
-                if (false == dfs(region, BOARD_POINT_RIGHT, originalRegionStatus, newRegionStatus)) //  Right
-                {
-                    //  If the DFS down was not successful, return false
-                    return false;
-                }
-                if (false == dfs(region, BOARD_POINT_LEFT, originalRegionStatus, newRegionStatus))  //  Left
-                {
-                    //  If the DFS down was not successful, return false
-                    return false;
-                }
-            }
-            else
-            {
-                //  Base case: out of bounds or not the target region status
-            }            
-
-            return true;
+            //  Explore 4-directional neighbors
+            final BoardPoint BOARD_POINT_DOWN   = new BoardPoint(ROW + 1, COLUMN);
+            final BoardPoint BOARD_POINT_UP     = new BoardPoint(ROW - 1, COLUMN);        
+            final BoardPoint BOARD_POINT_RIGHT  = new BoardPoint(ROW, COLUMN + 1);
+            final BoardPoint BOARD_POINT_LEFT   = new BoardPoint(ROW, COLUMN - 1);
+            dfs(region, BOARD_POINT_DOWN, originalRegionStatus, newRegionStatus);   //  Down
+            dfs(region, BOARD_POINT_UP, originalRegionStatus, newRegionStatus);     //  Up
+            dfs(region, BOARD_POINT_RIGHT, originalRegionStatus, newRegionStatus);  //  Right
+            dfs(region, BOARD_POINT_LEFT, originalRegionStatus, newRegionStatus);   //  Left
         }
-    
-//        return false;   //  If the region status is SMALL_ENEMY_OVER
+        else
+        {
+            //  Base case: out of bounds or not the target region status
+        }
     }
 
     /**
@@ -1032,5 +1050,78 @@ public class Grid
 
         return REGION_NOT_ALLOWED_TO_SMALL_ENEMIES;
     } 
-}
   
+
+    /**
+        * moveDirection method
+        * 
+        * @implNote this function returns the direction while an object is moving from
+        *           source to destination
+        *
+        * @param BoardPoint sourcePoint (source point) 
+        * @param BoardPoint destinationPoint (destination point)
+        * @return Direction (move direction)
+        */
+	public Direction moveDirection(BoardPoint sourcePoint, BoardPoint destinationPoint) 
+    {
+        Direction   moveDirection   = Direction.STOPPED;
+
+        if (!sourcePoint.isEqual(destinationPoint))
+        {
+            //  If both points are different
+            if (sourcePoint.getRow() == destinationPoint.getRow())
+            {
+                //  If both points are in the same row
+                if (destinationPoint.getColumn() > sourcePoint.getColumn())
+                {   
+                    moveDirection   = Direction.EAST;
+                }
+                else
+                {
+                    moveDirection   = Direction.WEST;
+                }
+            }
+            else if (sourcePoint.getColumn() == destinationPoint.getColumn())
+            {
+                //  If both points are in the same column
+                if (destinationPoint.getRow() > sourcePoint.getRow())
+                {   
+                    moveDirection   = Direction.SOUTH;
+                }
+                else
+                {
+                    moveDirection   = Direction.NORTH;
+                }
+            }
+            else
+            {
+                //  The points are in different rows and columns
+                if (destinationPoint.getColumn() > sourcePoint.getColumn())
+                {   
+                    if (destinationPoint.getRow() > sourcePoint.getRow())
+                    {
+                        moveDirection   = Direction.SOUTH_EAST;
+                    }
+                    else
+                    {
+                        moveDirection   = Direction.NORTH_EAST;
+                    }
+                }
+                else
+                {
+                    if (destinationPoint.getRow() > sourcePoint.getRow())
+                    {
+                        moveDirection   = Direction.SOUTH_WEST;
+                    }
+                    else
+                    {
+                        moveDirection   = Direction.NORTH_WEST;
+                    }
+                }
+            }
+        }
+
+        return moveDirection;
+
+    }
+}

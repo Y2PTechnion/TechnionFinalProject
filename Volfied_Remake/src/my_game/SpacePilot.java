@@ -98,7 +98,7 @@ public class SpacePilot extends GameCharacter
 
 
     //  Array of different types of images of space pilot
-	private final String[]	images = {"YellowSpaceshipRight", "YellowSpaceshipLeft",
+	private final String[]	images = {"YellowSpaceshipLeft", "YellowSpaceshipRight",
 			"YellowSpaceshipUp", "YellowSpaceshipDown", "YellowSpaceshipUp"};
 
     /**
@@ -186,11 +186,13 @@ public class SpacePilot extends GameCharacter
         *               according to space pilot requirements
         *
         * @param none
-        * @return (none)
+        * @return (boolean) (true if the space pilot has moved, false otherwise)
         */
     @Override
-	public void move() 
+	public boolean move() 
     {
+        boolean hasMoved = false;
+
 		//  Saves the direction policy as current direction
 		directionPolicy = currentDirection;
 				
@@ -205,6 +207,9 @@ public class SpacePilot extends GameCharacter
         {
             //  Only set the desired location if the move is allowed
             setLocation(desired);
+            hasMoved    = true;
         }
+
+        return hasMoved;
 	}
 }	

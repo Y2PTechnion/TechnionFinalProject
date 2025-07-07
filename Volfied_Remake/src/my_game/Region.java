@@ -129,7 +129,7 @@ public class Region
         return (MAXIMUM_NUMBER_OF_RELEVANT_GAME_REGIONS_IN_GRID);
     }
 
-    public static void resetConqueredRegions() 
+    public void resetConqueredRegions() 
     {
         currentNumberOfConqueredRegionsInGrid   = 0;
     }

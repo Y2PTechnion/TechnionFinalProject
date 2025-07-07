@@ -92,6 +92,12 @@ public class BoardPoint
     private int row     = 0;
     private int column  = 0;
 
+    public BoardPoint(BoardPoint boardPoint) 
+    {
+        this.row    = boardPoint.getRow();
+        this.column = boardPoint.getColumn();
+    }
+
     public BoardPoint(int row, int column) 
     {
         this.row    = row;
@@ -106,6 +112,12 @@ public class BoardPoint
     public int getRow() 
     {
         return this.row;
+    }
+
+    public void set(BoardPoint boardPoint) 
+    {
+        this.column = boardPoint.column;
+        this.row    = boardPoint.row;
     }
 
     public void setColumn(int column) 
