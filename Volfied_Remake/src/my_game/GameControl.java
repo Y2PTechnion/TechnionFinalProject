@@ -78,11 +78,8 @@ package my_game;
 import java.awt.Color;
 import java.util.LinkedList;
 
-import javax.lang.model.util.ElementScanner6;
-
 import base.Game;
 import base.PeriodicLoop;
-import base.KeyboardListener.Direction;
 import my_base.MyContent;
 import my_game.Region.RegionStatus;
 import my_ui_elements.EndButton;
@@ -101,7 +98,6 @@ public class GameControl
 	private Board                   board                                       = null;
     private TipManager              tipManager                                  = null;
     static private boolean          getSpacePilotIsOutsideSafeZone              = false;
-    static private BoardPoint       boardPointInsideThePotentialConqueredZone   = new BoardPoint(0, 0);
     static private int              spacePilotLeftistColumnWhenOutsideSafeZone  = Grid.getTotalGameCellsInXPerRow();
     static private int              spacePilotRightestColumnWhenOutsideSafeZone = 0;
     static private int              spacePilotSouthestRowWhenOutsideSafeZone    = 0;
@@ -856,7 +852,8 @@ public class GameControl
             maximumPotentialZonesInsideConqueredZoneSize, 
             boardPointInsideThePotentialConqueredZone);
 
-        if (0 != QUANTITY_OF_POTENTIAL_POINTS_FOUND)
+        if ((0 != QUANTITY_OF_POTENTIAL_POINTS_FOUND)
+            && (1 != QUANTITY_OF_POTENTIAL_POINTS_FOUND))
         {
             for (int point = 0; point < QUANTITY_OF_POTENTIAL_POINTS_FOUND; point++)
             {
